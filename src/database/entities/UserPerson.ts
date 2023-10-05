@@ -5,6 +5,7 @@ import { Teacher } from "./Teacher";
 import { Administrator } from "./Administrator";
 import { Business } from "./Business";
 import { DetailConversation } from "./DetailConversation";
+import { Student } from "./Student";
 
 @Entity({ name: 'user_person' })
 export class UserPerson extends CodeBase {
@@ -62,6 +63,15 @@ export class UserPerson extends CodeBase {
         referencedColumnName: 'user_id',
     })
     business?: Business;
+
+    @OneToOne(() => Business, (business) => business.user_id, {
+        createForeignKeyConstraints: false,
+    })
+    @JoinColumn({
+        name: 'id',
+        referencedColumnName: 'user_id',
+    })
+    student?: Student;
 
     @OneToMany(() => DetailConversation, (detailConversation) => detailConversation.userPerson)
     detailConversation?: DetailConversation[];

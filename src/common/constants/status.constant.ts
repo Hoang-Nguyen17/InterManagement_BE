@@ -29,8 +29,8 @@ export enum statusFinished {
 }
 
 export enum role {
-    admin = 'admin',
-    teacher = 'teacher',
-    student = 'student',
-    business = 'business',
+    admin = 1,
+    teacher = 2,
+    student = 3,
+    business = 4,
 }
