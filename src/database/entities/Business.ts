@@ -31,6 +31,6 @@ export class Business extends CodeBase {
     })
     user_person?: UserPerson;
 
-    @ManyToOne(() => Job, (job) => job.business)
+    @OneToMany(() => Job, (job) => job.business)
     job?: Job[];
 }

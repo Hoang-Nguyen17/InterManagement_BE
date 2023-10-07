@@ -31,5 +31,5 @@ export class UserAccount extends CodeBase {
         name: 'permission_id',
         referencedColumnName: 'id',
     })
-    permission: Permission;
+    permission?: Permission;
 }

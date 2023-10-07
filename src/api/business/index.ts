@@ -1,8 +1,10 @@
 import * as express from 'express';
 const router = express.Router();
 
-// const userController = require('./controllers/userController')
+const businessController = require("./controllers/businessController")
 
-// router.post('/auth/login', userController.login);
+// router.get('/', businessController.getBusiness);
+// router.get('/:id', businessController.getBusinessById);
+// router.put('/:id', businessController.upDateBusiness);
 
 module.exports = router;

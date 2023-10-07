@@ -1,8 +1,9 @@
 import * as express from 'express';
+const Auth = require('../../common/helpers/auth');
 const router = express.Router();
 
-// const userController = require('./controllers/userController')
+const schoolController = require('./controllers/schoolController');
 
-// router.post('/auth/login', userController.login);
+// router.get('/school', Auth.auth ,schoolController.getSchools);
 
 module.exports = router;
