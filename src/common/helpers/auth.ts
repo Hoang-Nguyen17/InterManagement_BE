@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { NotFoundException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import jwtObj from '../../config/jwt';
+import { role } from '../constants/status.constant';
 
-export class Auth {
+export default class Auth {
     public isLogin = async (accessToken: string) => {
         let resultData: any = {};
         resultData.result = false;
@@ -22,10 +23,20 @@ export class Auth {
         if (req.headers.authorization) {
             const token = req.headers.authorization;
             const isLogin = await this.isLogin(token);
-            const user = isLogin.userData;
-            if (isLogin.result) return next(user);
-            return new NotFoundException({detail: 'không tìm thấy tài khoản của bạn'});
+            if (isLogin.result) return next();
+            return res.status(404).json({detail: 'không tìm thấy tài khoản của bạn'});
         }
-        return new NotFoundException({ detail: 'Unauthorized' });
+        return res.status(404).json({ detail: 'Unauthorized' });
+    };
+
+    public authAdmin = async (req: Request, res: Response, next: NextFunction) => {
+        if (req.headers.authorization) {
+            const token = req.headers.authorization;
+            const isLogin = await this.isLogin(token);
+            console.log(isLogin);
+            if (isLogin.result && isLogin.userData.userType == role.admin) return next();
+            return res.status(404).json({detail: 'không tìm thấy tài khoản của bạn'});
+        }
+        return res.status(404).json({ detail: 'Unauthorized' });
     };
 }
