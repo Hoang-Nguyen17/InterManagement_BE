@@ -1,13 +1,15 @@
-import { Department } from "src/database/entities/Department";
+import { Department } from "../../../database/entities/Department";
 import { Program } from "../../../database/entities/Program";
 import { School } from "../../../database/entities/School";
-import { AppDataSource } from "src/ormconfig";
+import { AppDataSource } from "../../../ormconfig";
+import { Class } from "../../../database/entities/Class";
 
 
 export class SchoolService {
     private shcoolRepository = AppDataSource.getRepository(School);
     private programRepository = AppDataSource.getRepository(Program);
     private departmentRepository = AppDataSource.getRepository(Department);
+    private classRepository = AppDataSource.getRepository(Class);
 
     public getSchool = async (): Promise<School[]> => {
         try {
@@ -137,6 +139,62 @@ export class SchoolService {
             if (!department) return false;
             await this.departmentRepository.softDelete(department)
             return true;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    public saveClass = async (Class: Class): Promise<Class> => {
+        try {
+            if (Class.id) {
+                const oldData = await this.classRepository.findOne({
+                    where: {
+                        id: Class.id,
+                    }
+                })
+                if (!oldData) return;
+                Class.class_name = Class.class_name ?? oldData.class_name;
+                Class.academic_year = Class.academic_year ?? oldData.academic_year;
+                Class.department_id = Class.department_id ?? oldData.department_id;
+                Class.head_teacher = Class.head_teacher ?? oldData.head_teacher;
+                Class.students = Class.students ?? oldData.students;
+            }
+            const result = this.classRepository.save(Class);
+            return result;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    public deletClass = async (classId: number): Promise<boolean> => {
+        try {
+            const Class = await this.classRepository.findOne({
+                where: {
+                    id: classId,
+                }
+            })
+            if (!Class) return false;
+            const result = await this.classRepository.softDelete({ id: classId })
+            if (!result.affected) return false;
+            return true;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    public getClasses = async (schoolId: number, departmentId: number, classId: number) => {
+        try {
+            const qb = this.classRepository
+                .createQueryBuilder("class")
+                .innerJoinAndSelect('class.department', 'department')
+                .leftJoinAndSelect('class.teacher', 'teacher')
+                .where('department.school_id = :schoolId', { schoolId: schoolId });
+
+            if (departmentId) qb.andWhere('class.department_id = :departmentId', { departmentId: departmentId });
+            if (classId) qb.andWhere('class.id = :classId', { classId: classId });
+
+            if (classId) return qb.getOne();
+            return qb.offset(0).take(15).getManyAndCount();
         } catch (e) {
             throw e;
         }

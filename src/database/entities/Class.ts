@@ -39,5 +39,5 @@ export class Class extends CodeBase {
     teacher?: Teacher;
 
     @OneToMany(() => Student, (student) => student.program)
-    student: Student[];
+    student?: Student[];
 }

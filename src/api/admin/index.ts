@@ -24,4 +24,11 @@ router.get('/school/:id/department', schoolController.getDepartments);
 router.get('/school/:id/department/:did', schoolController.getDepartment);
 router.delete('/school/:id/department/:did', authInstance.authAdmin, schoolController.deleteDepartment);
 
+// class
+router.post('/school/:id/department/:did/class', authInstance.authAdmin, schoolController.saveClass);
+router.put('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.updateClass);
+router.get('/school/:id/class', schoolController.getClasses);
+router.get('/school/:id/department/:did/class/:cid', schoolController.getClass);
+router.delete('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.deleteClass);
+
 module.exports = router;
