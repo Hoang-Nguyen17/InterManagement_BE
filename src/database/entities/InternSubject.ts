@@ -13,6 +13,9 @@ export class InternSubject extends CodeBase {
     id: number;
 
     @Column()
+    name: string;
+
+    @Column()
     unit: number;
 
     @Column()

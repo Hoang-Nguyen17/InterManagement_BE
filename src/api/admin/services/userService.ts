@@ -5,6 +5,7 @@ import { UserPerson } from "../../../database/entities/UserPerson";
 import { Teacher } from "../../../database/entities/Teacher";
 import { Student } from "../../../database/entities/Student";
 import { Business } from "../../../database/entities/Business";
+import { FindOneOptions } from "typeorm";
 
 export class UserService {
     private userAccountRepository = AppDataSource.getRepository(UserAccount);
@@ -12,6 +13,7 @@ export class UserService {
     private teacherRepository = AppDataSource.getRepository(Teacher);
     private studentRepository = AppDataSource.getRepository(Student);
     private businessRepository = AppDataSource.getRepository(Business);
+
 
     public isExistsEmail = async (email: string) => {
         try {
@@ -60,4 +62,10 @@ export class UserService {
             throw e;
         }
     }
+
+    // Teacher
+    public getOneTeacher = async (filter?: FindOneOptions<Teacher>) => {
+        return await this.teacherRepository.findOne(filter);
+    }
+
 }

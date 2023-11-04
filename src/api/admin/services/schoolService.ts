@@ -3,6 +3,11 @@ import { Program } from "../../../database/entities/Program";
 import { School } from "../../../database/entities/School";
 import { AppDataSource } from "../../../ormconfig";
 import { Class } from "../../../database/entities/Class";
+import { InternSubject } from "../../../database/entities/InternSubject";
+import { Teacher } from "src/database/entities/Teacher";
+import { UserService } from "./userService";
+import { Brackets, FindOneOptions } from "typeorm";
+import { SchoolService as UserSchoolService } from "../../user/services/schoolService";
 
 
 export class SchoolService {
@@ -10,6 +15,9 @@ export class SchoolService {
     private programRepository = AppDataSource.getRepository(Program);
     private departmentRepository = AppDataSource.getRepository(Department);
     private classRepository = AppDataSource.getRepository(Class);
+    private internSubjectRespository = AppDataSource.getRepository(InternSubject);
+    private userService = new UserService();
+    private userSchoolService = new UserSchoolService()
 
     public getSchool = async (): Promise<School[]> => {
         try {
@@ -83,6 +91,7 @@ export class SchoolService {
         }
     }
 
+    // department
     public getDepartments = async (schoolId: number): Promise<Department[]> => {
         try {
             const data = this.departmentRepository.find({
@@ -94,6 +103,10 @@ export class SchoolService {
         } catch (e) {
             throw e;
         }
+    }
+
+    public getOneDepartment = async (filter?: FindOneOptions<Department>) => {
+        return await this.departmentRepository.findOne(filter);
     }
 
     public getDepartment = async (schoolId: number, departmentId: number): Promise<Department> => {
@@ -198,5 +211,88 @@ export class SchoolService {
         } catch (e) {
             throw e;
         }
+    }
+
+    // Intern Subject
+    public saveInternSubject = async (InternSubject: InternSubject): Promise<InternSubject> => {
+        await Promise.all([
+            this.userService.getOneTeacher({
+                where: {
+                    id: InternSubject.teacher_id
+                }
+            }),
+            this.getOneDepartment({
+                where: {
+                    id: InternSubject.department_id
+                }
+            }),
+            await this.userSchoolService.getOneAcademicYear({
+                where: {
+                    id: InternSubject.academic_year
+                }
+            }),
+            await this.userSchoolService.getOneSemester({
+                where: {
+                    id: InternSubject.semester_id
+                }
+            })
+        ]).then((result) => {
+            result.forEach((e) => {
+                if (!e) {
+                    console.log(typeof e, 'not found');
+                    return;
+                }
+            })
+        })
+
+        if (InternSubject.id) {
+            const subject = await this.getOneInternSubject({ where: { id: InternSubject.id } });
+            if (!subject) return;
+
+            subject.name = InternSubject.name;
+            subject.max_students = InternSubject.max_students;
+            subject.academic_year = InternSubject.academic_year;
+            subject.department_id = InternSubject.department_id;
+            subject.semester_id = InternSubject.semester_id;
+            subject.sessions = InternSubject.sessions;
+            subject.unit = InternSubject.unit;
+            subject.teacher_id = InternSubject.teacher_id;
+            subject.start_date = InternSubject.start_date;
+            subject.end_date = InternSubject.end_date;
+
+            const result = await this.internSubjectRespository.save(subject);
+            return result;
+        }
+        const result = await this.internSubjectRespository.save(InternSubject);
+        return result;
+    }
+
+    public getOneInternSubject = async (filter?: FindOneOptions<InternSubject>) => {
+        return await this.internSubjectRespository.findOne(filter);
+    }
+
+    public getInternSubjects = async (filter: any) => {
+        const { take, page } = filter;
+        const qb = this.internSubjectRespository
+            .createQueryBuilder('subject')
+            .leftJoinAndSelect('subject.teacher', 'teacher')
+            .leftJoinAndSelect('teacher.user_person', 'userPerson')
+            .leftJoinAndSelect('subject.department', 'department')
+            .leftJoinAndSelect('subject.academicYear', 'academicYear')
+            .leftJoinAndSelect('subject.semester', 'semester')
+
+        filter.academic_year && qb.andWhere('subject.academic_year = :academicYear', { academicYear: filter.academic_year });
+        filter.semester_id && qb.andWhere('subject.semester_id = :semester', { semester: filter.semester_id });
+        filter.teacher_id && qb.andWhere('subject.teacher_id = teacherId', { teacherId: filter.teacher_id });
+        filter.department_id && qb.andWhere('subject.department_id = :departmentId', { departmentId: filter.department_id });
+        filter.search && qb.andWhere(new Brackets((qb) => {
+            qb
+                .orWhere('subject.name ILIKE :searchText', { searchText: filter.search })
+                .orWhere('userPerson.full_name ILIKE :searchtext', { searchText: filter.search })
+                .orWhere('department.department_name ILIKE :searchText', { searchText: filter.search });
+        }));
+
+        const data = await qb.skip((page - 1) * take).take(take).getManyAndCount();
+        return data;
     }
 }

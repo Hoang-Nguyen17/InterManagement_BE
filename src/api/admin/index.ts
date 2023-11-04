@@ -5,6 +5,8 @@ const authInstance = new Auth();
 
 const userController = require('./controllers/userController');
 const schoolController = require('./controllers/schoolController');
+const internSubjectController = require('./controllers/internSubjectControllecr');
+
 
 router.post('/register' , authInstance.authAdmin, userController.register);
 
@@ -27,6 +29,12 @@ router.delete('/school/:id/department/:did', authInstance.authAdmin, schoolContr
 // class
 router.post('/school/:id/department/:did/class', authInstance.authAdmin, schoolController.saveClass);
 router.put('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.updateClass);
+router.get('/school/:id/class', schoolController.getClasses);
+router.get('/school/:id/department/:did/class/:cid', schoolController.getClass);
+router.delete('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.deleteClass);
+
+// intern subject
+router.post('/school/intern-subject', authInstance.authAdmin, internSubjectController.saveInternSubject);
 router.get('/school/:id/class', schoolController.getClasses);
 router.get('/school/:id/department/:did/class/:cid', schoolController.getClass);
 router.delete('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.deleteClass);
