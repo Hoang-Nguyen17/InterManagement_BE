@@ -19,6 +19,7 @@ const login = async (req: Request, res: Response) => {
         const user = await us.login(username, pass)
         if (!user) return res.status(404).json({ detail: 'Đăng nhập thất bại, không tìm thấy tài khoản' });
 
+        delete user.pass;
         const returnData = {
             user: user,
             access_token: makeToken('access', user?.user_person?.id, user?.permission_id),
