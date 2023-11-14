@@ -5,7 +5,7 @@ const authInstance = new Auth();
 
 const userController = require('./controllers/userController');
 const schoolController = require('./controllers/schoolController');
-const internSubjectController = require('./controllers/internSubjectControllecr');
+import { internSubjectController } from './controllers/internSubjectController';
 
 
 router.post('/register' , authInstance.authAdmin, userController.register);
@@ -35,8 +35,8 @@ router.delete('/school/:id/department/:did/class/:cid', authInstance.authAdmin, 
 
 // intern subject
 router.post('/school/intern-subject', authInstance.authAdmin, internSubjectController.saveInternSubject);
-router.get('/school/:id/class', schoolController.getClasses);
-router.get('/school/:id/department/:did/class/:cid', schoolController.getClass);
-router.delete('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.deleteClass);
+router.get('/school/intern-subject', authInstance.authAdmin, internSubjectController.getInternSubject);
+router.get('/school/intern-subject/:id', authInstance.authAdmin, internSubjectController.getInternSubject);
+router.delete('/school/intern-subject', authInstance.authAdmin, internSubjectController.deleteInternSubjects);
 
 module.exports = router;
