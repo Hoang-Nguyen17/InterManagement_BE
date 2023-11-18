@@ -31,10 +31,10 @@ const login = async (req: Request, res: Response) => {
     }
 }
 
-const getProfile = (req: Request, res: Response) => {
+const getProfile = async (req: Request, res: Response) => {
     const userData = req.userData;
     const us = new UserService();
-    const user = us.getProfileById(userData.id);
+    const user = await us.getProfileById(userData.id);
     return res.status(200).json(user);
 }
 

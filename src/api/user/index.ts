@@ -1,7 +1,7 @@
 import * as express from 'express';
 const router = express.Router();
 import { userController } from './controllers/userController';
-import Auth from 'src/common/helpers/auth';
+import Auth from '../../common/helpers/auth';
 const schoolController = require('./controllers/schoolController');
 
 const authInstance = new Auth();
