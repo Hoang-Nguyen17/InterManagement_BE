@@ -3,6 +3,15 @@ import { NotFoundException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import jwtObj from '../../config/jwt';
 import { role } from '../constants/status.constant';
+import { JwtPayload } from 'jsonwebtoken';
+
+declare global {
+    namespace Express {
+        interface Request {
+            userData?: JwtPayload;
+        }
+    }
+}
 
 export default class Auth {
     public isLogin = async (accessToken: string) => {
