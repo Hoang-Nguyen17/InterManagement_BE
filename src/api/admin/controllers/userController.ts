@@ -8,7 +8,6 @@ import { UserService } from "../services/userService";
 import { Teacher } from "../../../database/entities/Teacher";
 import { Business } from "../../../database/entities/Business";
 import { Student } from "../../../database/entities/Student";
-import { AppDataSource } from "../../../ormconfig";
 
 import * as Joi from "joi";
 
@@ -29,7 +28,7 @@ const register = async (req: Request, res: Response) => {
 
             // teacher
             teacher: Joi.when('permission_id', {
-                is: 2, // nếu permission_id = 2
+                is: 2, // if permission_id = 2
                 then: Joi.object({
                     dob: Joi.date().required(),
                     start_date: Joi.date().required(),
@@ -43,7 +42,7 @@ const register = async (req: Request, res: Response) => {
 
             // student
             student: Joi.when('permission_id', {
-                is: 3, // nếu permission_id = 3
+                is: 3, // if permission_id = 3
                 then: Joi.object({
                     dob: Joi.date().required(),
                     admission_date: Joi.date().required(),
@@ -58,7 +57,7 @@ const register = async (req: Request, res: Response) => {
 
             // business
             business: Joi.when('permission_id', {
-                is: 4, // nếu permission_id = 4
+                is: 4, // if permission_id = 4
                 then: Joi.object({
                     short_desc: Joi.string().optional(),
                     representator: Joi.string().required(),
@@ -130,6 +129,6 @@ const register = async (req: Request, res: Response) => {
     }
 }
 
-module.exports = {
+export const userController = {
     register,
 }

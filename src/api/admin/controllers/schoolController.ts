@@ -333,7 +333,7 @@ const deleteClass = async (req: Request, res: Response) => {
         return res.status(500).json({ detail: e.message })
     }
 }
-module.exports = {
+export const schoolController = {
     getSchool,
 
     saveProgram,

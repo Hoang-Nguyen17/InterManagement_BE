@@ -3,12 +3,12 @@ import Auth from '../../common/helpers/auth';
 const router = express.Router();
 const authInstance = new Auth();
 
-const userController = require('./controllers/userController');
-const schoolController = require('./controllers/schoolController');
+import { userController } from './controllers/userController';
+import { schoolController } from './controllers/schoolController';
 import { internSubjectController } from './controllers/internSubjectController';
 
 
-router.post('/register' , authInstance.authAdmin, userController.register);
+router.post('/register', authInstance.authAdmin, userController.register);
 
 router.get('/school', schoolController.getSchool);
 

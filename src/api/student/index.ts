@@ -1,8 +1,8 @@
 import * as express from 'express';
 const router = express.Router();
 
-// const userController = require('./controllers/userController')
+import { studentLearnInternController } from '../admin/controllers/studentLearnInternSubjectController';
 
-// router.post('/auth/login', userController.login);
+router.post('/signup-intern-subject/', studentLearnInternController.saveStudentLearnInternSubject);
 
 module.exports = router;
