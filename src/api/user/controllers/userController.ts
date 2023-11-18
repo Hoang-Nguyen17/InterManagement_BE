@@ -32,6 +32,9 @@ const login = async (req: Request, res: Response) => {
     }
 }
 
-module.exports = {
+const getProfile = (req: Request, res: Response) => { }
+
+export const userController = {
     login,
+    getProfile,
 }

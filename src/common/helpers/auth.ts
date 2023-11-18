@@ -23,8 +23,11 @@ export default class Auth {
         if (req.headers.authorization) {
             const token = req.headers.authorization;
             const isLogin = await this.isLogin(token);
-            if (isLogin.result) return next();
-            return res.status(404).json({detail: 'không tìm thấy tài khoản của bạn'});
+            if (isLogin.result) {
+                req['userData'] = isLogin.userData;
+                return next();
+            }
+            return res.status(404).json({ detail: 'không tìm thấy tài khoản của bạn' });
         }
         return res.status(404).json({ detail: 'Unauthorized' });
     };
@@ -34,8 +37,11 @@ export default class Auth {
             const token = req.headers.authorization;
             const isLogin = await this.isLogin(token);
             console.log(isLogin);
-            if (isLogin.result && isLogin.userData.userType == role.admin) return next();
-            return res.status(404).json({detail: 'không tìm thấy tài khoản của bạn'});
+            if (isLogin.result && isLogin.userData.userType == role.admin) {
+                req['userData'] = isLogin.userData;
+                return next()
+            };
+            return res.status(404).json({ detail: 'không tìm thấy tài khoản của bạn' });
         }
         return res.status(404).json({ detail: 'Unauthorized' });
     };
