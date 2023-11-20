@@ -212,8 +212,9 @@ const deleteDepartment = async (req: Request, res: Response) => {
             did: Joi.number().required(),
         })
         const { error, value } = schema.validate(req.params);
+        console.log(value);
         if (error) return res.status(400).json(error);
-        const result = await ss.deleteDepartment(value.id, value.pid);
+        const result = await ss.deleteDepartment(value.id, value.did);
         if (!result) return res.status(404).json({ detail: 'Xóa thất bại' });
         return res.status(200).json(result);
     } catch (e) {
@@ -289,7 +290,7 @@ const getClasses = async (req: Request, res: Response) => {
         const ss = new SchoolService();
         const schoolId = parseInt(req.params.id) ?? null;
         if (!schoolId) return res.status(400).json({detail: 'không tìm thấy trường của bạn'});
-        const data = await ss.getDepartments(schoolId);
+        const data = await ss.getClasses(schoolId);
         if (!data) return res.status(404).json({ detail: 'Không tìm thấy khoa' });
         return res.status(200).json(data);
     } catch (e) {

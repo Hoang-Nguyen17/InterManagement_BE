@@ -36,9 +36,9 @@ export default class Auth {
                 req['userData'] = isLogin.userData;
                 return next();
             }
-            return res.status(404).json({ detail: 'không tìm thấy tài khoản của bạn' });
+            return res.status(403).json({ detail: 'Token không hợp lệ hoặc hết hạn, vui lòng đăng nhập lại' });
         }
-        return res.status(404).json({ detail: 'Unauthorized' });
+        return res.status(403).json({ detail: 'Unauthorized' });
     };
 
     public authAdmin = async (req: Request, res: Response, next: NextFunction) => {
@@ -50,8 +50,8 @@ export default class Auth {
                 req['userData'] = isLogin.userData;
                 return next()
             };
-            return res.status(404).json({ detail: 'không tìm thấy tài khoản của bạn' });
+            return res.status(403).json({ detail: 'Token không hợp lệ hoặc hết hạn, vui lòng đăng nhập lại' });
         }
-        return res.status(404).json({ detail: 'Unauthorized' });
+        return res.status(403).json({ detail: 'Unauthorized' });
     };
 }

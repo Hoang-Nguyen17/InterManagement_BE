@@ -84,7 +84,7 @@ export class SchoolService {
                 }
             })
             if (!program) return false;
-            await this.programRepository.softDelete(program)
+            await this.programRepository.softRemove(program)
             return true;
         } catch (e) {
             throw e;
@@ -149,8 +149,9 @@ export class SchoolService {
                     id: departmentId,
                 }
             })
+            console.log(departmentId, schoolId, department);
             if (!department) return false;
-            await this.departmentRepository.softDelete(department)
+            await this.departmentRepository.softRemove(department)
             return true;
         } catch (e) {
             throw e;
@@ -195,7 +196,7 @@ export class SchoolService {
         }
     }
 
-    public getClasses = async (schoolId: number, departmentId: number, classId: number) => {
+    public getClasses = async (schoolId: number, departmentId: number = null, classId: number = null) => {
         try {
             const qb = this.classRepository
                 .createQueryBuilder("class")
