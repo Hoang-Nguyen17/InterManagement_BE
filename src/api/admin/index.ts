@@ -15,22 +15,22 @@ router.get('/school', schoolController.getSchool);
 // program
 router.post('/school/:id/program', authInstance.authAdmin, schoolController.saveProgram);
 router.put('/school/:id/program/:pid', authInstance.authAdmin, schoolController.updateProgram);
-router.get('/school/:id/program', schoolController.getPrograms);
-router.get('/school/:id/program/:pid', schoolController.getProgram);
+router.get('/school/:id/program',authInstance.auth, schoolController.getPrograms);
+router.get('/school/:id/program/:pid', authInstance.auth, schoolController.getProgram);
 router.delete('/school/:id/program/:pid', authInstance.authAdmin, schoolController.deleteProgram);
 
 // department
 router.post('/school/:id/department', authInstance.authAdmin, schoolController.saveDepartment);
 router.put('/school/:id/department/:did', authInstance.authAdmin, schoolController.updateDepartment);
-router.get('/school/:id/department', schoolController.getDepartments);
-router.get('/school/:id/department/:did', schoolController.getDepartment);
+router.get('/school/:id/department', authInstance.auth, schoolController.getDepartments);
+router.get('/school/:id/department/:did', authInstance.auth, schoolController.getDepartment);
 router.delete('/school/:id/department/:did', authInstance.authAdmin, schoolController.deleteDepartment);
 
 // class
 router.post('/school/:id/department/:did/class', authInstance.authAdmin, schoolController.saveClass);
 router.put('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.updateClass);
-router.get('/school/:id/class', schoolController.getClasses);
-router.get('/school/:id/department/:did/class/:cid', schoolController.getClass);
+router.get('/school/:id/class', authInstance.auth, schoolController.getClasses);
+router.get('/school/:id/department/:did/class/:cid', authInstance.auth, schoolController.getClass);
 router.delete('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.deleteClass);
 
 // intern subject
