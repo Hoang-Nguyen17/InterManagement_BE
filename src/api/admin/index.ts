@@ -34,8 +34,7 @@ router.delete('/school/:id/class/:cid', authInstance.verifyAdminSchool, schoolCo
 
 // intern subject
 router.post('/school/:id/department/:did/intern-subject', authInstance.verifyAdminSchool, internSubjectController.saveInternSubject);
-router.get('/school/intern-subject', authInstance.authAdmin, internSubjectController.getInternSubject);
-router.get('/school/intern-subject/:id', authInstance.authAdmin, internSubjectController.getInternSubject);
-router.delete('/school/intern-subject', authInstance.authAdmin, internSubjectController.deleteInternSubjects);
+router.get('/school/:id/intern-subject', authInstance.verifyAuthSchool, internSubjectController.getInternSubjects);
+router.delete('/school/:id/intern-subject', authInstance.verifyAdminSchool, internSubjectController.deleteInternSubjects);
 
 module.exports = router;

@@ -6,6 +6,7 @@ import { ERROR_SUBJECT } from "../../../common/error/subject.error";
 import { InternSubjectService } from "../services/internSubjectService";
 import { UserService } from "../services/userService";
 import { SchoolService as UserSchoolService } from "../../user/services/schoolService";
+import { subjectFilter } from "../interfaces/subjectFilter.interface";
 
 
 const saveInternSubject = async (req: Request, res: Response) => {
@@ -56,41 +57,22 @@ const saveInternSubject = async (req: Request, res: Response) => {
     }
 }
 
-const getInternSubject = async (req: Request, res: Response) => {
+const getInternSubjects = async (req: Request, res: Response) => {
     try {
         const schema = Joi.object({
-            academic_year: Joi.number(),
-            semester_id: Joi.number(),
-            teacher_id: Joi.number(),
-            department_id: Joi.number(),
-            search: Joi.string(),
-
-            take: Joi.number().default(10),
-            page: Joi.number().min(1).default(1),
+            academic_year: Joi.number().optional(),
+            semester_id: Joi.number().optional(),
+            department_id: Joi.number().optional(),
+            search: Joi.string().optional(),
         });
 
         const { error, value } = schema.validate(req.query);
         if (error) return res.status(400).json(error);
 
         const internalSubjectService = new InternSubjectService();
-        const data = await internalSubjectService.getSubjectDetail(value);
+        const filter: subjectFilter = value;
+        const data = await internalSubjectService.getInternSubjects(filter);
         return res.status(200).json(data);
-    } catch (e) {
-        console.log(e);
-        return res.status(500).json({ detail: e.message });
-    }
-}
-
-const getSubjectDetails = async (req: Request, res: Response) => {
-    try {
-        const subjectId = parseInt(req.params.id);
-        if (!subjectId) return res.status(404).json({ detail: ERROR_SUBJECT.MISS_SUBJECT_ID });
-
-        const internalSubjectService = new InternSubjectService();
-        const subject = await internalSubjectService.getSubjectDetail(subjectId);
-        if (!subject) return res.status(404).json({ detail: ERROR_SUBJECT.NOT_FOUND });
-
-        return res.status(200).json(subject);
     } catch (e) {
         console.log(e);
         return res.status(500).json({ detail: e.message });
@@ -101,17 +83,18 @@ const deleteInternSubjects = async (req: Request, res: Response) => {
     try {
         const scheam = Joi.object({
             ids: Joi.array().items(
-                Joi.number(),
+                Joi.number().required(),
             ).required(),
         })
+        const schoolId = req.userData.schoolId;
 
         const { error, value } = scheam.validate(req.body);
         if (error) return res.status(400).json({ detail: error.message });
 
         const internalSubjectService = new InternSubjectService();
-        const result = await internalSubjectService.deleteInternSubjects(value.ids);
-        if (result) return res.status(404).json({ detail: ERROR_SUBJECT.NOT_FOUND });
-        return res.status(200).json(true);
+        const result = await internalSubjectService.deleteInternSubjects(value.ids, schoolId);
+        if (!result.length) return res.status(404).json({ detail: ERROR_SUBJECT.NOT_FOUND });
+        return res.status(200).json(result);
     } catch (e) {
         console.log(e);
         return res.status(500).json({ detail: e.message });
@@ -120,7 +103,6 @@ const deleteInternSubjects = async (req: Request, res: Response) => {
 
 export const internSubjectController = {
     saveInternSubject,
-    getInternSubject,
-    getSubjectDetails,
+    getInternSubjects,
     deleteInternSubjects,
 }

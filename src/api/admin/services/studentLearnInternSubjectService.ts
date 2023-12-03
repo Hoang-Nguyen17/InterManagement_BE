@@ -1,6 +1,6 @@
 import { StudentLearnIntern } from "../../../database/entities/StudentLearnIntern";
 import { AppDataSource } from "../../../ormconfig";
-import { IStudentLearnInternSubject } from "../interface/studentLearnInternFilter.interface";
+import { IStudentLearnInternSubject } from "../interfaces/studentLearnInternFilter.interface";
 
 
 export class StudentLearInternService {
