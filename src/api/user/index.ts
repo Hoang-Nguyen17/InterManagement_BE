@@ -2,7 +2,7 @@ import * as express from 'express';
 const router = express.Router();
 import { userController } from './controllers/userController';
 import Auth from '../../common/helpers/auth';
-const schoolController = require('./controllers/schoolController');
+import {schoolController} from './controllers/schoolController';
 
 const authInstance = new Auth();
 
