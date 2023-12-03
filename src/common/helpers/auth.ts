@@ -21,6 +21,7 @@ export default class Auth {
         if (accessToken) {
             try {
                 resultData.userData = jwt.verify(accessToken, jwtObj.secret);
+                
                 resultData.result = true;
             } catch (err) {
                 resultData.result = false;
@@ -48,7 +49,7 @@ export default class Auth {
             const isLogin = await this.isLogin(token);
             if (isLogin.result) {
                 const schoolId = parseInt(req.params.id);
-                if (schoolId !== isLogin.schoolId) return res.status(400).json({ detail: 'bạn không có quyền truy cập' });
+                if (schoolId !== isLogin.userData?.schoolId) return res.status(400).json({ detail: 'bạn không có quyền truy cập' });
                 req['userData'] = isLogin.userData;
                 return next();
             }

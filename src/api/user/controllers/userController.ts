@@ -15,7 +15,7 @@ const login = async (req: Request, res: Response) => {
 
         const { username, pass } = value;
         const us = new UserService();
-        const {result, schoolId} = await us.login(username, pass)
+        const {result, schoolId} = await us.login(username, pass);
         if (!result) return res.status(404).json({ detail: 'Đăng nhập thất bại, không tìm thấy tài khoản' });
 
         delete result.pass;
