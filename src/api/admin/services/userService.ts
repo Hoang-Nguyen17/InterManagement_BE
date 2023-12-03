@@ -76,4 +76,14 @@ export class UserService {
         return await this.studentRepository.findOne(filter);
     }
 
+    public getAdministrator = async (schoolId: number) => {
+        const qb = this.userPersonRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.administrator', 'administrator')
+            .where('administrator.school_id = :schoolId', { schoolId });
+
+        const data = await qb.getMany();
+        return data;
+    }
+
 }

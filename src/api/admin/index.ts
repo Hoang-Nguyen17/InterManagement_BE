@@ -10,7 +10,7 @@ import { internSubjectController } from './controllers/internSubjectController';
 
 router.post('/school/:id/register', authInstance.verifyAdminSchool, userController.register);
 
-router.get('/school/:id', authInstance.verifyAuthSchool, schoolController.getSchool);
+router.get('/school', authInstance.authAdmin, schoolController.getSchool);
 
 // program
 router.post('/school/:id/program', authInstance.verifyAdminSchool, schoolController.saveProgram);
@@ -38,6 +38,6 @@ router.get('/school/:id/intern-subject', authInstance.verifyAuthSchool, internSu
 router.delete('/school/:id/intern-subject', authInstance.verifyAdminSchool, internSubjectController.deleteInternSubjects);
 
 // admin
-router.get('/school/:id/admintrator', authInstance.verifyAdminSchool, userController.getAdministrators);
+router.get('/', authInstance.authAdmin, userController.getAdministrators);
 
 module.exports = router;
