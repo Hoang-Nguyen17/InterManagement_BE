@@ -40,4 +40,10 @@ router.delete('/school/:id/intern-subject', authInstance.verifyAdminSchool, inte
 // admin
 router.get('/', authInstance.authAdmin, userController.getAdministrators);
 
+// teacher
+router.get('/school/teacher', authInstance.authAdmin, userController.getTeachers);
+// student
+router.get('/', authInstance.authAdmin, userController.getAdministrators);
+// major
+
 module.exports = router;

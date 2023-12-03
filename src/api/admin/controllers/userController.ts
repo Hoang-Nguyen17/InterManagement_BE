@@ -141,7 +141,28 @@ const getAdministrators = async (req: Request, res: Response) => {
     }
 };
 
+const getTeachers = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+        const schema = Joi.object({
+            page: Joi.number().default(1),
+            limit: Joi.number().default(10),
+        })
+
+        const { error, value } = schema.validate(req.query);
+        if (error) return res.status(400).json(error);
+
+        const us = new UserService();
+        const data = await us.getTeachers(schoolId, value.page, value.limit);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error);
+    }
+};
+
 export const userController = {
     register,
     getAdministrators,
+    getTeachers,
 }

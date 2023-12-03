@@ -86,4 +86,17 @@ export class UserService {
         return data;
     }
 
+    public getTeachers = async (schoolId: number, page: number, limit: number) => {
+        const qb = this.userPersonRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.teacher', 'teacher')
+            .leftJoin('teacher.department', 'department')
+            .where('department.school_id = :schoolId', { schoolId })
+            .andWhere('user.teacher IS NOT NULL')
+            .offset((page - 1) * limit)
+            .take(limit).orderBy('user.createdAt', 'DESC');
+
+        const [data, total] = await qb.getManyAndCount();
+        return { data, total };
+    }
 }
