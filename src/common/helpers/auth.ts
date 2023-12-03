@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import jwtObj from '../../config/jwt';
 import { role } from '../constants/status.constant';
 import { JwtPayload } from 'jsonwebtoken';
+import { UserService } from '../../api/admin/services/userService';
 
 declare global {
     namespace Express {
@@ -45,7 +46,6 @@ export default class Auth {
         if (req.headers.authorization) {
             const token = req.headers.authorization;
             const isLogin = await this.isLogin(token);
-            console.log(isLogin);
             if (isLogin.result && isLogin.userData.userType == role.admin) {
                 req['userData'] = isLogin.userData;
                 return next()
@@ -53,5 +53,31 @@ export default class Auth {
             return res.status(403).json({ detail: 'Token không hợp lệ hoặc hết hạn, vui lòng đăng nhập lại' });
         }
         return res.status(403).json({ detail: 'Unauthorized' });
+    };
+
+
+    public verifyAdminSchool = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            if (req.headers.authorization) {
+                const token = req.headers.authorization;
+                const isLogin = await this.isLogin(token);
+                const schoolId = parseInt(req.params.id);
+                if (!schoolId) return res.status(403).json({ detail: 'thiếu schoolId' });
+
+                if (isLogin.result && isLogin.userData.userType == role.admin) {
+                    const us = new UserService();
+                    const userAdmin = await us.getOneUser({ where: { id: isLogin.id }, relations: ['administrator'] });
+                    if (userAdmin.administrator.school_id !== schoolId) return res.status(400).json({ detail: 'tài khoản admin không phải tài khoản của trường' });
+
+                    req['userData'] = isLogin.userData;
+                    return next()
+                };
+                return res.status(403).json({ detail: 'Token không hợp lệ hoặc hết hạn, vui lòng đăng nhập lại' });
+            }
+            return res.status(403).json({ detail: 'Unauthorized' });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(error);
+        }
     };
 }

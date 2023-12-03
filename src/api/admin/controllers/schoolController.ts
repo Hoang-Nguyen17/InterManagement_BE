@@ -4,6 +4,7 @@ import { SchoolService } from "../services/schoolService";
 import { Program } from "../../../database/entities/Program";
 import { Department } from "../../../database/entities/Department";
 import { Class } from "../../../database/entities/Class";
+import { FilterClass } from "../interfaces/class.interface";
 
 const getSchool = async (req: Request, res: Response) => {
     try {
@@ -66,7 +67,7 @@ const getPrograms = async (req: Request, res: Response) => {
     try {
         const ss = new SchoolService();
         const schoolId = parseInt(req.params.id) ?? null;
-        if (!schoolId) return res.status(400).json({detail: 'không tìm thấy trường của bạn'});
+        if (!schoolId) return res.status(400).json({ detail: 'không tìm thấy trường của bạn' });
         const data = await ss.getPrograms(schoolId);
         if (!data) return res.status(404).json({ detail: 'Không tìm thấy chưong trình' });
         return res.status(200).json(data);
@@ -149,7 +150,7 @@ const updateDepartment = async (req: Request, res: Response) => {
         });
         const schoolId = parseInt(req.params.id) ?? null;
         const departmentId = parseInt(req.params.did) ?? null;
-        if (!departmentId) return res.status(400).json({detail: 'mã khoa sai'});
+        if (!departmentId) return res.status(400).json({ detail: 'mã khoa sai' });
 
 
         const { error, value } = schema.validate(req.body);
@@ -176,7 +177,7 @@ const getDepartments = async (req: Request, res: Response) => {
     try {
         const ss = new SchoolService();
         const schoolId = parseInt(req.params.id) ?? null;
-        if (!schoolId) return res.status(400).json({detail: 'không tìm thấy trường của bạn'});
+        if (!schoolId) return res.status(400).json({ detail: 'không tìm thấy trường của bạn' });
         const data = await ss.getDepartments(schoolId);
         if (!data) return res.status(404).json({ detail: 'Không tìm thấy khoa' });
         return res.status(200).json(data);
@@ -230,11 +231,12 @@ const saveClass = async (req: Request, res: Response) => {
     try {
         const schema = Joi.object({
             class_name: Joi.string().required(),
-            students: Joi.number().optional(),
+            students: Joi.number().min(1).max(120).optional(),
             academic_year: Joi.number().required(),
             head_teacher: Joi.number().required(),
         });
         const department_id = parseInt(req.params.did) ?? null;
+        if (!department_id) return res.status(400).json({ detail: 'thiếu id của khoa' });
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
 
@@ -257,25 +259,28 @@ const saveClass = async (req: Request, res: Response) => {
 const updateClass = async (req: Request, res: Response) => {
     try {
         const schema = Joi.object({
-            department_name: Joi.string().required(),
-            department_head: Joi.number().optional(),
+            class_name: Joi.string().optional(),
+            students: Joi.number().min(1).max(120).optional(),
+            academic_year: Joi.number().optional(),
+            head_teacher: Joi.number().optional(),
         });
         const schoolId = parseInt(req.params.id) ?? null;
+        const classId = parseInt(req.params.cid) ?? null;
         const departmentId = parseInt(req.params.did) ?? null;
-        if (!departmentId) return res.status(400).json({detail: 'mã khoa sai'});
-
+        if (!departmentId) return res.status(400).json({ detail: 'thiếu mã khoa' });
+        if (!classId) return res.status(400).json({ detail: 'thiếu mã lớp' });
 
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
 
-        const department: Department = {
+        const Class: Class = {
             ...value,
-            school_id: schoolId,
-            id: departmentId,
+            id: classId,
+            department_id: departmentId,
         }
 
         const ss = new SchoolService();
-        const data = await ss.saveDepartment(department);
+        const data = await ss.saveClass(Class);
         if (!data) return res.status(401).json({ detail: 'cập nhật khoa học thất bại' });
 
         return res.status(200).json(data);
@@ -287,10 +292,26 @@ const updateClass = async (req: Request, res: Response) => {
 
 const getClasses = async (req: Request, res: Response) => {
     try {
-        const ss = new SchoolService();
         const schoolId = parseInt(req.params.id) ?? null;
-        if (!schoolId) return res.status(400).json({detail: 'không tìm thấy trường của bạn'});
-        const data = await ss.getClasses(schoolId);
+        if (!schoolId) return res.status(400).json({ detail: 'không tìm thấy trường của bạn' });
+
+        const schema = Joi.object({
+            academic_year: Joi.number().optional(),
+            head_teacher: Joi.number().optional(),
+            department_id: Joi.number().optional(),
+            search_text: Joi.string().optional(),
+            page: Joi.number().default(1).optional(),
+            limit: Joi.number().default(10).optional(),
+        });
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+        const filter: FilterClass = { ...value, school_id: schoolId };
+        const ss = new SchoolService();
+        console.log(filter);
+        console.log(value);
+
+        const data = await ss.getClasses(filter);
         if (!data) return res.status(404).json({ detail: 'Không tìm thấy khoa' });
         return res.status(200).json(data);
     } catch (e) {

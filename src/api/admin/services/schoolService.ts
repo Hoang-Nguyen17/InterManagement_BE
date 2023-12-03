@@ -8,6 +8,7 @@ import { Teacher } from "src/database/entities/Teacher";
 import { UserService } from "./userService";
 import { Brackets, FindOneOptions } from "typeorm";
 import { SchoolService as UserSchoolService } from "../../user/services/schoolService";
+import { FilterClass } from "../interfaces/class.interface";
 
 
 export class SchoolService {
@@ -173,7 +174,7 @@ export class SchoolService {
                 Class.head_teacher = Class.head_teacher ?? oldData.head_teacher;
                 Class.students = Class.students ?? oldData.students;
             }
-            const result = this.classRepository.save(Class);
+            const result = await this.classRepository.save(Class);
             return result;
         } catch (e) {
             throw e;
@@ -196,19 +197,31 @@ export class SchoolService {
         }
     }
 
-    public getClasses = async (schoolId: number, departmentId: number = null, classId: number = null) => {
+    public getClasses = async (filter: FilterClass) => {
         try {
+            const { academic_year, head_teacher, department_id, search_text, school_id, page, limit } = filter;
             const qb = this.classRepository
                 .createQueryBuilder("class")
                 .innerJoinAndSelect('class.department', 'department')
                 .leftJoinAndSelect('class.teacher', 'teacher')
-                .where('department.school_id = :schoolId', { schoolId: schoolId });
+                .where('department.school_id = :schoolId', { schoolId: school_id });
 
-            if (departmentId) qb.andWhere('class.department_id = :departmentId', { departmentId: departmentId });
-            if (classId) qb.andWhere('class.id = :classId', { classId: classId });
+            if (department_id) qb.andWhere('class.department_id = :department_id', { department_id });
+            if (academic_year) qb.andWhere('class.academic_year = :academic_year', { academic_year });
+            if (head_teacher) qb.andWhere('class.head_teacher = :head_teacher', { head_teacher });
+            if (search_text) qb.andWhere(new Brackets((qb) => {
+                qb.orWhere('class.class_name LIKE :search_text', {
+                    search_text: `%${search_text}%`,
+                })
+                    .orWhere('teacher.education_level LIKE :search_text', {
+                        search_text: `%${search_text}%`,
+                    });
 
-            if (classId) return qb.getOne();
-            return qb.offset(0).take(15).getManyAndCount();
+            }));
+
+            console.log(filter);
+            const [classes, total] = await qb.offset((page - 1) * limit).take(limit).orderBy('class.createdAt', 'DESC').getManyAndCount();
+            return { data: classes, total: total };
         } catch (e) {
             throw e;
         }

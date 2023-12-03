@@ -27,9 +27,9 @@ router.get('/school/:id/department/:did', authInstance.auth, schoolController.ge
 router.delete('/school/:id/department/:did', authInstance.authAdmin, schoolController.deleteDepartment);
 
 // class
-router.post('/school/:id/department/:did/class', authInstance.authAdmin, schoolController.saveClass);
-router.put('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.updateClass);
-router.get('/school/:id/class', authInstance.auth, schoolController.getClasses);
+router.post('/school/:id/department/:did/class', authInstance.verifyAdminSchool, schoolController.saveClass);
+router.put('/school/:id/department/:did/class/:cid', authInstance.verifyAdminSchool, schoolController.updateClass);
+router.get('/school/:id/class', authInstance.verifyAdminSchool, schoolController.getClasses);
 router.get('/school/:id/department/:did/class/:cid', authInstance.auth, schoolController.getClass);
 router.delete('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.deleteClass);
 

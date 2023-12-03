@@ -12,7 +12,7 @@ export class Class extends CodeBase {
     @Column({ type: 'nvarchar', length: 50 })
     class_name: string;
 
-    @Column()
+    @Column({ nullable: true})
     students: number;
 
     @Column()
