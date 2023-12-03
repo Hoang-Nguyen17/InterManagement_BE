@@ -131,7 +131,8 @@ const register = async (req: Request, res: Response) => {
 
 const getAdministrators = async (req: Request, res: Response) => {
     try {
-
+        const schoolId = req.userData.schoolId;
+        
     } catch (error) {
         console.log(error);
         return res.status(500).json(error);

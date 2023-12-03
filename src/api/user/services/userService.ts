@@ -30,7 +30,7 @@ export class UserService {
                 schoolId = student.program.school_id;
             } else if (user.teacher) {
                 const teacher = await this.teacherRepository.findOne({ where: { id: user.teacher.id }, relations: ['department'] });
-                const schoolId = teacher.department.school_id;
+                schoolId = teacher.department.school_id;
             }
 
             return { result, schoolId };
