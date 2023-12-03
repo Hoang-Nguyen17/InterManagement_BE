@@ -15,14 +15,14 @@ const login = async (req: Request, res: Response) => {
 
         const { username, pass } = value;
         const us = new UserService();
-        const user = await us.login(username, pass)
-        if (!user) return res.status(404).json({ detail: 'Đăng nhập thất bại, không tìm thấy tài khoản' });
+        const {result, schoolId} = await us.login(username, pass)
+        if (!result) return res.status(404).json({ detail: 'Đăng nhập thất bại, không tìm thấy tài khoản' });
 
-        delete user.pass;
+        delete result.pass;
         const returnData = {
-            user: user,
-            access_token: makeToken('access', user?.user_person?.id, user?.permission_id),
-            refresh_token: makeToken('refresh', user.user_person?.id, user?.permission_id),
+            user: result,
+            access_token: makeToken('access', result?.user_person?.id, result?.permission_id, schoolId),
+            refresh_token: makeToken('refresh', result.user_person?.id, result?.permission_id, schoolId),
         }
         return res.status(200).json(returnData);
     } catch (e) {

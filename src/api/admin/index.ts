@@ -8,30 +8,29 @@ import { schoolController } from './controllers/schoolController';
 import { internSubjectController } from './controllers/internSubjectController';
 
 
-router.post('/register', authInstance.authAdmin, userController.register);
+router.post('/school/:id/register', authInstance.verifyAdminSchool, userController.register);
 
 router.get('/school', schoolController.getSchool);
 
 // program
-router.post('/school/:id/program', authInstance.authAdmin, schoolController.saveProgram);
-router.put('/school/:id/program/:pid', authInstance.authAdmin, schoolController.updateProgram);
-router.get('/school/:id/program',authInstance.auth, schoolController.getPrograms);
-router.get('/school/:id/program/:pid', authInstance.auth, schoolController.getProgram);
-router.delete('/school/:id/program/:pid', authInstance.authAdmin, schoolController.deleteProgram);
+router.post('/school/:id/program', authInstance.verifyAdminSchool, schoolController.saveProgram);
+router.put('/school/:id/program/:pid', authInstance.verifyAdminSchool, schoolController.updateProgram);
+router.get('/school/:id/program',authInstance.verifyAuthSchool, schoolController.getPrograms);
+router.get('/school/:id/program/:pid', authInstance.verifyAuthSchool, schoolController.getProgram);
+router.delete('/school/:id/program/:pid', authInstance.verifyAdminSchool, schoolController.deleteProgram);
 
 // department
-router.post('/school/:id/department', authInstance.authAdmin, schoolController.saveDepartment);
-router.put('/school/:id/department/:did', authInstance.authAdmin, schoolController.updateDepartment);
-router.get('/school/:id/department', authInstance.auth, schoolController.getDepartments);
-router.get('/school/:id/department/:did', authInstance.auth, schoolController.getDepartment);
-router.delete('/school/:id/department/:did', authInstance.authAdmin, schoolController.deleteDepartment);
+router.post('/school/:id/department', authInstance.verifyAdminSchool, schoolController.saveDepartment);
+router.put('/school/:id/department/:did', authInstance.verifyAdminSchool, schoolController.updateDepartment);
+router.get('/school/:id/department', authInstance.verifyAuthSchool, schoolController.getDepartments);
+router.get('/school/:id/department/:did', authInstance.verifyAuthSchool, schoolController.getDepartment);
+router.delete('/school/:id/department/:did', authInstance.verifyAdminSchool, schoolController.deleteDepartment);
 
 // class
 router.post('/school/:id/department/:did/class', authInstance.verifyAdminSchool, schoolController.saveClass);
 router.put('/school/:id/department/:did/class/:cid', authInstance.verifyAdminSchool, schoolController.updateClass);
-router.get('/school/:id/class', authInstance.verifyAdminSchool, schoolController.getClasses);
-router.get('/school/:id/department/:did/class/:cid', authInstance.auth, schoolController.getClass);
-router.delete('/school/:id/department/:did/class/:cid', authInstance.authAdmin, schoolController.deleteClass);
+router.get('/school/:id/class', authInstance.verifyAuthSchool, schoolController.getClasses);
+router.delete('/school/:id/class/:cid', authInstance.verifyAdminSchool, schoolController.deleteClass);
 
 // intern subject
 router.post('/school/intern-subject', authInstance.authAdmin, internSubjectController.saveInternSubject);

@@ -148,9 +148,9 @@ export class SchoolService {
             const department = await this.departmentRepository.findOne({
                 where: {
                     id: departmentId,
+                    school_id: schoolId,
                 }
             })
-            console.log(departmentId, schoolId, department);
             if (!department) return false;
             await this.departmentRepository.softRemove(department)
             return true;
@@ -183,12 +183,6 @@ export class SchoolService {
 
     public deletClass = async (classId: number): Promise<boolean> => {
         try {
-            const Class = await this.classRepository.findOne({
-                where: {
-                    id: classId,
-                }
-            })
-            if (!Class) return false;
             const result = await this.classRepository.softDelete({ id: classId })
             if (!result.affected) return false;
             return true;
@@ -225,6 +219,10 @@ export class SchoolService {
         } catch (e) {
             throw e;
         }
+    }
+
+    public getOneClass = async (filter?: FindOneOptions<Class>) => {
+        return await this.classRepository.findOne(filter);
     }
 
     public getOneInternSubject = async (filter?: FindOneOptions<InternSubject>) => {

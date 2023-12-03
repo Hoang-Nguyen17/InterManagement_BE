@@ -7,7 +7,7 @@ export const hashPass = (pass) => {
     return hash.update(pass).digest('hex');
 }
 
-export const makeToken = (tokenType, id, userType) => {
+export const makeToken = (tokenType, id, userType, schoolId = null) => {
     let expiresIn = '24h';
     // let expiresIn = '10m';
     if (tokenType == 'refresh') {
@@ -18,6 +18,7 @@ export const makeToken = (tokenType, id, userType) => {
         {
             id: id,
             userType: userType,
+            schoolId: schoolId,
         },
         jwtObj.secret,
         { expiresIn: expiresIn },

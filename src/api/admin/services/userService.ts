@@ -72,4 +72,8 @@ export class UserService {
         return await this.userPersonRepository.findOne(filter);
     }
 
+    public getOneStudent = async (filter?: FindOneOptions<Student>) => {
+        return await this.studentRepository.findOne(filter);
+    }
+
 }

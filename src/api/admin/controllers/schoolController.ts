@@ -150,22 +150,19 @@ const updateDepartment = async (req: Request, res: Response) => {
         });
         const schoolId = parseInt(req.params.id) ?? null;
         const departmentId = parseInt(req.params.did) ?? null;
-        if (!departmentId) return res.status(400).json({ detail: 'mã khoa sai' });
+        const ss = new SchoolService();
+
+        const department = await ss.getDepartment(schoolId, departmentId);
+        if (!department) return res.status(400).json({ detail: 'Không tìm thấy khoa' });
 
 
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
 
-        const department: Department = {
-            ...value,
-            school_id: schoolId,
-            id: departmentId,
-        }
+        department.department_name = value.department_name;
+        department.department_head = value.department_head;
 
-        const ss = new SchoolService();
         const data = await ss.saveDepartment(department);
-        if (!data) return res.status(401).json({ detail: 'cập nhật khoa học thất bại' });
-
         return res.status(200).json(data);
     } catch (e) {
         console.log(e);
@@ -213,7 +210,6 @@ const deleteDepartment = async (req: Request, res: Response) => {
             did: Joi.number().required(),
         })
         const { error, value } = schema.validate(req.params);
-        console.log(value);
         if (error) return res.status(400).json(error);
         const result = await ss.deleteDepartment(value.id, value.did);
         if (!result) return res.status(404).json({ detail: 'Xóa thất bại' });
@@ -236,7 +232,10 @@ const saveClass = async (req: Request, res: Response) => {
             head_teacher: Joi.number().required(),
         });
         const department_id = parseInt(req.params.did) ?? null;
-        if (!department_id) return res.status(400).json({ detail: 'thiếu id của khoa' });
+        const school_id = parseInt(req.params.id);
+        const ss = new SchoolService();
+        const department = await ss.getDepartment(school_id, department_id);
+        if (!department) return res.status(400).json({ detail: 'Khoa không hợp lệ' });
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
 
@@ -245,7 +244,6 @@ const saveClass = async (req: Request, res: Response) => {
             department_id: department_id,
         }
 
-        const ss = new SchoolService();
         const data = await ss.saveClass(Class);
         if (!data) return res.status(401).json({ detail: 'Thêm lớp sinh hoạt thất bại' });
 
@@ -266,8 +264,11 @@ const updateClass = async (req: Request, res: Response) => {
         });
         const schoolId = parseInt(req.params.id) ?? null;
         const classId = parseInt(req.params.cid) ?? null;
+        const ss = new SchoolService();
+
         const departmentId = parseInt(req.params.did) ?? null;
-        if (!departmentId) return res.status(400).json({ detail: 'thiếu mã khoa' });
+        const department = await ss.getDepartment(schoolId, departmentId);
+        if (!department) return res.status(400).json({ detail: 'Khoa không hợp lệ' });
         if (!classId) return res.status(400).json({ detail: 'thiếu mã lớp' });
 
         const { error, value } = schema.validate(req.body);
@@ -279,7 +280,6 @@ const updateClass = async (req: Request, res: Response) => {
             department_id: departmentId,
         }
 
-        const ss = new SchoolService();
         const data = await ss.saveClass(Class);
         if (!data) return res.status(401).json({ detail: 'cập nhật khoa học thất bại' });
 
@@ -308,29 +308,8 @@ const getClasses = async (req: Request, res: Response) => {
         if (error) return res.status(400).json(error);
         const filter: FilterClass = { ...value, school_id: schoolId };
         const ss = new SchoolService();
-        console.log(filter);
-        console.log(value);
 
         const data = await ss.getClasses(filter);
-        if (!data) return res.status(404).json({ detail: 'Không tìm thấy khoa' });
-        return res.status(200).json(data);
-    } catch (e) {
-        console.log(e);
-        return res.status(500).json({ detail: e.message })
-    }
-}
-
-const getClass = async (req: Request, res: Response) => {
-    try {
-        const ss = new SchoolService();
-        const schema = Joi.object({
-            id: Joi.number().required(),
-            did: Joi.number().required(),
-        })
-        const { error, value } = schema.validate(req.params);
-        if (error) return res.status(400).json(error);
-        const data = await ss.getDepartment(value.id, value.pid);
-        if (!data) return res.status(404).json({ detail: 'Không tìm thấy khoa' });
         return res.status(200).json(data);
     } catch (e) {
         console.log(e);
@@ -340,15 +319,15 @@ const getClass = async (req: Request, res: Response) => {
 
 const deleteClass = async (req: Request, res: Response) => {
     try {
+        const schoolId = parseInt(req.params.id);
+        const classId = parseInt(req.params.cid);
+
         const ss = new SchoolService();
-        const schema = Joi.object({
-            id: Joi.number().required(),
-            did: Joi.number().required(),
-        })
-        const { error, value } = schema.validate(req.params);
-        if (error) return res.status(400).json(error);
-        const result = await ss.deleteDepartment(value.id, value.pid);
-        if (!result) return res.status(404).json({ detail: 'Xóa thất bại' });
+        const Class = await ss.getOneClass({ where: { id: classId }, relations: ['department'] });
+        if (!Class) return res.status(400).json({ detail: 'Không tìm thấy thông tin class' });
+        if (Class.department.school_id !== schoolId) return res.status(400).json({ detail: 'không có quyền xóa' });
+
+        const result = await ss.deletClass(classId);
         return res.status(200).json(result);
     } catch (e) {
         console.log(e);
@@ -373,6 +352,5 @@ export const schoolController = {
     saveClass,
     updateClass,
     getClasses,
-    getClass,
     deleteClass,
 }

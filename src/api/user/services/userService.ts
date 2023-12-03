@@ -21,10 +21,22 @@ export class UserService {
                     username: username,
                     pass: hashPass(pass),
                 },
-                relations: ['permission', 'user_person', 'user_person.teacher', 'user_person.student', 'user_person.business'],
+                relations: ['permission', 'user_person', 'user_person.teacher', 'user_person.student', 'user_person.business', 'user_person.administrator'],
             });
+            const user = result.user_person;
+            let schoolId = user?.administrator?.school_id;
+            if (result.user_person.student) {
+                const student = await this.studentRepository.findOne({ where: { id: user.student.id }, relations: ['program'] });
+                schoolId = student.program.school_id;
+            } else if (user.teacher) {
+                const teacher = await this.teacherRepository.findOne({ where: { id: user.teacher.id }, relations: ['department'] });
+                const schoolId = teacher.department.school_id;
+            } else {
+                schoolId = null;
+            }
 
-            return result;
+
+            return { result, schoolId };
         } catch (e) {
             throw e;
         }
