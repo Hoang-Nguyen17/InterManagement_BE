@@ -8,8 +8,9 @@ import { FilterClass } from "../interfaces/class.interface";
 
 const getSchool = async (req: Request, res: Response) => {
     try {
+        const schoolId = req.userData.schoolId;
         const ss = new SchoolService();
-        const data = await ss.getSchool();
+        const data = await ss.getSchool(schoolId);
         return res.status(200).json(data);
     } catch (e) {
         console.log(e);

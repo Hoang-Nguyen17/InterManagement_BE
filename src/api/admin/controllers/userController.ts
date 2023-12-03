@@ -102,24 +102,24 @@ const register = async (req: Request, res: Response) => {
                     ...value.teacher
                 }
                 user_account.user_person.teacher = await us.saveTeacher(teacher);
-              break;
+                break;
             case role.student:
                 const student: Student = {
                     user_id: user_account?.user_person?.id,
                     ...value.student
                 }
                 user_account.user_person.student = await us.saveStudent(student);
-              break;
+                break;
             case role.business:
                 const business: Business = {
                     user_id: user_account?.user_person?.id,
                     ...value.business
                 }
                 user_account.user_person.business = await us.saveBusiness(business);
-              break;
+                break;
             default:
                 break;
-          }
+        }
         return res.status(200).json({
             user_person: user_account,
         })
@@ -129,6 +129,16 @@ const register = async (req: Request, res: Response) => {
     }
 }
 
+const getAdministrators = async (req: Request, res: Response) => {
+    try {
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error);
+    }
+};
+
 export const userController = {
     register,
+    getAdministrators,
 }

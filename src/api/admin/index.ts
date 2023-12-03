@@ -10,7 +10,7 @@ import { internSubjectController } from './controllers/internSubjectController';
 
 router.post('/school/:id/register', authInstance.verifyAdminSchool, userController.register);
 
-router.get('/school', schoolController.getSchool);
+router.get('/school/:id', authInstance.verifyAuthSchool, schoolController.getSchool);
 
 // program
 router.post('/school/:id/program', authInstance.verifyAdminSchool, schoolController.saveProgram);
@@ -36,5 +36,8 @@ router.delete('/school/:id/class/:cid', authInstance.verifyAdminSchool, schoolCo
 router.post('/school/:id/department/:did/intern-subject', authInstance.verifyAdminSchool, internSubjectController.saveInternSubject);
 router.get('/school/:id/intern-subject', authInstance.verifyAuthSchool, internSubjectController.getInternSubjects);
 router.delete('/school/:id/intern-subject', authInstance.verifyAdminSchool, internSubjectController.deleteInternSubjects);
+
+// admin
+router.get('/school/:id/admintrator', authInstance.verifyAdminSchool, userController.getAdministrators);
 
 module.exports = router;

@@ -18,12 +18,6 @@ export class School extends CodeBase {
     @Column({ type: 'nvarchar', length: 50 })
     study_field: string;
 
-    @Column()
-    students: number;
-
-    @Column()
-    teachers: number;
-
     @OneToMany(() => Program, (program) => program.school)
     program?: Program[];
 

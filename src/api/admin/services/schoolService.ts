@@ -4,11 +4,13 @@ import { School } from "../../../database/entities/School";
 import { AppDataSource } from "../../../ormconfig";
 import { Class } from "../../../database/entities/Class";
 import { InternSubject } from "../../../database/entities/InternSubject";
-import { Teacher } from "src/database/entities/Teacher";
+import { Teacher } from "../../../database/entities/Teacher";
 import { UserService } from "./userService";
 import { Brackets, FindOneOptions } from "typeorm";
 import { SchoolService as UserSchoolService } from "../../user/services/schoolService";
 import { FilterClass } from "../interfaces/class.interface";
+import { Major } from "../../../database/entities/Major";
+import { Student } from "../../../database/entities/Student";
 
 
 export class SchoolService {
@@ -20,12 +22,54 @@ export class SchoolService {
     private userService = new UserService();
     private userSchoolService = new UserSchoolService()
 
-    public getSchool = async (): Promise<School[]> => {
+    public getSchool = async (schoolId: number): Promise<School> => {
         try {
-            const data = this.shcoolRepository.find({
-                relations: ['program', 'department', 'department.major'],
-            });
-            return data;
+            const school = this.shcoolRepository
+                .createQueryBuilder('school')
+                .addSelect((subQuery) => {
+                    return subQuery
+                        .select('COUNT(*)', 'countDepartment')
+                        .from(Department, 'd')
+                        .where('d.school_id = school.id');
+                }, 'countDepartment')
+                .addSelect((subQuery) => {
+                    return subQuery
+                        .select('COUNT(*)', 'countProgram')
+                        .from(Program, 'p')
+                        .where('p.school_id = school.id');
+                }, 'countProgram')
+                .addSelect((subQuery) => {
+                    return subQuery
+                        .select('COUNT(*)', 'countMajor')
+                        .from(Major, 'm')
+                        .leftJoin(Department, 'd', 'm.department_id = d.id')
+                        .where('d.school_id = school.id')
+                }, 'countMajor')
+                .addSelect((subQuery) => {
+                    return subQuery
+                        .select('COUNT(*)', 'countClass')
+                        .from(Class, 'c')
+                        .leftJoin(Department, 'd', 'c.department_id = d.id')
+                        .where('d.school_id = school.id')
+                }, 'countClass')
+                .addSelect((subQuery) => {
+                    return subQuery
+                        .select('COUNT(*)', 'countTeacher')
+                        .from(Teacher, 't')
+                        .leftJoin(Department, 'd', 't.department_id = d.id')
+                        .where('d.school_id = school.id')
+                }, 'countTeacher')
+                .addSelect((subQuery) => {
+                    return subQuery
+                        .select('COUNT(*)', 'countStudent')
+                        .from(Student, 's')
+                        .leftJoin(Class, 'c', 's.class_id = c.id')
+                        .leftJoin(Department, 'd', 'c.department_id = d.id')
+                        .where('d.school_id = school.id')
+                }, 'countStudent')
+                .where('school.id = :schoolId', { schoolId })
+                .getRawOne();
+            return school;
         } catch (e) {
             throw e;
         }

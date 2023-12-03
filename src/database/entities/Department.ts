@@ -46,4 +46,7 @@ export class Department extends CodeBase {
 
     @OneToMany(() => ExaminationBoard, (examinationBoard) => examinationBoard.department)
     examinationBoard?: ExaminationBoard[];
+
+    @OneToMany(() => Teacher, (teacher) => teacher.department)
+    teachers?: Teacher[];
 }
