@@ -33,7 +33,7 @@ router.get('/school/:id/class', authInstance.verifyAuthSchool, schoolController.
 router.delete('/school/:id/class/:cid', authInstance.verifyAdminSchool, schoolController.deleteClass);
 
 // intern subject
-router.post('/school/intern-subject', authInstance.authAdmin, internSubjectController.saveInternSubject);
+router.post('/school/:id/department/:did/intern-subject', authInstance.verifyAdminSchool, internSubjectController.saveInternSubject);
 router.get('/school/intern-subject', authInstance.authAdmin, internSubjectController.getInternSubject);
 router.get('/school/intern-subject/:id', authInstance.authAdmin, internSubjectController.getInternSubject);
 router.delete('/school/intern-subject', authInstance.authAdmin, internSubjectController.deleteInternSubjects);

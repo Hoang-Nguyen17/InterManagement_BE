@@ -61,54 +61,6 @@ export class InternSubjectService {
 
     // Intern Subject
     async saveInternSubject(InternSubject: InternSubject): Promise<InternSubject> {
-        await Promise.all([
-            this.userService.getOneTeacher({
-                where: {
-                    id: InternSubject.teacher_id
-                }
-            }),
-            this.schoolService.getOneDepartment({
-                where: {
-                    id: InternSubject.department_id
-                }
-            }),
-            await this.userSchoolService.getOneAcademicYear({
-                where: {
-                    id: InternSubject.academic_year
-                }
-            }),
-            await this.userSchoolService.getOneSemester({
-                where: {
-                    id: InternSubject.semester_id
-                }
-            })
-        ]).then((result) => {
-            result.forEach((e) => {
-                if (!e) {
-                    console.log(typeof e, 'not found');
-                    return;
-                }
-            })
-        })
-
-        if (InternSubject.id) {
-            const subject = await this.schoolService.getOneInternSubject({ where: { id: InternSubject.id } });
-            if (!subject) return;
-
-            subject.name = InternSubject.name;
-            subject.max_students = InternSubject.max_students;
-            subject.academic_year = InternSubject.academic_year;
-            subject.department_id = InternSubject.department_id;
-            subject.semester_id = InternSubject.semester_id;
-            subject.sessions = InternSubject.sessions;
-            subject.unit = InternSubject.unit;
-            subject.teacher_id = InternSubject.teacher_id;
-            subject.start_date = InternSubject.start_date;
-            subject.end_date = InternSubject.end_date;
-
-            const result = await this.save(subject);
-            return result;
-        }
         const result = await this.save(InternSubject);
         return result;
     }
