@@ -23,12 +23,12 @@ export class UserService {
                 },
                 relations: ['permission', 'user_person', 'user_person.teacher', 'user_person.student', 'user_person.business', 'user_person.administrator'],
             });
-            const user = result.user_person;
+            const user = result?.user_person;
             let schoolId = user?.administrator?.school_id ?? null;
-            if (result.user_person.student) {
+            if (user?.student) {
                 const student = await this.studentRepository.findOne({ where: { id: user.student.id }, relations: ['program'] });
                 schoolId = student.program.school_id;
-            } else if (user.teacher) {
+            } else if (user?.teacher) {
                 const teacher = await this.teacherRepository.findOne({ where: { id: user.teacher.id }, relations: ['department'] });
                 schoolId = teacher.department.school_id;
             }

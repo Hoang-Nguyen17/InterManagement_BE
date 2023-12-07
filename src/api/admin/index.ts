@@ -43,7 +43,7 @@ router.get('/', authInstance.authAdmin, userController.getAdministrators);
 // teacher
 router.get('/school/teacher', authInstance.authAdmin, userController.getTeachers);
 // student
-router.get('/', authInstance.authAdmin, userController.getAdministrators);
+router.get('/school/student', authInstance.authAdmin, userController.getStudents);
 // major
 
 module.exports = router;
