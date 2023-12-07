@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "start": "nest start",
-    "start:dev": "src/index.ts",
+    "start:dev": "nodemon src/index.ts",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js --config src/ormconfig.ts",
     "typeorm:generate": "npm run typeorm migration:generate -- -n",
     "typeorm:run": "npm run typeorm migration:run",
