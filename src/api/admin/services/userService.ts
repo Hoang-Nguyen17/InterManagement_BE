@@ -5,6 +5,7 @@ import { UserPerson } from "../../../database/entities/UserPerson";
 import { Teacher } from "../../../database/entities/Teacher";
 import { Student } from "../../../database/entities/Student";
 import { Business } from "../../../database/entities/Business";
+import { FindOneOptions } from "typeorm";
 
 export class UserService {
     private userAccountRepository = AppDataSource.getRepository(UserAccount);
@@ -12,6 +13,7 @@ export class UserService {
     private teacherRepository = AppDataSource.getRepository(Teacher);
     private studentRepository = AppDataSource.getRepository(Student);
     private businessRepository = AppDataSource.getRepository(Business);
+
 
     public isExistsEmail = async (email: string) => {
         try {
@@ -59,5 +61,57 @@ export class UserService {
         } catch (e) {
             throw e;
         }
+    }
+
+    // Teacher
+    public getOneTeacher = async (filter?: FindOneOptions<Teacher>) => {
+        return await this.teacherRepository.findOne(filter);
+    }
+
+    public getOneUser = async (filter?: FindOneOptions<UserPerson>) => {
+        return await this.userPersonRepository.findOne(filter);
+    }
+
+    public getOneStudent = async (filter?: FindOneOptions<Student>) => {
+        return await this.studentRepository.findOne(filter);
+    }
+
+    public getAdministrator = async (schoolId: number) => {
+        const qb = this.userPersonRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.administrator', 'administrator')
+            .where('administrator.school_id = :schoolId', { schoolId });
+
+        const data = await qb.getMany();
+        return data;
+    }
+
+    public getTeachers = async (schoolId: number, page: number, limit: number) => {
+        const qb = this.userPersonRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.teacher', 'teacher')
+            .leftJoin('teacher.department', 'department')
+            .where('department.school_id = :schoolId', { schoolId })
+            .andWhere('user.teacher IS NOT NULL')
+            .offset((page - 1) * limit)
+            .take(limit).orderBy('user.createdAt', 'DESC');
+
+        const [data, total] = await qb.getManyAndCount();
+        return { data, total };
+    }
+
+    public getStudents = async (schoolId: number, page: number, limit: number) => {
+        const qb = this.userPersonRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.student', 'student')
+            .leftJoinAndSelect('student.class', 'Class')
+            .leftJoin('Class.department', 'department')
+            .where('department.school_id = :schoolId', { schoolId })
+            .andWhere('user.student IS NOT NULL')
+            .offset((page - 1) * limit)
+            .take(limit).orderBy('user.createdAt', 'DESC');
+
+        const [data, total] = await qb.getManyAndCount();
+        return { data, total };
     }
 }

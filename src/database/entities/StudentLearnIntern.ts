@@ -13,7 +13,7 @@ export class StudentLearnIntern extends CodeBase {
     @Column()
     student_id: number;
 
-    @Column()
+    @Column({ nullable: true })
     score: number;
 
     @Column({ default: status.processing })
@@ -22,7 +22,7 @@ export class StudentLearnIntern extends CodeBase {
     @Column({ default: status.finished })
     regist_status: status;
 
-    @Column()
+    @Column({ nullable: true })
     board_id: number;
 
     @Column()

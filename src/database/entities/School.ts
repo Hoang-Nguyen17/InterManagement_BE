@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn
 import { CodeBase } from "./CodeBase";
 import { Program } from "./Program";
 import { Administrator } from "./Administrator";
+import { Department } from "./Department";
 
 @Entity({ name: 'school' })
 export class School extends CodeBase {
@@ -17,15 +18,12 @@ export class School extends CodeBase {
     @Column({ type: 'nvarchar', length: 50 })
     study_field: string;
 
-    @Column()
-    students: number;
-
-    @Column()
-    teachers: number;
-
     @OneToMany(() => Program, (program) => program.school)
     program?: Program[];
 
     @OneToMany(() => Administrator, (administrator) => administrator.school)
     administrator?: Administrator[];
+
+    @OneToMany(() => Department, (department) => department.school)
+    department?: Department[];
 }

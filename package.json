@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "start": "nest start",
-    "start:dev": "nodemon src/index.ts",
+    "start:dev": "src/index.ts",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js --config src/ormconfig.ts",
     "typeorm:generate": "npm run typeorm migration:generate -- -n",
     "typeorm:run": "npm run typeorm migration:run",
@@ -32,12 +32,14 @@
     "joi": "^17.10.2",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "mysql": "^2.18.1",
+    "mysql": "npm:mysql2@^2.1.0",
     "mysql2": "^3.6.1",
+    "nodemon": "^3.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "socket.io": "^4.7.2",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "vercel": "^32.6.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

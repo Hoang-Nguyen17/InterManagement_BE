@@ -8,7 +8,6 @@ import { UserService } from "../services/userService";
 import { Teacher } from "../../../database/entities/Teacher";
 import { Business } from "../../../database/entities/Business";
 import { Student } from "../../../database/entities/Student";
-import { AppDataSource } from "../../../ormconfig";
 
 import * as Joi from "joi";
 
@@ -29,7 +28,7 @@ const register = async (req: Request, res: Response) => {
 
             // teacher
             teacher: Joi.when('permission_id', {
-                is: 2, // nếu permission_id = 2
+                is: 2, // if permission_id = 2
                 then: Joi.object({
                     dob: Joi.date().required(),
                     start_date: Joi.date().required(),
@@ -43,7 +42,7 @@ const register = async (req: Request, res: Response) => {
 
             // student
             student: Joi.when('permission_id', {
-                is: 3, // nếu permission_id = 3
+                is: 3, // if permission_id = 3
                 then: Joi.object({
                     dob: Joi.date().required(),
                     admission_date: Joi.date().required(),
@@ -58,7 +57,7 @@ const register = async (req: Request, res: Response) => {
 
             // business
             business: Joi.when('permission_id', {
-                is: 4, // nếu permission_id = 4
+                is: 4, // if permission_id = 4
                 then: Joi.object({
                     short_desc: Joi.string().optional(),
                     representator: Joi.string().required(),
@@ -103,24 +102,24 @@ const register = async (req: Request, res: Response) => {
                     ...value.teacher
                 }
                 user_account.user_person.teacher = await us.saveTeacher(teacher);
-              break;
+                break;
             case role.student:
                 const student: Student = {
                     user_id: user_account?.user_person?.id,
                     ...value.student
                 }
                 user_account.user_person.student = await us.saveStudent(student);
-              break;
+                break;
             case role.business:
                 const business: Business = {
                     user_id: user_account?.user_person?.id,
                     ...value.business
                 }
                 user_account.user_person.business = await us.saveBusiness(business);
-              break;
+                break;
             default:
                 break;
-          }
+        }
         return res.status(200).json({
             user_person: user_account,
         })
@@ -130,6 +129,61 @@ const register = async (req: Request, res: Response) => {
     }
 }
 
-module.exports = {
+const getAdministrators = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+        const us = new UserService();
+        const data = await us.getAdministrator(schoolId);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error);
+    }
+};
+
+const getTeachers = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+        const schema = Joi.object({
+            page: Joi.number().default(1),
+            limit: Joi.number().default(10),
+        })
+
+        const { error, value } = schema.validate(req.query);
+        if (error) return res.status(400).json(error);
+
+        const us = new UserService();
+        const data = await us.getTeachers(schoolId, value.page, value.limit);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error);
+    }
+};
+
+const getStudents = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+        const schema = Joi.object({
+            page: Joi.number().default(1),
+            limit: Joi.number().default(10),
+        })
+
+        const { error, value } = schema.validate(req.query);
+        if (error) return res.status(400).json(error);
+
+        const us = new UserService();
+        const data = await us.getStudents(schoolId, value.page, value.limit);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error);
+    }
+};
+
+export const userController = {
     register,
+    getAdministrators,
+    getTeachers,
+    getStudents,
 }
