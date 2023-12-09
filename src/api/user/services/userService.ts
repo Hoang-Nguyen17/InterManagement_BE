@@ -22,12 +22,21 @@ export class UserService {
                     username: username,
                     pass: hashPass(pass),
                 },
-                relations: ['permission', 'user_person', 'user_person.teacher', 'user_person.student', 'user_person.business', 'user_person.administrator'],
+                relations: [
+                    'permission', 
+                    'user_person', 
+                    'user_person.teacher', 
+                    'user_person.student', 
+                    'user_person.business', 
+                    'user_person.administrator'
+                ],
             });
             const user = result?.user_person;
+            console.log(result);
             let schoolId = user?.administrator?.school_id ?? null;
             if (user?.student) {
                 const student = await this.studentRepository.findOne({ where: { id: user.student.id }, relations: ['program'] });
+                console.log(student);
                 schoolId = student.program.school_id;
             } else if (user?.teacher) {
                 const teacher = await this.teacherRepository.findOne({ where: { id: user.teacher.id }, relations: ['department'] });
