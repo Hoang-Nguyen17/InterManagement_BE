@@ -10,6 +10,8 @@ import { Business } from "../../../database/entities/Business";
 import { Student } from "../../../database/entities/Student";
 
 import * as Joi from "joi";
+import { IFilterTeacher } from "../interfaces/teacher.interface";
+import { IFilterStudent } from "../interfaces/student.interface";
 
 const register = async (req: Request, res: Response) => {
     try {
@@ -144,7 +146,11 @@ const getAdministrators = async (req: Request, res: Response) => {
 const getTeachers = async (req: Request, res: Response) => {
     try {
         const schoolId = req.userData.schoolId;
+
         const schema = Joi.object({
+            status: Joi.number().valid(...Object.values(TeachingStatus)).optional(),
+            searchText: Joi.string().optional(),
+            departmentId: Joi.number().optional(),
             page: Joi.number().default(1),
             limit: Joi.number().default(10),
         })
@@ -152,8 +158,9 @@ const getTeachers = async (req: Request, res: Response) => {
         const { error, value } = schema.validate(req.query);
         if (error) return res.status(400).json(error);
 
+        const filter: IFilterTeacher = { ...value, schoolId };
         const us = new UserService();
-        const data = await us.getTeachers(schoolId, value.page, value.limit);
+        const data = await us.getTeachers(filter);
         return res.status(200).json(data);
     } catch (error) {
         console.log(error);
@@ -165,6 +172,10 @@ const getStudents = async (req: Request, res: Response) => {
     try {
         const schoolId = req.userData.schoolId;
         const schema = Joi.object({
+            status: Joi.number().valid(...Object.values(studyingStatus)).optional(),
+            searchText: Joi.string().optional(),
+            departmentId: Joi.number().optional(),
+            classId: Joi.number().optional(),
             page: Joi.number().default(1),
             limit: Joi.number().default(10),
         })
@@ -172,8 +183,9 @@ const getStudents = async (req: Request, res: Response) => {
         const { error, value } = schema.validate(req.query);
         if (error) return res.status(400).json(error);
 
+        const filter: IFilterStudent = { ...value, schoolId };
         const us = new UserService();
-        const data = await us.getStudents(schoolId, value.page, value.limit);
+        const data = await us.getStudents(filter);
         return res.status(200).json(data);
     } catch (error) {
         console.log(error);

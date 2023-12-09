@@ -5,7 +5,9 @@ import { UserPerson } from "../../../database/entities/UserPerson";
 import { Teacher } from "../../../database/entities/Teacher";
 import { Student } from "../../../database/entities/Student";
 import { Business } from "../../../database/entities/Business";
-import { FindOneOptions } from "typeorm";
+import { Brackets, FindOneOptions } from "typeorm";
+import { IFilterTeacher } from "../interfaces/teacher.interface";
+import { IFilterStudent } from "../interfaces/student.interface";
 
 export class UserService {
     private userAccountRepository = AppDataSource.getRepository(UserAccount);
@@ -86,29 +88,50 @@ export class UserService {
         return data;
     }
 
-    public getTeachers = async (schoolId: number, page: number, limit: number) => {
+    public getTeachers = async (filter: IFilterTeacher) => {
+        const { schoolId, limit, page, departmentId, searchText, status } = filter;
         const qb = this.userPersonRepository
             .createQueryBuilder('user')
-            .leftJoinAndSelect('user.teacher', 'teacher')
+            .innerJoinAndSelect('user.teacher', 'teacher')
             .leftJoin('teacher.department', 'department')
-            .where('department.school_id = :schoolId', { schoolId })
-            .andWhere('user.teacher IS NOT NULL')
-            .offset((page - 1) * limit)
+            .addSelect(['department.department_name']);
+
+        if (status) qb.andWhere('teacher.current_status = status', { status });
+        if (schoolId) qb.andWhere('department.school_id = :schoolId', { schoolId });
+        if (departmentId) qb.andWhere('department.id = :departmentId', { departmentId });
+        if (searchText) qb.andWhere(new Brackets((qb) => {
+            qb
+                .orWhere('user.email ILIKE :searchText', { searchText })
+                .orWhere('user.full_name ILIKE :searchtext', { searchText })
+        }));
+
+        qb.offset((page - 1) * limit)
             .take(limit).orderBy('user.createdAt', 'DESC');
 
         const [data, total] = await qb.getManyAndCount();
         return { data, total };
     }
 
-    public getStudents = async (schoolId: number, page: number, limit: number) => {
+    public getStudents = async (filter: IFilterStudent) => {
+        const { schoolId, limit, page, departmentId, classId, searchText, status } = filter;
         const qb = this.userPersonRepository
             .createQueryBuilder('user')
-            .leftJoinAndSelect('user.student', 'student')
-            .leftJoinAndSelect('student.class', 'Class')
+            .innerJoin('user.student', 'student')
+            .leftJoin('student.class', 'Class')
             .leftJoin('Class.department', 'department')
-            .where('department.school_id = :schoolId', { schoolId })
-            .andWhere('user.student IS NOT NULL')
-            .offset((page - 1) * limit)
+            .addSelect(['department.department_name', 'Class.class_name']);
+            
+        if (status) qb.andWhere('student.current_status = status', { status });
+        if (schoolId) qb.andWhere('department.school_id = schoolId', { schoolId });
+        if (departmentId) qb.andWhere('department.id = departmentId', { departmentId });
+        if (classId) qb.andWhere('class.id = classId', { classId });
+        if (searchText) qb.andWhere(new Brackets((qb) => {
+            qb
+                .orWhere('user.email ILIKE :searchText', { searchText })
+                .orWhere('user.full_name ILIKE :searchtext', { searchText })
+        }));
+
+        qb.offset((page - 1) * limit)
             .take(limit).orderBy('user.createdAt', 'DESC');
 
         const [data, total] = await qb.getManyAndCount();

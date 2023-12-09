@@ -142,7 +142,8 @@ export class SchoolService {
             const data = this.departmentRepository.find({
                 where: {
                     school_id: schoolId,
-                }
+                },
+                relations: ['teacher'],
             });
             return data;
         } catch (e) {

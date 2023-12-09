@@ -7,3 +7,13 @@ export interface IStudentLearnInternSubject {
     limit?: number;
     page?: number;
 }
+
+export interface IFilterStudent {
+    schoolId?: number;
+    status?: number;
+    searchText?: string;
+    departmentId: number;
+    classId: number;
+    page: number;
+    limit: number;
+}
