@@ -14,17 +14,16 @@ import { Student } from "../../../database/entities/Student";
 
 
 export class SchoolService {
-    private shcoolRepository = AppDataSource.getRepository(School);
+    private schoolRepository = AppDataSource.getRepository(School);
     private programRepository = AppDataSource.getRepository(Program);
     private departmentRepository = AppDataSource.getRepository(Department);
+    private majorRepository = AppDataSource.getRepository(Major);
     private classRepository = AppDataSource.getRepository(Class);
     private internSubjectRespository = AppDataSource.getRepository(InternSubject);
-    private userService = new UserService();
-    private userSchoolService = new UserSchoolService()
 
     public getSchool = async (schoolId: number): Promise<School> => {
         try {
-            const school = this.shcoolRepository
+            const school = this.schoolRepository
                 .createQueryBuilder('school')
                 .addSelect((subQuery) => {
                     return subQuery
@@ -73,6 +72,44 @@ export class SchoolService {
         } catch (e) {
             throw e;
         }
+    }
+
+    public getOneDepartment = async (filter?: FindOneOptions<Department>) => {
+        return await this.departmentRepository.findOne(filter);
+    }
+
+    public getOneProgram = async (filter?: FindOneOptions<Program>) => {
+        return await this.programRepository.findOne(filter);
+    }
+
+    public getOneClass = async (filter?: FindOneOptions<Class>) => {
+        return await this.classRepository.findOne(filter);
+    }
+
+    public getOneMajor = async (filter?: FindOneOptions<Major>) => {
+        return await this.majorRepository.findOne(filter);
+    }
+
+    public getOneInternSubject = async (filter?: FindOneOptions<InternSubject>) => {
+        return await this.internSubjectRespository.findOne(filter);
+    }
+
+    public checkMajorBySchoolId = async (schoolId: number, majorId: number) => {
+        return await this.majorRepository
+            .createQueryBuilder('major')
+            .leftJoin('major.department', 'department')
+            .where('major.id = :majorId', { majorId })
+            .andWhere('department.school_id = :schoolId', { schoolId })
+            .getOne();
+    }
+
+    public checkClassBySchoolId = async (schoolId: number, classId: number) => {
+        return await this.classRepository
+            .createQueryBuilder('Class')
+            .leftJoin('Class.department', 'department')
+            .where('Class.id = :classId', { classId })
+            .andWhere('department.school_id = :schoolId', { schoolId })
+            .getOne();
     }
 
     public getPrograms = async (schoolId: number): Promise<Program[]> => {
@@ -149,10 +186,6 @@ export class SchoolService {
         } catch (e) {
             throw e;
         }
-    }
-
-    public getOneDepartment = async (filter?: FindOneOptions<Department>) => {
-        return await this.departmentRepository.findOne(filter);
     }
 
     public getDepartment = async (schoolId: number, departmentId: number): Promise<Department> => {
@@ -266,11 +299,4 @@ export class SchoolService {
         }
     }
 
-    public getOneClass = async (filter?: FindOneOptions<Class>) => {
-        return await this.classRepository.findOne(filter);
-    }
-
-    public getOneInternSubject = async (filter?: FindOneOptions<InternSubject>) => {
-        return await this.internSubjectRespository.findOne(filter);
-    }
 }

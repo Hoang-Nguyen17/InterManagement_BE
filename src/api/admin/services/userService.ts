@@ -8,6 +8,7 @@ import { Business } from "../../../database/entities/Business";
 import { Brackets, FindOneOptions } from "typeorm";
 import { IFilterTeacher } from "../interfaces/teacher.interface";
 import { IFilterStudent } from "../interfaces/student.interface";
+import { SchoolService } from "./schoolService";
 
 export class UserService {
     private userAccountRepository = AppDataSource.getRepository(UserAccount);
@@ -15,6 +16,7 @@ export class UserService {
     private teacherRepository = AppDataSource.getRepository(Teacher);
     private studentRepository = AppDataSource.getRepository(Student);
     private businessRepository = AppDataSource.getRepository(Business);
+    private schoolAdminService = new SchoolService()
 
 
     public isExistsEmail = async (email: string) => {
@@ -78,6 +80,28 @@ export class UserService {
         return await this.studentRepository.findOne(filter);
     }
 
+    public isValidAccount = async (account: UserAccount, schoolId: number): Promise<boolean> => {
+        let isValid;
+
+        isValid = await this.userAccountRepository.findOne({ where: { username: account.username } });
+        if (isValid) return false;
+
+        isValid = await this.isExistsEmail(account.user_person.email);
+        if (isValid) return false;
+
+        if (account.user_person.teacher) {
+            isValid = this.schoolAdminService.getOneDepartment({ where: { school_id: schoolId, id: account.user_person.teacher.department_id } });
+            if (!isValid) return false;
+        } else if (account.user_person.student) {
+            if (!(
+                await this.schoolAdminService.getOneProgram({ where: { school_id: schoolId, id: account.user_person.student.program_id } })
+                && await this.schoolAdminService.checkMajorBySchoolId(schoolId, account.user_person.student.major_id)
+                && await this.schoolAdminService.checkClassBySchoolId(schoolId, account.user_person.student.class_id)
+            )) return false
+        }
+        return true;
+    }
+
     public getAdministrator = async (schoolId: number) => {
         const qb = this.userPersonRepository
             .createQueryBuilder('user')
@@ -96,7 +120,7 @@ export class UserService {
             .leftJoin('teacher.department', 'department')
             .addSelect(['department.department_name']);
 
-        if (status) qb.andWhere('teacher.current_status = status', { status });
+        if (status) qb.andWhere('teacher.current_status = :status', { status });
         if (schoolId) qb.andWhere('department.school_id = :schoolId', { schoolId });
         if (departmentId) qb.andWhere('department.id = :departmentId', { departmentId });
         if (searchText) qb.andWhere(new Brackets((qb) => {
@@ -121,10 +145,10 @@ export class UserService {
             .leftJoin('Class.department', 'department')
             .addSelect(['department.department_name', 'Class.class_name']);
             
-        if (status) qb.andWhere('student.current_status = status', { status });
-        if (schoolId) qb.andWhere('department.school_id = schoolId', { schoolId });
-        if (departmentId) qb.andWhere('department.id = departmentId', { departmentId });
-        if (classId) qb.andWhere('class.id = classId', { classId });
+        if (status) qb.andWhere('student.current_status = :status', { status });
+        if (schoolId) qb.andWhere('department.school_id = :schoolId', { schoolId });
+        if (departmentId) qb.andWhere('department.id = :departmentId', { departmentId });
+        if (classId) qb.andWhere('class.id = :classId', { classId });
         if (searchText) qb.andWhere(new Brackets((qb) => {
             qb
                 .orWhere('user.email ILIKE :searchText', { searchText })

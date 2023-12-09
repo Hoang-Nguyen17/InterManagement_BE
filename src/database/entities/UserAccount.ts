@@ -26,6 +26,7 @@ export class UserAccount extends CodeBase {
     })
     user_person?: UserPerson;
 
+
     @ManyToOne(() => Permission, (permission) => permission.id)
     @JoinColumn({
         name: 'permission_id',

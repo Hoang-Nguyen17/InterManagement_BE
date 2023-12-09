@@ -6,6 +6,7 @@ import { UserPerson } from "../../../database/entities/UserPerson";
 import { Teacher } from "../../../database/entities/Teacher";
 import { Student } from "../../../database/entities/Student";
 import { Business } from "../../../database/entities/Business";
+import { SchoolService as SchoolAdminService } from "../../admin/services/schoolService";
 
 export class UserService {
     private userAccountRepository = AppDataSource.getRepository(UserAccount);
