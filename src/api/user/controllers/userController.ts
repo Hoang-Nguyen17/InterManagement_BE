@@ -17,7 +17,6 @@ const login = async (req: Request, res: Response) => {
         const { username, pass } = value;
         const us = new UserService();
         const { result, schoolId = 0 } = await us.login(username, pass);
-        console.log(result, schoolId);
         if (!(result && (result.permission_id === PermissionConstants.MANAGE_APP || schoolId))) 
             return res.status(400).json({ detail: 'Đăng nhập thất bại, không tìm thấy tài khoản' });
 

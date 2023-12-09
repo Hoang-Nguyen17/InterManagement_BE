@@ -32,11 +32,9 @@ export class UserService {
                 ],
             });
             const user = result?.user_person;
-            console.log(result);
             let schoolId = user?.administrator?.school_id ?? null;
             if (user?.student) {
                 const student = await this.studentRepository.findOne({ where: { id: user.student.id }, relations: ['program'] });
-                console.log(student);
                 schoolId = student.program.school_id;
             } else if (user?.teacher) {
                 const teacher = await this.teacherRepository.findOne({ where: { id: user.teacher.id }, relations: ['department'] });
