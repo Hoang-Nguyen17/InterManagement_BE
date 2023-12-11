@@ -48,11 +48,11 @@ app.use(
 );
 
 // api
-app.use('/admin', require('./api/admin'));
-app.use('/business', require('./api/business'));
-app.use('/student', require('./api/student'));
-app.use('/teacher', require('./api/teacher'));
-app.use('/user', require('./api/user'));
+app.use('/api/v1/admin', require('./api/admin'));
+app.use('/api/v1/business', require('./api/business'));
+app.use('/api/v1/student', require('./api/student'));
+app.use('/api/v1/teacher', require('./api/teacher'));
+app.use('/api/v1/user', require('./api/user'));
 
 const httpServer = http.createServer(app);
 
