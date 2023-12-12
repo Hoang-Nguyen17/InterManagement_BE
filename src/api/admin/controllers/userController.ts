@@ -83,11 +83,10 @@ const register = async (req: Request, res: Response) => {
       .required();
 
     const { error, value } = schema.validate(req.body);
-    console.log(value);
     if (error) return res.status(400).json({ detail: error.message });
 
     const us = new UserService();
-    
+
     const accountInfo = await value.reduce(
       async (accountArrayPromise, account) => {
         const accountArray = await accountArrayPromise;
@@ -105,73 +104,43 @@ const register = async (req: Request, res: Response) => {
 
         return accountArray;
       },
-      
+
       Promise.resolve({ successes: [], failures: [] } as {
         successes: any[];
         failures: any[];
       })
     );
 
+    if (!accountInfo.successes.length) return res.status(400).json({ detail: 'danh sách tài khoản không hợp lệ' });
 
-    value.map(async (value) => {
-      const userAccount: UserAccount = {
-        username: value.username,
-        pass: hashPass(value.pass),
-        permission_id: value.permission_id,
-        token: null,
-      };
-
-      const userPerson: UserPerson = {
-        id: null,
-        image: value.image,
-        username: value.username,
-        email: value.email,
-        full_name: value.full_name,
-        phone: value.phone,
-        address: value.address,
-      };
-
-      const isExistsEmail = await us.isExistsEmail(value.email);
-      if (isExistsEmail)
-        return res.status(400).json({ detail: "email đã tồn tại" });
-
-      const user_account: UserAccount = await us.saveUser(
-        userAccount,
-        userPerson
-      );
-      if (!user_account)
-        return res
-          .status(403)
-          .json({ detail: "Tạo tài khoản không thành công" });
-
-      switch (value.permission_id) {
+    accountInfo.successes.map(async (account: UserAccount) => {
+      const userAccount: UserAccount = { username: account.username, permission_id: account.permission_id, pass: hashPass(account.pass) };
+      await us.saveAccount(userAccount);
+      const person: UserPerson = {
+        ...account.user_person,
+        username: account.username,
+      }
+      const userPerson = await us.saveUserPerson(person);
+      switch (account.permission_id) {
         case role.teacher:
           const teacher: Teacher = {
-            user_id: user_account?.user_person?.id,
-            ...value.teacher,
-          };
-          user_account.user_person.teacher = await us.saveTeacher(teacher);
+            ...account.user_person.teacher,
+            user_id: userPerson.id,
+          }
+          await us.saveTeacher(teacher);
           break;
         case role.student:
           const student: Student = {
-            user_id: user_account?.user_person?.id,
-            ...value.student,
-          };
-          user_account.user_person.student = await us.saveStudent(student);
-          break;
-        case role.business:
-          const business: Business = {
-            user_id: user_account?.user_person?.id,
-            ...value.business,
-          };
-          user_account.user_person.business = await us.saveBusiness(business);
-          break;
-        default:
+            ...account.user_person.student,
+            user_id: userPerson.id,
+          }
+          await us.saveStudent(student);
           break;
       }
+
     });
 
-    return res.status(200).json();
+    return res.status(200).json({ listAccountFailed: accountInfo.failures });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ detail: e.message });

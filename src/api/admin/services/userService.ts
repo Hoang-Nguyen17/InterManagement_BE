@@ -5,7 +5,7 @@ import { UserPerson } from "../../../database/entities/UserPerson";
 import { Teacher } from "../../../database/entities/Teacher";
 import { Student } from "../../../database/entities/Student";
 import { Business } from "../../../database/entities/Business";
-import { Brackets, FindOneOptions } from "typeorm";
+import { Brackets, DeepPartial, FindOneOptions } from "typeorm";
 import { IFilterTeacher } from "../interfaces/teacher.interface";
 import { IFilterStudent } from "../interfaces/student.interface";
 import { SchoolService } from "./schoolService";
@@ -33,14 +33,28 @@ export class UserService {
         }
     }
 
-    public saveUser = async (userAccount: UserAccount, userPerson: UserPerson) => {
+    public saveAccount = async (userAccount: UserAccount) => {
         try {
-            const user_account = await this.userAccountRepository.save(userAccount);
-            user_account.user_person = await this.userPersonRepository.save(userPerson);
-            return user_account;
+            return await this.userAccountRepository.save(userAccount);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    createUserAccount(data: DeepPartial<UserAccount>) {
+        return this.userAccountRepository.create(data);
+    }
+
+    public saveUserPerson = async (userPerson: UserPerson) => {
+        try {
+            return await this.userPersonRepository.save(userPerson);
         } catch (e) {
             throw e;
         }
+    }
+
+    createUserPerson(data: DeepPartial<UserPerson>) {
+        return this.userPersonRepository.create(data);
     }
 
     public saveTeacher = async (teacher: Teacher): Promise<Teacher> => {
@@ -144,7 +158,7 @@ export class UserService {
             .leftJoin('student.class', 'Class')
             .leftJoin('Class.department', 'department')
             .addSelect(['department.department_name', 'Class.class_name']);
-            
+
         if (status) qb.andWhere('student.current_status = :status', { status });
         if (schoolId) qb.andWhere('department.school_id = :schoolId', { schoolId });
         if (departmentId) qb.andWhere('department.id = :departmentId', { departmentId });
