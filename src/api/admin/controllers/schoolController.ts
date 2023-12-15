@@ -221,7 +221,39 @@ const deleteDepartment = async (req: Request, res: Response) => {
     }
 }
 
+// ----------------------- Major -----------------------
 
+const saveMajor = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+        const schema = Joi.object({
+            id: Joi.number().optional(),
+            major_name: Joi.string().required(),
+            department_id: Joi.number().required(),
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const ss = new SchoolService();
+        const major = ss.createMajor(value);
+        const department = await ss.getDepartment(schoolId, major.department_id);
+        if (!department) return res.status(400).json('department không tồn tại');
+        let result;
+        if (major.id) {
+            const oldMajor = await ss.getOneMajor({ where: { id: major.id } });
+            if (!oldMajor) return res.status(400).json('major không tồn tại');
+            oldMajor.major_name = major.major_name;
+            result = await ss.saveMajor(oldMajor);
+            return 
+        }
+        return res.status(200).json(result);
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
 // ----------------------- Class -----------------------
 
 const saveClass = async (req: Request, res: Response) => {

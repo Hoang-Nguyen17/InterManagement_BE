@@ -6,7 +6,7 @@ import { Class } from "../../../database/entities/Class";
 import { InternSubject } from "../../../database/entities/InternSubject";
 import { Teacher } from "../../../database/entities/Teacher";
 import { UserService } from "./userService";
-import { Brackets, FindOneOptions } from "typeorm";
+import { Brackets, FindOneOptions, DeepPartial, In } from "typeorm";
 import { SchoolService as UserSchoolService } from "../../user/services/schoolService";
 import { FilterClass } from "../interfaces/class.interface";
 import { Major } from "../../../database/entities/Major";
@@ -297,6 +297,22 @@ export class SchoolService {
         } catch (e) {
             throw e;
         }
+    }
+
+    createMajor(data: DeepPartial<Major>) {
+        return this.majorRepository.create(data);
+    }
+
+    async saveMajor(data: DeepPartial<Major>): Promise<Major> {
+        return await this.majorRepository.save(data);
+    }
+
+    async getAllMajor(filter?: FindOneOptions<Major>) {
+        return await this.majorRepository.find(filter);
+    }
+
+    async softDeleteMajor(ids: number[]) {
+        return await this.majorRepository.softDelete({ id: In(ids) });
     }
 
 }

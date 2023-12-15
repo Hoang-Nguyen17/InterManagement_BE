@@ -98,7 +98,7 @@ const saveBusiness = async (req: Request, res: Response) => {
             permisstion_id: Joi.number().valid(4).default(4),
             user_person: Joi.object({
                 full_name: Joi.string().max(75).required(),
-                image: Joi.string().max(150).optional(),
+                image: Joi.string().max(500).optional(),
                 phone: Joi.string().pattern(/^[0-9]{10}$/).required(),
                 email: Joi.string().email().required(),
                 address: Joi.string().max(100).required(),
