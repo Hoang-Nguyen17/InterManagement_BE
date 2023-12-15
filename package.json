@@ -6,8 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build && npm run copy && npm run node_modules:prod",
-    "copy": "copy \"package.json\" \"dist/\"",
+    "build": "nest build && npm run node_modules:prod",
     "deploy": "npm install && npm run build && npm run start:dev",
     "start": "nest start",
     "start:dev": "nodemon src/index.ts",
