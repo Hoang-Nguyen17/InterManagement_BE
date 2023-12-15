@@ -16,7 +16,7 @@ router.post('/school/:id/register', authInstance.verifyAdminSchool, userControll
 // school
 router.post('/school', manageAppController.saveSchool);
 router.delete('/school', manageAppController.deleteSchool);
-router.get('/school', authInstance.authAdmin, schoolController.getSchool);
+router.get('/school', schoolController.getSchool);
 
 // business
 router.post('/business', manageAppController.saveBusiness);

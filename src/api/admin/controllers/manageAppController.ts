@@ -107,14 +107,65 @@ const saveBusiness = async (req: Request, res: Response) => {
         const business: Business = value.user_person.business;
 
         const us = new UserService();
+        const ms = new ManageAppService();
         const isExistsUserName = await us.getOneAccount({ where: { username: user_account.username } });
         if (isExistsUserName) return res.status(400).json('username đã tồn tại');
         const isExistsUserPerson = await us.getOneUser({ where: { email: user_person.email, full_name: user_person.full_name } });
         if (isExistsUserPerson) return res.status(400).json('email hoặc tên công ty không hợp lệ');
 
+        const result: UserAccount = await us.saveAccount(user_account);
+        user_person.username = result.username;
+        result.user_person = await us.saveUserPerson(user_person);
+        business.user_id = result.user_person.id;
+        result.user_person.business = await ms.saveBusiness(business);
 
+        return res.status(200).json(result);
+    }
+    catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message });
+    }
+}
 
-        let result: UserAccount;
+const updateBusiness = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            pass: Joi.string().max(6).optional(),
+            user_person: Joi.object({
+                id: Joi.number().required(),
+                full_name: Joi.string().max(75).required(),
+                image: Joi.string().max(150).optional(),
+                phone: Joi.string().pattern(/^[0-9]{10}$/).required(),
+                email: Joi.string().email().required(),
+                address: Joi.string().max(100).required(),
+                business: Joi.object({
+                    establish_date: Joi.date().required(),
+                    industry_sector: Joi.string().max(50).required(),
+                    representator: Joi.string().max(50).required(),
+                    short_desc: Joi.string().max(400).optional(),
+                }).required(),
+            }).required(),
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const user_account: UserAccount = value;
+        const user_person: UserPerson = value.user_person;
+        const business: Business = value.user_person.business;
+
+        const us = new UserService();
+        const ms = new ManageAppService();
+        
+        const isExistsUserPerson = await us.getOneUser({ where: { email: user_person.email, full_name: user_person.full_name } });
+        if (isExistsUserPerson) return res.status(400).json('email hoặc tên công ty không hợp lệ');
+
+        const result: UserAccount = await us.saveAccount(user_account);
+        user_person.username = result.username;
+        result.user_person = await us.saveUserPerson(user_person);
+        business.user_id = result.user_person.id;
+        result.user_person.business = await ms.saveBusiness(business);
+
         return res.status(200).json(result);
     }
     catch (e) {
@@ -130,4 +181,5 @@ export const manageAppController = {
 
     businesses,
     saveBusiness,
+    updateBusiness,
 }
