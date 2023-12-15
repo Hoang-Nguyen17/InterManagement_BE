@@ -6,11 +6,24 @@ const authInstance = new Auth();
 import { userController } from './controllers/userController';
 import { schoolController } from './controllers/schoolController';
 import { internSubjectController } from './controllers/internSubjectController';
+import { manageAppController } from './controllers/manageAppController';
 
 
 router.post('/school/:id/register', authInstance.verifyAdminSchool, userController.register);
 
+// --------------------------------------- manage app ----------------------------------
+
+// school
+router.post('/school', manageAppController.saveSchool);
+router.delete('/school', manageAppController.deleteSchool);
 router.get('/school', authInstance.authAdmin, schoolController.getSchool);
+
+// business
+router.post('/business', manageAppController.saveBusiness);
+router.delete('/business', manageAppController.deleteSchool);
+router.get('/business', manageAppController.businesses);
+
+// --------------------------------------- admin school ----------------------------------
 
 // program
 router.post('/school/:id/program', authInstance.verifyAdminSchool, schoolController.saveProgram);

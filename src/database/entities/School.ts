@@ -15,6 +15,9 @@ export class School extends CodeBase {
     @Column({ type: 'nvarchar', length: 50 })
     shorthand_name: string;
 
+    @Column({ type: 'nvarchar', length: 200, nullable: true })
+    avatar: string;
+
     @Column()
     establish_date: Date;
 
