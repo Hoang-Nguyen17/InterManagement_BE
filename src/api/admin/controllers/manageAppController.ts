@@ -142,9 +142,9 @@ const saveBusiness = async (req: Request, res: Response) => {
 const updateBusiness = async (req: Request, res: Response) => {
     try {
         const schema = Joi.object({
+            username: Joi.string().required(),
             pass: Joi.string().max(6).optional(),
             user_person: Joi.object({
-                id: Joi.number().required(),
                 full_name: Joi.string().max(75).required(),
                 image: Joi.string().max(150).optional(),
                 phone: Joi.string().pattern(/^[0-9]{10}$/).required(),
@@ -169,11 +169,17 @@ const updateBusiness = async (req: Request, res: Response) => {
         const us = new UserService();
         const ms = new ManageAppService();
 
+        const userAccount: UserAccount = await us.getOneAccount({ where: { username: user_account.username } });
+        if (!userAccount) return res.status(400).json('Tài khoản không tồn tại');
         const isExistsUserPerson = await us.getOneUser({ where: { email: user_person.email, full_name: user_person.full_name, id: Not(user_person.id) } });
         if (isExistsUserPerson) return res.status(400).json('email hoặc tên công ty không hợp lệ');
+        userAccount.pass = user_account.pass;
 
-        const result: UserAccount = await us.saveAccount(user_account);
+        const result: UserAccount = await us.saveAccount(userAccount);
+        const userPerson = await us.getOneUser({ where: { username: result.username } });
         user_person.username = result.username;
+        user_person.id = userPerson.id;
+
         result.user_person = await us.saveUserPerson(user_person);
         business.user_id = result.user_person.id;
         result.user_person.business = await ms.saveBusiness(business);
@@ -186,6 +192,25 @@ const updateBusiness = async (req: Request, res: Response) => {
     }
 }
 
+const deleteBusinesses = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.array().items(
+            Joi.number().required(),
+        ).required();
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const ms = new ManageAppService();
+        const result = await ms.softDeleteBusinesses(value);
+        if (!result.affected) return res.status(400).json('Businesses không tồn tại');
+        return res.status(200).json();
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
 
 export const manageAppController = {
     saveSchool,
@@ -195,4 +220,5 @@ export const manageAppController = {
     businesses,
     saveBusiness,
     updateBusiness,
+    deleteBusinesses,
 }
