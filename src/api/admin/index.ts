@@ -21,6 +21,7 @@ router.get('/manage-school', manageAppController.getSchools);
 
 // business
 router.post('/business', manageAppController.saveBusiness);
+router.put('/business', manageAppController.updateBusiness);
 router.delete('/business', manageAppController.deleteSchool);
 router.get('/business', manageAppController.businesses);
 
