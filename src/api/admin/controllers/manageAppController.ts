@@ -8,6 +8,7 @@ import { UserPerson } from "../../../database/entities/UserPerson";
 import { Business } from "../../../database/entities/Business";
 import { UserService } from "../services/userService";
 import { Not } from "typeorm";
+import { hashPass } from "../../../common/helpers/common";
 
 
 const getSchools = async (req: Request, res: Response) => {
@@ -114,7 +115,7 @@ const saveBusiness = async (req: Request, res: Response) => {
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
 
-        const user_account: UserAccount = value;
+        const user_account: UserAccount = { username: value.username, permission_id: value.permission_id, pass: hashPass(value.pass) };
         const user_person: UserPerson = value.user_person;
         const business: Business = value.user_person.business;
 
