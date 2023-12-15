@@ -7,7 +7,19 @@ import { UserAccount } from "../../../database/entities/UserAccount";
 import { UserPerson } from "../../../database/entities/UserPerson";
 import { Business } from "../../../database/entities/Business";
 import { UserService } from "../services/userService";
+import { Not } from "typeorm";
 
+
+const getSchools = async (req: Request, res: Response) => {
+    try {
+        const ms = new ManageAppService();
+        const schools = await ms.getAllSchool();
+        return res.status(200).json(schools);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
 const saveSchool = async (req: Request, res: Response) => {
     try {
         const schema = Joi.object({
@@ -156,8 +168,8 @@ const updateBusiness = async (req: Request, res: Response) => {
 
         const us = new UserService();
         const ms = new ManageAppService();
-        
-        const isExistsUserPerson = await us.getOneUser({ where: { email: user_person.email, full_name: user_person.full_name } });
+
+        const isExistsUserPerson = await us.getOneUser({ where: { email: user_person.email, full_name: user_person.full_name, id: Not(user_person.id) } });
         if (isExistsUserPerson) return res.status(400).json('email hoặc tên công ty không hợp lệ');
 
         const result: UserAccount = await us.saveAccount(user_account);
@@ -178,6 +190,7 @@ const updateBusiness = async (req: Request, res: Response) => {
 export const manageAppController = {
     saveSchool,
     deleteSchool,
+    getSchools,
 
     businesses,
     saveBusiness,

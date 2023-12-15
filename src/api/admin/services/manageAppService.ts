@@ -20,6 +20,10 @@ export class ManageAppService {
         return await this.schoolRes.findOne(filter);
     }
 
+    async getAllSchool(filter?: FindOneOptions<School>) {
+        return await this.schoolRes.find(filter);
+    }
+
     async softDeleteSchools(ids: number[]) {
         return await this.schoolRes.softDelete({ id: In(ids) });
     }
