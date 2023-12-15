@@ -16,7 +16,7 @@ const saveSchool = async (req: Request, res: Response) => {
             shorthand_name: Joi.string().max(20).required(),
             establish_date: Joi.date().required(),
             study_field: Joi.string().max(50).required(),
-            avatar: Joi.string().max(150),
+            avatar: Joi.string().max(500),
         })
 
         const { error, value } = schema.validate(req.body);
@@ -109,6 +109,8 @@ const saveBusiness = async (req: Request, res: Response) => {
         const us = new UserService();
         const isExistsUserName = await us.getOneAccount({ where: { username: user_account.username } });
         if (isExistsUserName) return res.status(400).json('username đã tồn tại');
+        const isExistsUserPerson = await us.getOneUser({ where: { email: user_person.email, full_name: user_person.full_name } });
+        if (isExistsUserPerson) return res.status(400).json('email hoặc tên công ty không hợp lệ');
 
 
 
