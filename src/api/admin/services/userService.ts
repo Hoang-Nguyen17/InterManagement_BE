@@ -81,6 +81,10 @@ export class UserService {
         }
     }
 
+    public getOneAccount = async (filter?: FindOneOptions<UserAccount>) => {
+        return await this.userAccountRepository.findOne(filter);
+    }
+
     // Teacher
     public getOneTeacher = async (filter?: FindOneOptions<Teacher>) => {
         return await this.teacherRepository.findOne(filter);

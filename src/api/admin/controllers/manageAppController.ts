@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
-import Joi from "joi";
+import * as Joi from "joi";
 import { School } from "../../../database/entities/School";
 import { ManageAppService } from "../services/manageAppService";
 import { FilterBusiness } from "../interfaces/business.interface";
+import { UserAccount } from "../../../database/entities/UserAccount";
+import { UserPerson } from "../../../database/entities/UserPerson";
+import { Business } from "../../../database/entities/Business";
+import { UserService } from "../services/userService";
 
 const saveSchool = async (req: Request, res: Response) => {
     try {
@@ -77,23 +81,39 @@ const businesses = async (req: Request, res: Response) => {
 const saveBusiness = async (req: Request, res: Response) => {
     try {
         const schema = Joi.object({
-            full_name: Joi.string().max(75).required(),
-            image: Joi.string().max(150).optional(),
-            phone: Joi.string().pattern(/^[0-9]{10}$/).required(),
-            email: Joi.string().email().required(),
-            address: Joi.string().max(100).required(),
-            business: Joi.object({
-                establish_date: Joi.date().required(),
-                industry_sector: Joi.string().max(50).required(),
-                representator: Joi.string().max(50).required(),
-                short_desc: Joi.string().max(400).optional(),
-            })
+            username: Joi.string().required(),
+            pass: Joi.string().max(6).optional(),
+            permisstion_id: Joi.number().valid(4).default(4),
+            user_person: Joi.object({
+                full_name: Joi.string().max(75).required(),
+                image: Joi.string().max(150).optional(),
+                phone: Joi.string().pattern(/^[0-9]{10}$/).required(),
+                email: Joi.string().email().required(),
+                address: Joi.string().max(100).required(),
+                business: Joi.object({
+                    establish_date: Joi.date().required(),
+                    industry_sector: Joi.string().max(50).required(),
+                    representator: Joi.string().max(50).required(),
+                    short_desc: Joi.string().max(400).optional(),
+                }).required(),
+            }).required(),
         })
 
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
 
-        return res.status(200).json();
+        const user_account: UserAccount = value;
+        const user_person: UserPerson = value.user_person;
+        const business: Business = value.user_person.business;
+
+        const us = new UserService();
+        const isExistsUserName = await us.getOneAccount({ where: { username: user_account.username } });
+        if (isExistsUserName) return res.status(400).json('username đã tồn tại');
+
+
+
+        let result: UserAccount;
+        return res.status(200).json(result);
     }
     catch (e) {
         console.log(e);
