@@ -11,6 +11,7 @@ import { SchoolService as UserSchoolService } from "../../user/services/schoolSe
 import { FilterClass } from "../interfaces/class.interface";
 import { Major } from "../../../database/entities/Major";
 import { Student } from "../../../database/entities/Student";
+import { FilterMajor } from "../interfaces/major.interface";
 
 
 export class SchoolService {
@@ -315,4 +316,24 @@ export class SchoolService {
         return await this.majorRepository.softDelete({ id: In(ids) });
     }
 
+    async majors(filter: FilterMajor): Promise<{ items: Major[], total: number }> {
+        const { page, limit, search_text, department_id, schoolId } = filter;
+        const qb = await this.majorRepository
+            .createQueryBuilder('major')
+            .leftJoinAndSelect('major.department', 'department')
+            .where('department.school_id = :SchoolId', { schoolId: schoolId });
+
+        if (search_text) {
+            qb.andWhere(new Brackets((qb) => {
+                qb.orWhere('major.major_name LIKE :search_text')
+            })).setParameter(search_text, `%${search_text}%`);
+        }
+
+        if (department_id) {
+            qb.andWhere('department.id = :departmentId', { departmentId: department_id });
+        }
+
+        const [items, total] = await qb.offset((page - 1) * limit).take(limit).getManyAndCount();
+        return { items, total };
+    }
 }
