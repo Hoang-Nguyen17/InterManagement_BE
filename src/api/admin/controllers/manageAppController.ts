@@ -95,7 +95,7 @@ const saveBusiness = async (req: Request, res: Response) => {
         const schema = Joi.object({
             username: Joi.string().required(),
             pass: Joi.string().max(6).optional(),
-            permisstion_id: Joi.number().valid(4).default(4),
+            permission_id: Joi.number().valid(4).default(4),
             user_person: Joi.object({
                 full_name: Joi.string().max(75).required(),
                 image: Joi.string().max(500).optional(),
