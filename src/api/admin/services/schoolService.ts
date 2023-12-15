@@ -181,7 +181,7 @@ export class SchoolService {
                 where: {
                     school_id: schoolId,
                 },
-                relations: ['teacher'],
+                relations: ['teacher', 'teacher.user_person'],
             });
             return data;
         } catch (e) {
