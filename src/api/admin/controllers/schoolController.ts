@@ -229,7 +229,7 @@ const saveMajor = async (req: Request, res: Response) => {
     try {
         const schoolId = req.userData.schoolId;
         const schema = Joi.object({
-            id: Joi.number().optional(),
+            id: Joi.number().min(1).optional(),
             major_name: Joi.string().required(),
             department_id: Joi.number().required(),
         })
