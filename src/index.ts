@@ -16,21 +16,21 @@ const app = express();
 
 //  --------------- PRODUCTION --------------------------------
 
-// const corsOptions = {
-//     origin: 'https://itw.vercel.app',
-//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//     allowedHeaders: 'origin, authorization, access-token, content-type',
-//     credentials: true,
-// };
-
-
-// ---------------- DEPLOYMENT ------------------------------
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'https://itw.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'origin, authorization, access-token, content-type',
     credentials: true,
 };
+
+
+// ---------------- DEPLOYMENT ------------------------------
+// const corsOptions = {
+//     origin: 'http://localhost:3000',
+//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//     allowedHeaders: 'origin, authorization, access-token, content-type',
+//     credentials: true,
+// };
 
 app.use(cors(corsOptions));
 
