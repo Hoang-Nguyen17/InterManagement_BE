@@ -318,10 +318,11 @@ export class SchoolService {
 
     async majors(filter: FilterMajor): Promise<{ items: Major[], total: number }> {
         const { page, limit, search_text, department_id, schoolId } = filter;
+        console.log('schooldId: ', schoolId);
         const qb = await this.majorRepository
             .createQueryBuilder('major')
             .leftJoinAndSelect('major.department', 'department')
-            .where('department.school_id = :SchoolId', { schoolId: schoolId });
+            .where('department.school_id = :schoolId', { schoolId: schoolId });
 
         if (search_text) {
             qb.andWhere(new Brackets((qb) => {

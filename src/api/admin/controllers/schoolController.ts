@@ -264,6 +264,7 @@ const saveMajor = async (req: Request, res: Response) => {
 const getMajors = async (req: Request, res: Response) => {
     try {
         const schoolId = parseInt(req.params.id);
+
         const schema = Joi.object({
             search_text: Joi.string(),
             department_id: Joi.number(),

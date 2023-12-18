@@ -44,10 +44,10 @@ router.get('/school/:id/department', authInstance.verifyAuthSchool, schoolContro
 router.get('/school/:id/department/:did', authInstance.verifyAuthSchool, schoolController.getDepartment);
 router.delete('/school/:id/department/:did', authInstance.verifyAdminSchool, schoolController.deleteDepartment);
 
-// department
-router.post('/school/major', authInstance.authAdmin, schoolController.saveDepartment);
-router.get('/school/major', authInstance.authAdmin, schoolController.getDepartments);
-router.delete('/school/major', authInstance.authAdmin, schoolController.deleteDepartment);
+// major
+router.post('/school/:id/major', authInstance.authAdmin, schoolController.saveMajor);
+router.get('/school/:id/major', authInstance.authAdmin, schoolController.getMajors);
+router.delete('/school/:id/major', authInstance.authAdmin, schoolController.deleteMajors);
 
 // class
 router.post('/school/:id/department/:did/class', authInstance.verifyAdminSchool, schoolController.saveClass);
