@@ -158,10 +158,10 @@ export class UserService {
         const { schoolId, limit, page, departmentId, classId, searchText, status } = filter;
         const qb = this.userPersonRepository
             .createQueryBuilder('user')
-            .innerJoin('user.student', 'student')
+            .innerJoinAndSelect('user.student', 'student')
             .leftJoin('student.class', 'Class')
             .leftJoin('Class.department', 'department')
-            .addSelect(['department.department_name', 'Class.class_name']);
+            .addSelect(['department.id', 'department.department_name', 'Class.class_name', 'Class.id']);
 
         if (status) qb.andWhere('student.current_status = :status', { status });
         if (schoolId) qb.andWhere('department.school_id = :schoolId', { schoolId });

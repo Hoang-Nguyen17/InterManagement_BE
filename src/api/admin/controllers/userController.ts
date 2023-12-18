@@ -111,7 +111,7 @@ const register = async (req: Request, res: Response) => {
       })
     );
 
-    if (!accountInfo.successes.length) return res.status(400).json({ detail: 'danh sách tài khoản không hợp lệ' });
+    if (!accountInfo.successes.length) return res.status(400).json({ detail: 'danh sách tài khoản không hợp lệ', account_failures: accountInfo.failures });
 
     accountInfo.successes.map(async (account: UserAccount) => {
       const userAccount: UserAccount = { username: account.username, permission_id: account.permission_id, pass: hashPass(account.pass) };
