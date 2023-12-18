@@ -248,7 +248,10 @@ const saveMajor = async (req: Request, res: Response) => {
             if (oldMajor.department.school_id !== schoolId) return res.status(400).json('Bạn không có quyền truy cập vào major này');
 
             oldMajor.major_name = major.major_name;
-            oldMajor.department_id = major.department_id;
+            if (oldMajor.department_id !== major.department_id) {
+                oldMajor.department_id = major.department_id;
+                oldMajor.department = await ss.getOneDepartment({ where: { id: major.department_id } });
+            }
             result = await ss.saveMajor(oldMajor);
         } else {
             result = await ss.saveMajor(major);
