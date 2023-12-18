@@ -6,10 +6,28 @@ const authInstance = new Auth();
 import { userController } from './controllers/userController';
 import { schoolController } from './controllers/schoolController';
 import { internSubjectController } from './controllers/internSubjectController';
+import { manageAppController } from './controllers/manageAppController';
 
 
 router.post('/school/:id/register', authInstance.verifyAdminSchool, userController.register);
 
+// --------------------------------------- manage app ----------------------------------
+
+// school
+router.post('/school', manageAppController.saveSchool);
+router.delete('/school', manageAppController.deleteSchool);
+router.get('/manage-school', manageAppController.getSchools);
+
+
+// business
+router.post('/business', manageAppController.saveBusiness);
+router.put('/business', manageAppController.updateBusiness);
+router.delete('/business', manageAppController.deleteSchool);
+router.get('/business', manageAppController.businesses);
+
+// --------------------------------------- admin school ----------------------------------
+
+// school
 router.get('/school', authInstance.authAdmin, schoolController.getSchool);
 
 // program
@@ -25,6 +43,11 @@ router.put('/school/:id/department/:did', authInstance.verifyAdminSchool, school
 router.get('/school/:id/department', authInstance.verifyAuthSchool, schoolController.getDepartments);
 router.get('/school/:id/department/:did', authInstance.verifyAuthSchool, schoolController.getDepartment);
 router.delete('/school/:id/department/:did', authInstance.verifyAdminSchool, schoolController.deleteDepartment);
+
+// major
+router.post('/school/:id/major', authInstance.authAdmin, schoolController.saveMajor);
+router.get('/school/:id/major', authInstance.authAdmin, schoolController.getMajors);
+router.delete('/school/:id/major', authInstance.authAdmin, schoolController.deleteMajors);
 
 // class
 router.post('/school/:id/department/:did/class', authInstance.verifyAdminSchool, schoolController.saveClass);

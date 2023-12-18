@@ -13,7 +13,7 @@ export class Administrator extends CodeBase {
     @Column({ default: accountStatus.Enabled })
     account_status: accountStatus;
 
-    @Column()
+    @Column({ nullable: true })
     school_id: number;
 
     @Column()

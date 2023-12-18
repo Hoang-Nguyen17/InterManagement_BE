@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { UserService } from "../services/userService";
 import { makeToken } from "../../../common/helpers/common";
+import { PermissionConstants } from "../../../common/constants/permisstion.constant";
 const Joi = require('joi');
 
 const login = async (req: Request, res: Response) => {
@@ -15,8 +16,9 @@ const login = async (req: Request, res: Response) => {
 
         const { username, pass } = value;
         const us = new UserService();
-        const {result, schoolId} = await us.login(username, pass);
-        if (!result) return res.status(404).json({ detail: 'Đăng nhập thất bại, không tìm thấy tài khoản' });
+        const { result, schoolId = 0 } = await us.login(username, pass);
+        if (!(result && (result.permission_id === PermissionConstants.MANAGE_APP || result.permission_id === PermissionConstants.BUSINESS || schoolId)))
+            return res.status(400).json({ detail: 'Đăng nhập thất bại, không tìm thấy tài khoản' });
 
         delete result.pass;
         const returnData = {

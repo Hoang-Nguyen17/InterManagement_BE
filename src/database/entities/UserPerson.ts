@@ -64,7 +64,7 @@ export class UserPerson extends CodeBase {
     })
     business?: Business;
 
-    @OneToOne(() => Business, (business) => business.user_id, {
+    @OneToOne(() => Student, (student) => student.user_id, {
         createForeignKeyConstraints: false,
     })
     @JoinColumn({

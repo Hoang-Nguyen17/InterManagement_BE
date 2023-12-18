@@ -14,9 +14,6 @@ export class UserAccount extends CodeBase {
     @Column()
     permission_id: number;
 
-    @Column({ type: 'mediumtext', nullable: true })
-    token: string;
-
     @OneToOne(() => UserPerson, (userPerson) => userPerson.username,{
         createForeignKeyConstraints: false,
     })
@@ -25,6 +22,7 @@ export class UserAccount extends CodeBase {
         referencedColumnName: 'username',
     })
     user_person?: UserPerson;
+
 
     @ManyToOne(() => Permission, (permission) => permission.id)
     @JoinColumn({

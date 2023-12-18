@@ -5,6 +5,8 @@ import { Program } from "../../../database/entities/Program";
 import { Department } from "../../../database/entities/Department";
 import { Class } from "../../../database/entities/Class";
 import { FilterClass } from "../interfaces/class.interface";
+import { FilterMajor } from "../interfaces/major.interface";
+import { In } from "typeorm";
 
 const getSchool = async (req: Request, res: Response) => {
     try {
@@ -221,7 +223,90 @@ const deleteDepartment = async (req: Request, res: Response) => {
     }
 }
 
+// ----------------------- Major -----------------------
 
+const saveMajor = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+        const schema = Joi.object({
+            id: Joi.number().min(1).optional(),
+            major_name: Joi.string().required(),
+            department_id: Joi.number().required(),
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const ss = new SchoolService();
+        const major = ss.createMajor(value);
+        const department = await ss.getDepartment(schoolId, major.department_id);
+        if (!department) return res.status(400).json('department không tồn tại');
+        let result;
+        if (major.id) {
+            const oldMajor = await ss.getOneMajor({ where: { id: major.id }, relations: ['department'] });
+            if (!oldMajor) return res.status(400).json('major không tồn tại');
+            if (oldMajor.department.school_id !== schoolId) return res.status(400).json('Bạn không có quyền truy cập vào major này');
+
+            oldMajor.major_name = major.major_name;
+            if (oldMajor.department_id !== major.department_id) {
+                oldMajor.department_id = major.department_id;
+                oldMajor.department = await ss.getOneDepartment({ where: { id: major.department_id } });
+            }
+            result = await ss.saveMajor(oldMajor);
+        } else {
+            result = await ss.saveMajor(major);
+        }
+        return res.status(200).json(result);
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
+
+const getMajors = async (req: Request, res: Response) => {
+    try {
+        const schoolId = parseInt(req.params.id);
+
+        const schema = Joi.object({
+            search_text: Joi.string(),
+            department_id: Joi.number(),
+            page: Joi.number().min(1).default(1),
+            limit: Joi.number().min(1).default(10),
+        })
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const filter: FilterMajor = { ...value, schoolId };
+        const ss = new SchoolService();
+        const data = await ss.majors(filter);
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
+
+const deleteMajors = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+        const schema = Joi.array().items(Joi.number()).required();
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const ss = new SchoolService();
+        const majors = await ss.getAllMajor({ where: { id: In(value) }, relations: ['department'] });
+        const ids = []
+        majors.forEach((major) => (major.department?.school_id === schoolId) && ids.push(major.id));
+        const result = await ss.softDeleteMajor(ids);
+        if (!result.affected) return res.status(400).json('danh sách major để xóa không hợp lệ');
+        return res.status(200).json(result);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
 // ----------------------- Class -----------------------
 
 const saveClass = async (req: Request, res: Response) => {
@@ -349,6 +434,10 @@ export const schoolController = {
     saveDepartment,
     updateDepartment,
     deleteDepartment,
+
+    saveMajor,
+    getMajors,
+    deleteMajors,
 
     saveClass,
     updateClass,

@@ -6,6 +6,7 @@ import { UserPerson } from "../../../database/entities/UserPerson";
 import { Teacher } from "../../../database/entities/Teacher";
 import { Student } from "../../../database/entities/Student";
 import { Business } from "../../../database/entities/Business";
+import { SchoolService as SchoolAdminService } from "../../admin/services/schoolService";
 
 export class UserService {
     private userAccountRepository = AppDataSource.getRepository(UserAccount);
@@ -21,7 +22,14 @@ export class UserService {
                     username: username,
                     pass: hashPass(pass),
                 },
-                relations: ['permission', 'user_person', 'user_person.teacher', 'user_person.student', 'user_person.business', 'user_person.administrator'],
+                relations: [
+                    'permission', 
+                    'user_person', 
+                    'user_person.teacher', 
+                    'user_person.student', 
+                    'user_person.business', 
+                    'user_person.administrator'
+                ],
             });
             const user = result?.user_person;
             let schoolId = user?.administrator?.school_id ?? null;

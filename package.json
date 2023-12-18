@@ -6,7 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build && npm run node_modules:prod",
+    "deploy": "npm install && npm run build && npm run start:dev",
     "start": "nest start",
     "start:dev": "nodemon src/index.ts",
     "start:prod": "node dist",
@@ -15,7 +16,8 @@
     "typeorm:run": "npm run typeorm migration:run",
     "typeorm:revert": "npm run typeorm migration:revert",
     "migration:generate": "npx TypeORM-ts-node-esm migration:generate -d ./src/ormconfig.ts src/database/migrations/",
-    "migration:run": "npx TypeORM-ts-node-esm migration:run -d ./datasource.config.ts"
+    "migration:run": "npx TypeORM-ts-node-esm migration:run -d ./datasource.config.ts",
+    "node_modules:prod": "cd dist && npm install --only=production"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

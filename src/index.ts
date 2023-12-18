@@ -14,12 +14,23 @@ const { PORT } = process.env;
 
 const app = express();
 
+//  --------------- PRODUCTION --------------------------------
+
 const corsOptions = {
     origin: 'https://itw.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'origin, authorization, access-token, content-type',
     credentials: true,
 };
+
+
+// ---------------- DEPLOYMENT ------------------------------
+// const corsOptions = {
+//     origin: 'http://localhost:3000',
+//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//     allowedHeaders: 'origin, authorization, access-token, content-type',
+//     credentials: true,
+// };
 
 app.use(cors(corsOptions));
 
@@ -48,11 +59,11 @@ app.use(
 );
 
 // api
-app.use('/admin', require('./api/admin'));
-app.use('/business', require('./api/business'));
-app.use('/student', require('./api/student'));
-app.use('/teacher', require('./api/teacher'));
-app.use('/user', require('./api/user'));
+app.use('/api/v1/admin', require('./api/admin'));
+app.use('/api/v1/business', require('./api/business'));
+app.use('/api/v1/student', require('./api/student'));
+app.use('/api/v1/teacher', require('./api/teacher'));
+app.use('/api/v1/user', require('./api/user'));
 
 const httpServer = http.createServer(app);
 
