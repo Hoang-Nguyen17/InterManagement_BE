@@ -15,7 +15,7 @@ const { PORT } = process.env;
 const app = express();
 
 const corsOptions = {
-    origin: 'http://localhost:8080',
+    origin: 'https://itw.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'origin, authorization, access-token, content-type',
     credentials: true,
