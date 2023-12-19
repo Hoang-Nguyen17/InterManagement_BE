@@ -4,6 +4,7 @@ import { Program } from "./Program";
 import { Administrator } from "./Administrator";
 import { Department } from "./Department";
 import { AcademicYear } from "./AcademicYear";
+import { Semester } from "./Semester";
 
 @Entity({ name: 'school' })
 export class School extends CodeBase {
@@ -36,4 +37,7 @@ export class School extends CodeBase {
 
     @OneToMany(() => AcademicYear, (academicYear) => academicYear.school)
     academicYear?: AcademicYear[];
+
+    @OneToMany(() => Semester, (semesters) => semesters.school)
+    semesters?: Semester[];
 }

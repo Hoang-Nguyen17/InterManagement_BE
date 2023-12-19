@@ -14,6 +14,7 @@ import { Student } from "../../../database/entities/Student";
 import { FilterMajor } from "../interfaces/major.interface";
 import { AcademicYear } from "../../../database/entities/AcademicYear";
 import { FilterAcademicYear } from "../interfaces/academic-year.interface";
+import { Semester } from "../../../database/entities/Semester";
 
 
 export class SchoolService {
@@ -24,6 +25,7 @@ export class SchoolService {
     private classRepository = AppDataSource.getRepository(Class);
     private internSubjectRespository = AppDataSource.getRepository(InternSubject);
     private academicYearRes = AppDataSource.getRepository(AcademicYear);
+    private semesterRes = AppDataSource.getRepository(Semester);
 
     public getSchool = async (schoolId: number): Promise<School> => {
         try {
@@ -319,10 +321,6 @@ export class SchoolService {
         return await this.majorRepository.softDelete({ id: In(ids) });
     }
 
-    public getOneAcademicYear = async (filter?: FindOneOptions<AcademicYear>) => {
-        return await this.academicYearRes.findOne(filter);
-    }
-
     async majors(filter: FilterMajor): Promise<{ items: Major[], total: number }> {
         const { page, limit, search_text, department_id, schoolId } = filter;
         const qb = await this.majorRepository
@@ -362,6 +360,10 @@ export class SchoolService {
         return await this.academicYearRes.softDelete({ id: In(ids) });
     }
 
+    public getOneAcademicYear = async (filter?: FindOneOptions<AcademicYear>) => {
+        return await this.academicYearRes.findOne(filter);
+    }
+
     async academicYears(filter: FilterAcademicYear): Promise<{ items: AcademicYear[], total: number }> {
         const { page, limit, schoolId } = filter;
         const qb = await this.academicYearRes
@@ -370,5 +372,26 @@ export class SchoolService {
 
         const [items, total] = await qb.offset((page - 1) * limit).take(limit).orderBy('academicYear.current_year', 'DESC').getManyAndCount();
         return { items, total };
+    }
+
+    // ---------------------Semester----------------------------------------
+    createSemester(data: DeepPartial<Semester>) {
+        return this.semesterRes.create(data);
+    }
+
+    async saveSemester(data: DeepPartial<Semester>): Promise<Semester> {
+        return await this.semesterRes.save(data);
+    }
+
+    public getOneSemester = async (filter?: FindOneOptions<AcademicYear>) => {
+        return await this.academicYearRes.findOne(filter);
+    }
+
+    async getAllSemester(filter?: FindOneOptions<Semester>) {
+        return await this.semesterRes.find(filter);
+    }
+
+    async softDeleteSemester(ids: number[]) {
+        return await this.semesterRes.softDelete({ id: In(ids) });
     }
 }

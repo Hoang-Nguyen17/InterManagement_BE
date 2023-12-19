@@ -464,7 +464,7 @@ const getAcademicYear = async (req: Request, res: Response) => {
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
 
-        const filter: FilterAcademicYear = { ...value, schoolId};
+        const filter: FilterAcademicYear = { ...value, schoolId };
         const ss = new SchoolService();
         const data = await ss.academicYears(filter);
         return res.status(200).json(data);
@@ -496,6 +496,70 @@ const deleteAcademicYear = async (req: Request, res: Response) => {
     }
 }
 
+// ---------------------------- Semester -------------------------------
+const saveSemester = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+
+        const schema = Joi.object({
+            id: Joi.number().min(1).optional(),
+            semester_name: Joi.string().max(20).required(),
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const ss = new SchoolService();
+        const semester = ss.createSemester({ ...value, schoolId });
+        let result;
+
+        if (semester.id) {
+            const oldSemester = await ss.getOneSemester({ where: { id: semester.id } });
+            if (!oldSemester) {
+                return res.status(400).json('semester không tồn tại');
+            }
+        }
+        result = await ss.saveAcademicYear(semester);
+        return res.status(200).json(result);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
+
+const getSemester = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.sschoolId;
+        const ss = new SchoolService();
+        const data = await ss.getAllSemester({ where: { school_id: schoolId } });
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
+
+const deleteSemester = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+        const schema = Joi.array().items(Joi.number()).required();
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const ss = new SchoolService();
+        const semesters = await ss.getAllSemester({ where: { id: In(value), school_id: schoolId } });
+        const ids = semesters.map((semester) => semester.id)
+        const result = await ss.softDeleteSemester(ids);
+        if (!result.affected) {
+            return res.status(400).json('semester không tồn tại');
+        }
+        return res.status(200).json(result);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
 export const schoolController = {
     getSchool,
 
@@ -523,4 +587,8 @@ export const schoolController = {
     saveAcademicYear,
     getAcademicYear,
     deleteAcademicYear,
+
+    saveSemester,
+    getSemester,
+    deleteSemester,
 }
