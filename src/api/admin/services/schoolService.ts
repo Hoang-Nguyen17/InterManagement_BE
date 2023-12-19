@@ -12,6 +12,8 @@ import { FilterClass } from "../interfaces/class.interface";
 import { Major } from "../../../database/entities/Major";
 import { Student } from "../../../database/entities/Student";
 import { FilterMajor } from "../interfaces/major.interface";
+import { AcademicYear } from "../../../database/entities/AcademicYear";
+import { FilterAcademicYear } from "../interfaces/academic-year.interface";
 
 
 export class SchoolService {
@@ -21,6 +23,7 @@ export class SchoolService {
     private majorRepository = AppDataSource.getRepository(Major);
     private classRepository = AppDataSource.getRepository(Class);
     private internSubjectRespository = AppDataSource.getRepository(InternSubject);
+    private academicYearRes = AppDataSource.getRepository(AcademicYear);
 
     public getSchool = async (schoolId: number): Promise<School> => {
         try {
@@ -316,6 +319,10 @@ export class SchoolService {
         return await this.majorRepository.softDelete({ id: In(ids) });
     }
 
+    public getOneAcademicYear = async (filter?: FindOneOptions<AcademicYear>) => {
+        return await this.academicYearRes.findOne(filter);
+    }
+
     async majors(filter: FilterMajor): Promise<{ items: Major[], total: number }> {
         const { page, limit, search_text, department_id, schoolId } = filter;
         const qb = await this.majorRepository
@@ -334,6 +341,34 @@ export class SchoolService {
         }
 
         const [items, total] = await qb.offset((page - 1) * limit).take(limit).getManyAndCount();
+        return { items, total };
+    }
+
+
+    // ---------------------AcademicYear----------------------------------------
+    createAcademicYear(data: DeepPartial<AcademicYear>) {
+        return this.academicYearRes.create(data);
+    }
+
+    async saveAcademicYear(data: DeepPartial<AcademicYear>): Promise<AcademicYear> {
+        return await this.academicYearRes.save(data);
+    }
+
+    async getAllAcademicYear(filter?: FindOneOptions<AcademicYear>) {
+        return await this.academicYearRes.find(filter);
+    }
+
+    async softDeleteAcademicYear(ids: number[]) {
+        return await this.academicYearRes.softDelete({ id: In(ids) });
+    }
+
+    async academicYears(filter: FilterAcademicYear): Promise<{ items: AcademicYear[], total: number }> {
+        const { page, limit, schoolId } = filter;
+        const qb = await this.academicYearRes
+            .createQueryBuilder('academicYear')
+            .where('academicYear.school_id = :schoolId', { schoolId: schoolId });
+
+        const [items, total] = await qb.offset((page - 1) * limit).take(limit).orderBy('academicYear.current_year', 'DESC').getManyAndCount();
         return { items, total };
     }
 }

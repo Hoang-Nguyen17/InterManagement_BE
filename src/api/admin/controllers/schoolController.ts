@@ -7,6 +7,7 @@ import { Class } from "../../../database/entities/Class";
 import { FilterClass } from "../interfaces/class.interface";
 import { FilterMajor } from "../interfaces/major.interface";
 import { In } from "typeorm";
+import { FilterAcademicYear } from "../interfaces/academic-year.interface";
 
 const getSchool = async (req: Request, res: Response) => {
     try {
@@ -420,6 +421,81 @@ const deleteClass = async (req: Request, res: Response) => {
         return res.status(500).json({ detail: e.message })
     }
 }
+
+// ---------------------------- AcademicYear -------------------------------
+const saveAcademicYear = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+
+        const schema = Joi.object({
+            id: Joi.number().min(1).optional(),
+            current_year: Joi.number().required(),
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const ss = new SchoolService();
+        const academicYear = ss.createAcademicYear({ ...value, schoolId });
+        let result;
+
+        if (academicYear.id) {
+            const oldAcademicYear = await ss.getOneAcademicYear({ where: { id: academicYear.id } });
+            if (!oldAcademicYear) {
+                return res.status(400).json('academic year không tồn tại');
+            }
+        }
+        result = await ss.saveAcademicYear(academicYear);
+        return res.status(200).json(result);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
+
+const getAcademicYear = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.sschoolId;
+
+        const schema = Joi.object({
+            page: Joi.number().min(1).default(1),
+            limit: Joi.number().min(1).default(5),
+        })
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const filter: FilterAcademicYear = { ...value, schoolId};
+        const ss = new SchoolService();
+        const data = await ss.academicYears(filter);
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
+
+const deleteAcademicYear = async (req: Request, res: Response) => {
+    try {
+        const schoolId = req.userData.schoolId;
+        const schema = Joi.array().items(Joi.number()).required();
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const ss = new SchoolService();
+        const academicYears = await ss.getAllAcademicYear({ where: { id: In(value), school_id: schoolId } });
+        const ids = academicYears.map((academicYear) => academicYear.id)
+        const result = await ss.softDeleteAcademicYear(ids);
+        if (!result.affected) {
+            return res.status(400).json('academic year không tồn tại');
+        }
+        return res.status(200).json(result);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
+
 export const schoolController = {
     getSchool,
 
@@ -443,4 +519,8 @@ export const schoolController = {
     updateClass,
     getClasses,
     deleteClass,
+
+    saveAcademicYear,
+    getAcademicYear,
+    deleteAcademicYear,
 }

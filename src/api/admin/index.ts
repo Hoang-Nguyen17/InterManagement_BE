@@ -46,7 +46,7 @@ router.delete('/school/:id/department/:did', authInstance.verifyAdminSchool, sch
 
 // major
 router.post('/school/:id/major', authInstance.authAdmin, schoolController.saveMajor);
-router.get('/school/:id/major', authInstance.authAdmin, schoolController.getMajors);
+router.get('/school/:id/major', authInstance.auth, schoolController.getMajors);
 router.delete('/school/:id/major', authInstance.authAdmin, schoolController.deleteMajors);
 
 // class
@@ -59,6 +59,11 @@ router.delete('/school/:id/class/:cid', authInstance.verifyAdminSchool, schoolCo
 router.post('/school/:id/department/:did/intern-subject', authInstance.verifyAdminSchool, internSubjectController.saveInternSubject);
 router.get('/school/:id/intern-subject', authInstance.verifyAuthSchool, internSubjectController.getInternSubjects);
 router.delete('/school/:id/intern-subject', authInstance.verifyAdminSchool, internSubjectController.deleteInternSubjects);
+
+// academic year
+router.post('/school/:id/academic-year', authInstance.authAdmin, schoolController.saveAcademicYear);
+router.get('/school/:id/academic-year', authInstance.auth, schoolController.getAcademicYear);
+router.delete('/school/:id/academic-year', authInstance.authAdmin, schoolController.deleteAcademicYear);
 
 // admin
 router.get('/', authInstance.authAdmin, userController.getAdministrators);
