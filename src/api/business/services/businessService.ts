@@ -1,11 +1,27 @@
 import { Business } from "../../../../src/database/entities/Business";
 import { AppDataSource } from "../../../../src/ormconfig";
-import { Brackets } from "typeorm";
+import { Brackets, DeepPartial, FindOneOptions } from "typeorm";
 import { filter } from "../interfaces/busnessInterface";
 
 
 export class BusinessService {
     private businessRepository = AppDataSource.getRepository(Business);
+
+    create(data: DeepPartial<Business>) {
+        return this.businessRepository.create(data);
+    }
+
+    async save(data: DeepPartial<Business>): Promise<Business> {
+        return await this.businessRepository.save(data);
+    }
+
+    async getAll(filter?: FindOneOptions<Business>) {
+        return await this.businessRepository.find(filter);
+    }
+
+    public getOne = async (filter?: FindOneOptions<Business>) => {
+        return await this.businessRepository.findOne(filter);
+    }
 
     public getBusiness = async (filter: filter) => {
         try {

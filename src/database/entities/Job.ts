@@ -14,7 +14,7 @@ export class Job extends CodeBase {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'longtext' })
+    @Column({ type: 'nvarchar', length: 500 })
     image: string;
 
     @Column({ type: 'nvarchar', length: 50 })
@@ -26,10 +26,10 @@ export class Job extends CodeBase {
     @Column({ type: 'nvarchar', length: 500 })
     requirements: string;
 
-    @Column({ type: 'nvarchar', length: 500 })
+    @Column({ type: 'nvarchar', length: 500, nullable: true })
     another_information: string;
 
-    @Column()
+    @Column({ nullable: true })
     vacancies: number;
 
     @Column()

@@ -440,7 +440,7 @@ const saveAcademicYear = async (req: Request, res: Response) => {
         let result;
 
         if (academicYear.id) {
-            const oldAcademicYear = await ss.getOneAcademicYear({ where: { id: academicYear.id } });
+            const oldAcademicYear = await ss.getOneAcademicYear({ where: { id: academicYear.id, school_id: schoolId } });
             if (!oldAcademicYear) {
                 return res.status(400).json('academic year không tồn tại');
             }
@@ -514,7 +514,7 @@ const saveSemester = async (req: Request, res: Response) => {
         let result;
 
         if (semester.id) {
-            const oldSemester = await ss.getOneSemester({ where: { id: semester.id } });
+            const oldSemester = await ss.getOneSemester({ where: { id: semester.id, school_id: schoolId } });
             if (!oldSemester) {
                 return res.status(400).json('semester không tồn tại');
             }

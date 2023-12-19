@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { BusinessService } from "../services/businessService";
-import Joi from "joi";
+import * as Joi from "joi";
 import { BadRequestException } from "@nestjs/common";
 import { filter } from "../interfaces/busnessInterface";
 
@@ -57,8 +57,7 @@ const upDateBusiness =async (req: Request, res: Response, user) => {
     const bs = new BusinessService();
     // const result = await bs.updateBusiness(value);
 }
-
-module.exports = {
+export const businessController = {
     getBusiness,
     getBusinessById,
 }
