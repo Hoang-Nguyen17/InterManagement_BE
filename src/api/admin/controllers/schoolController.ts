@@ -461,7 +461,7 @@ const getAcademicYear = async (req: Request, res: Response) => {
             page: Joi.number().min(1).default(1),
             limit: Joi.number().min(1).default(5),
         })
-        const { error, value } = schema.validate(req.body);
+        const { error, value } = schema.validate(req.query);
         if (error) return res.status(400).json(error);
 
         const filter: FilterAcademicYear = { ...value, schoolId };
@@ -511,7 +511,7 @@ const saveSemester = async (req: Request, res: Response) => {
         if (error) return res.status(400).json(error);
 
         const ss = new SchoolService();
-        const semester = ss.createSemester({ ...value, schoolId });
+        const semester = ss.createSemester({ ...value, school_id: schoolId });
         let result;
 
         if (semester.id) {
@@ -520,7 +520,7 @@ const saveSemester = async (req: Request, res: Response) => {
                 return res.status(400).json('semester không tồn tại');
             }
         }
-        result = await ss.saveAcademicYear(semester);
+        result = await ss.saveSemester(semester);
         return res.status(200).json(result);
     } catch (e) {
         console.log(e);
