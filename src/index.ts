@@ -15,7 +15,6 @@ const { PORT } = process.env;
 const app = express();
 
 //  --------------- PRODUCTION --------------------------------
-
 const corsOptions = {
     origin: 'https://itw.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

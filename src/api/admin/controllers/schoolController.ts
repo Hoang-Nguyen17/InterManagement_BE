@@ -426,6 +426,7 @@ const deleteClass = async (req: Request, res: Response) => {
 const saveAcademicYear = async (req: Request, res: Response) => {
     try {
         const schoolId = req.userData.schoolId;
+        console.log('schoolId: ', schoolId);
 
         const schema = Joi.object({
             id: Joi.number().min(1).optional(),
