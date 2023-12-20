@@ -68,7 +68,7 @@ router.delete('/school/:id/academic-year/:aid', authInstance.authAdmin, schoolCo
 // semester
 router.post('/school/:id/semester', authInstance.authAdmin, schoolController.saveSemester);
 router.get('/school/:id/semester', authInstance.auth, schoolController.getSemester);
-router.delete('/school/:id/semester?:sid', authInstance.authAdmin, schoolController.deleteSemester);
+router.delete('/school/:id/semester/:sid', authInstance.authAdmin, schoolController.deleteSemester);
 
 // admin
 router.get('/', authInstance.authAdmin, userController.getAdministrators);
