@@ -33,6 +33,9 @@ export class JobService {
             .createQueryBuilder('job')
             .innerJoinAndSelect('job.business', 'business')
             .innerJoinAndSelect('business', 'personBusiness')
+            .leftJoinAndSelect('job.position', 'position')
+            .leftJoinAndSelect('job.jobSkills', 'jobSkills')
+            .leftJoinAndSelect('jobSkills.skill', 'skill')
 
         if (businessId) {
             qb.andWhere('business.id = :businessId', { businessId });

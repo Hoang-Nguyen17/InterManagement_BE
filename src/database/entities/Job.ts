@@ -33,6 +33,9 @@ export class Job extends CodeBase {
     @Column({ type: 'decimal', precision: 2, scale: 2, default: null, nullable: true })
     average_rate: number;
 
+    @Column({ default: 0 })
+    viewer_count: number;
+
     @Column({ type: 'enum', enum: WorkType, default: WorkType.FULL_TIME })
     work_type: WorkType;
 

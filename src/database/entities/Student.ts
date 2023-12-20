@@ -45,9 +45,6 @@ export class Student extends CodeBase {
     @Column()
     class_id: number;
 
-    @Column({ default: 0 })
-    viewer_count: number;
-
     @ManyToOne(() => Program, (program) => program.id)
     @JoinColumn({
         name: 'program_id',
