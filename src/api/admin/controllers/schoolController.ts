@@ -478,18 +478,14 @@ const getAcademicYear = async (req: Request, res: Response) => {
 const deleteAcademicYear = async (req: Request, res: Response) => {
     try {
         const schoolId = req.userData.schoolId;
-        const schema = Joi.array().items(Joi.number()).required();
-
-        const { error, value } = schema.validate(req.body);
-        if (error) return res.status(400).json(error);
+        const academicYearId = parseInt(req.params.aid);
 
         const ss = new SchoolService();
-        const academicYears = await ss.getAllAcademicYear({ where: { id: In(value), school_id: schoolId } });
-        const ids = academicYears.map((academicYear) => academicYear.id)
-        const result = await ss.softDeleteAcademicYear(ids);
-        if (!result.affected) {
+        const academicYears = await ss.getOneAcademicYear({ where: { id: academicYearId, school_id: schoolId } });
+        if (!academicYears) {
             return res.status(400).json('academic year không tồn tại');
         }
+        const result = await ss.softDeleteAcademicYear([academicYearId]);
         return res.status(200).json(result);
     } catch (e) {
         console.log(e);
@@ -543,18 +539,15 @@ const getSemester = async (req: Request, res: Response) => {
 const deleteSemester = async (req: Request, res: Response) => {
     try {
         const schoolId = req.userData.schoolId;
-        const schema = Joi.array().items(Joi.number()).required();
-
-        const { error, value } = schema.validate(req.body);
-        if (error) return res.status(400).json(error);
+        const semesterId = parseInt(req.params.sid);
 
         const ss = new SchoolService();
-        const semesters = await ss.getAllSemester({ where: { id: In(value), school_id: schoolId } });
-        const ids = semesters.map((semester) => semester.id)
-        const result = await ss.softDeleteSemester(ids);
-        if (!result.affected) {
+        const semesters = await ss.getOneSemester({ where: { id: semesterId, school_id: schoolId } });
+        if (!semesters) {
             return res.status(400).json('semester không tồn tại');
         }
+        const result = await ss.softDeleteSemester([semesterId]);
+
         return res.status(200).json(result);
     } catch (e) {
         console.log(e);

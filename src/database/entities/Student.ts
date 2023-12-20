@@ -14,6 +14,7 @@ import { Notice } from "./Notice";
 import { Report } from "./Report";
 import { Conversation } from "./Conversation";
 import { RegularTodo } from "./RegularTodo";
+import { Applies } from "./Applies";
 
 @Entity({ name: 'student' })
 export class Student extends CodeBase {
@@ -43,6 +44,9 @@ export class Student extends CodeBase {
 
     @Column()
     class_id: number;
+
+    @Column({ default: 0 })
+    viewer_count: number;
 
     @ManyToOne(() => Program, (program) => program.id)
     @JoinColumn({
@@ -92,7 +96,10 @@ export class Student extends CodeBase {
 
     @OneToMany(() => Conversation, (conversation) => conversation.student)
     conversation?: Conversation[];
-    
+
     @OneToMany(() => RegularTodo, (regularTodo) => regularTodo.student)
     regularTodo?: RegularTodo[];
+
+    @OneToMany(() => Applies, (applies) => applies.student)
+    applies?: Applies[];
 }
