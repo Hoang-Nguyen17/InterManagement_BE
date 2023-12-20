@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
 import { CodeBase } from "./CodeBase";
 import { InternSubject } from "./InternSubject";
 import { ExaminationBoard } from "./ExaminationBoard";
@@ -21,6 +21,10 @@ export class AcademicYear extends CodeBase {
     @OneToMany(() => ExaminationBoard, (examinationBoard) => examinationBoard.academicYear)
     examinationBoard?: ExaminationBoard[];
 
-    @ManyToOne(() => School, (school) => school.academicYear)
+    @ManyToOne(() => School, (school) => school.id)
+    @JoinColumn({
+        name: 'school_id',
+        referencedColumnName: 'id',
+    })
     school?: School;
 }

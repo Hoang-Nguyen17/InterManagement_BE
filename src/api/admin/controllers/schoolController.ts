@@ -426,7 +426,6 @@ const deleteClass = async (req: Request, res: Response) => {
 const saveAcademicYear = async (req: Request, res: Response) => {
     try {
         const schoolId = req.userData.schoolId;
-        console.log('schoolId: ', schoolId);
 
         const schema = Joi.object({
             id: Joi.number().min(1).optional(),
@@ -437,7 +436,7 @@ const saveAcademicYear = async (req: Request, res: Response) => {
         if (error) return res.status(400).json(error);
 
         const ss = new SchoolService();
-        const academicYear = ss.createAcademicYear({ ...value, schoolId });
+        const academicYear = ss.createAcademicYear({ ...value, school_id: schoolId });
         let result;
 
         if (academicYear.id) {
@@ -456,7 +455,7 @@ const saveAcademicYear = async (req: Request, res: Response) => {
 
 const getAcademicYear = async (req: Request, res: Response) => {
     try {
-        const schoolId = req.userData.sschoolId;
+        const schoolId = req.userData.schoolId;
 
         const schema = Joi.object({
             page: Joi.number().min(1).default(1),
@@ -466,6 +465,7 @@ const getAcademicYear = async (req: Request, res: Response) => {
         if (error) return res.status(400).json(error);
 
         const filter: FilterAcademicYear = { ...value, schoolId };
+        console.log(filter);
         const ss = new SchoolService();
         const data = await ss.academicYears(filter);
         return res.status(200).json(data);
