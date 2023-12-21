@@ -54,7 +54,7 @@ export class Job extends CodeBase {
     @Column({ type: 'nvarchar', length: 50 })
     job_name: string;
 
-    @Column({ type: 'nvarchar', length: 50 })
+    @Column({ type: 'nvarchar', length: 500 })
     job_desc: string;
 
     @Column({ type: 'nvarchar', length: 500 })

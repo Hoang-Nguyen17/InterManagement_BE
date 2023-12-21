@@ -23,7 +23,7 @@ const saveJob = async (req: Request, res: Response) => {
         const schema = Joi.object({
             id: Joi.number().min(1).optional(),
             salary: Joi.number().min(0).required(),
-            image: Joi.string().max(500).required(),
+            image: Joi.string().max(500).optional(),
             work_type: Joi.string().valid(...Object.values(WorkType)).optional(),
             work_space: Joi.string().valid(...Object.values(WorkSpace)).optional(),
             expire_date: Joi.date().min(new Date()).required(),
@@ -32,7 +32,7 @@ const saveJob = async (req: Request, res: Response) => {
             job_desc: Joi.string().required(),
             requirements: Joi.string().required(),
             another_information: Joi.string().optional(),
-            vacancies: Joi.number().optional(),
+            vacancies: Joi.number().required(),
             position_id: Joi.number().optional(),
             skillIds: Joi.array().items(
                 Joi.number(),
