@@ -12,5 +12,12 @@ router.get('/job', authInstance.auth, jobController.getJobs);
 router.get('/job/:id', authInstance.auth, jobController.getJobs);
 router.delete('/job', authInstance.auth, jobController.deleteJobs);
 
+// position
+router.get('/position', authInstance.auth, jobController.getPosition);
+
+// skill
+router.get('/skill', authInstance.auth, jobController.getSkills);
+
+
 
 module.exports = router;

@@ -4,7 +4,7 @@ import { BadRequestException } from "@nestjs/common";
 import { BusinessService } from "../services/businessService";
 import { JobService } from "../services/jobService";
 import { FilterJob } from "../interfaces/job.interface";
-import { In } from "typeorm";
+import { In, Like } from "typeorm";
 import { WorkSpace, WorkType } from "../../../database/entities/Job";
 import { PositionService } from "../services/positionService";
 import { JobSkillService } from "../services/jobSkillService";
@@ -134,8 +134,51 @@ const deleteJobs = async (req: Request, res: Response) => {
     }
 }
 
+// skill for job
+const getSkills = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            search_text: Joi.string().optional(),
+        })
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const skillService = new SkillService();
+        const whereClause = value.search_text ? { skill_name: Like(`%${value.search_text}%`) } : null;
+        const skills = await skillService.getAll({ where: whereClause })
+        return res.status(200).json(skills);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
+// position
+const getPosition = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            search_text: Joi.string().optional(),
+        })
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const positionService = new PositionService();
+        const whereClause = value.search_text ? { position_name: Like(`%${value.search_text}%`) } : null;
+        const positions = await positionService.getAll({ where: whereClause })
+        return res.status(200).json(positions);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
+
 export const jobController = {
     saveJob,
     getJobs,
     deleteJobs,
+
+    getSkills,
+
+    getPosition,
 }
