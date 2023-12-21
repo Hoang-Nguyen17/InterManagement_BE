@@ -5,6 +5,18 @@ import { ExaminationBoard } from "./ExaminationBoard";
 import { Student } from "./Student";
 import { InternSubject } from "./InternSubject";
 
+export enum PassStatus {
+    FAILED = 'FAILED',
+    STUDYING = 'STUDYING',
+    PASSED = 'PASSED',
+}
+
+export enum RegistStatus {
+    REGISTERING = 'REGISTERING',
+    REJECTED = 'REJECTED',
+    SUCCESSED = 'SUCCESSED',
+}
+
 @Entity({ name: 'student_learn_intern' })
 export class StudentLearnIntern extends CodeBase {
     @PrimaryGeneratedColumn()
@@ -16,11 +28,11 @@ export class StudentLearnIntern extends CodeBase {
     @Column({ nullable: true })
     score: number;
 
-    @Column({ default: status.processing })
-    passed_status: status;
+    @Column({ type: 'enum', enum: PassStatus, default: PassStatus.STUDYING })
+    passed_status: PassStatus;
 
-    @Column({ default: status.finished })
-    regist_status: status;
+    @Column({ type: 'enum', enum: RegistStatus, default: RegistStatus.REGISTERING })
+    regist_status: RegistStatus;
 
     @Column({ nullable: true })
     board_id: number;
