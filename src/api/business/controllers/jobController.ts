@@ -134,25 +134,6 @@ const deleteJobs = async (req: Request, res: Response) => {
     }
 }
 
-// skill for job
-const getSkills = async (req: Request, res: Response) => {
-    try {
-        const schema = Joi.object({
-            search_text: Joi.string().optional(),
-        })
-        const { error, value } = schema.validate(req.body);
-        if (error) return res.status(400).json(error);
-
-        const skillService = new SkillService();
-        const whereClause = value.search_text ? { skill_name: Like(`%${value.search_text}%`) } : null;
-        const skills = await skillService.getAll({ where: whereClause })
-        return res.status(200).json(skills);
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ detail: error.message });
-    }
-}
-
 // position
 const getPosition = async (req: Request, res: Response) => {
     try {
@@ -165,6 +146,7 @@ const getPosition = async (req: Request, res: Response) => {
         const positionService = new PositionService();
         const whereClause = value.search_text ? { position_name: Like(`%${value.search_text}%`) } : null;
         const positions = await positionService.getAll({ where: whereClause })
+
         return res.status(200).json(positions);
     } catch (error) {
         console.log(error);
@@ -172,6 +154,63 @@ const getPosition = async (req: Request, res: Response) => {
     }
 }
 
+const savePosition = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            position_name: Joi.string().required(),
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const skillService = new SkillService();
+        const skill = skillService.create(value);
+        const result = await skillService.save(skill);
+
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
+// skill for job
+const getSkills = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            search_text: Joi.string().optional(),
+        })
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const skillService = new SkillService();
+        const whereClause = value.search_text ? { skill_name: Like(`%${value.search_text}%`) } : null;
+        const skills = await skillService.getAll({ where: whereClause })
+
+        return res.status(200).json(skills);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+const saveSkill = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            skill_name: Joi.string().required(),
+        })
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const skillService = new SkillService();
+        const skill = skillService.create(value);
+        const result = await skillService.save(skill);
+
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
 
 export const jobController = {
     saveJob,
@@ -179,6 +218,8 @@ export const jobController = {
     deleteJobs,
 
     getSkills,
+    saveSkill,
 
     getPosition,
+    savePosition,
 }
