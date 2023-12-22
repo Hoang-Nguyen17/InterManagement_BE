@@ -3,7 +3,7 @@ export interface IStudentLearnInternSubject {
     semester_id?: number;
     academic_id?: number;
     student_id?: number;
-    search?: string;
+    search_text?: string;
     limit?: number;
     page?: number;
 }

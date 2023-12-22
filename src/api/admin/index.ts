@@ -7,6 +7,7 @@ import { userController } from './controllers/userController';
 import { schoolController } from './controllers/schoolController';
 import { internSubjectController } from './controllers/internSubjectController';
 import { manageAppController } from './controllers/manageAppController';
+import { studentLearnInternController } from './controllers/studentLearnInternSubjectController';
 
 
 router.post('/school/:id/register', authInstance.verifyAdminSchool, userController.register);
@@ -33,7 +34,7 @@ router.get('/school', authInstance.authAdmin, schoolController.getSchool);
 // program
 router.post('/school/:id/program', authInstance.verifyAdminSchool, schoolController.saveProgram);
 router.put('/school/:id/program/:pid', authInstance.verifyAdminSchool, schoolController.updateProgram);
-router.get('/school/:id/program',authInstance.verifyAuthSchool, schoolController.getPrograms);
+router.get('/school/:id/program', authInstance.verifyAuthSchool, schoolController.getPrograms);
 router.get('/school/:id/program/:pid', authInstance.verifyAuthSchool, schoolController.getProgram);
 router.delete('/school/:id/program/:pid', authInstance.verifyAdminSchool, schoolController.deleteProgram);
 
@@ -59,6 +60,9 @@ router.delete('/school/:id/class/:cid', authInstance.verifyAdminSchool, schoolCo
 router.post('/school/:id/department/:did/intern-subject', authInstance.verifyAdminSchool, internSubjectController.saveInternSubject);
 router.get('/school/:id/intern-subject', authInstance.verifyAuthSchool, internSubjectController.getInternSubjects);
 router.delete('/school/:id/intern-subject', authInstance.verifyAdminSchool, internSubjectController.deleteInternSubjects);
+
+// student learn intern subject
+router.get('/school/:id/learn-intern', authInstance.authAdmin, studentLearnInternController.getStudentLearnInternSubject);
 
 // academic year
 router.post('/school/:id/academic-year', authInstance.authAdmin, schoolController.saveAcademicYear);
