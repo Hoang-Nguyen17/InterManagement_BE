@@ -48,7 +48,7 @@ export class Job extends CodeBase {
     @Column({ nullable: true })
     experience_years: number;
 
-    @Column({ type: 'nvarchar', length: 500 })
+    @Column({ type: 'nvarchar', length: 500, nullable: true })
     image: string;
 
     @Column({ type: 'nvarchar', length: 50 })
