@@ -32,7 +32,7 @@ export class JobService {
         const qb = await this.jobRes
             .createQueryBuilder('job')
             .innerJoinAndSelect('job.business', 'business')
-            .innerJoinAndSelect('business', 'personBusiness')
+            .innerJoinAndSelect('business.user_person', 'personBusiness')
             .leftJoinAndSelect('job.position', 'position')
             .leftJoinAndSelect('job.jobSkills', 'jobSkills')
             .leftJoinAndSelect('jobSkills.skill', 'skill')
