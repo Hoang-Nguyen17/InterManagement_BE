@@ -1,4 +1,4 @@
-import { Brackets } from "typeorm";
+import { Brackets, DeepPartial, FindOneOptions, FindOptionsWhere } from "typeorm";
 import { StudentLearnIntern } from "../../../database/entities/StudentLearnIntern";
 import { AppDataSource } from "../../../ormconfig";
 import { IStudentLearnInternSubject } from "../interfaces/student.interface";
@@ -6,6 +6,39 @@ import { IStudentLearnInternSubject } from "../interfaces/student.interface";
 
 export class StudentLearInternService {
     private studentLearnInternRes = AppDataSource.getRepository(StudentLearnIntern);
+
+    
+    create(data: DeepPartial<StudentLearnIntern>) {
+        return this.studentLearnInternRes.create(data);
+    }
+
+    async save(data: DeepPartial<StudentLearnIntern[]>): Promise<StudentLearnIntern[]> {
+        return await this.studentLearnInternRes.save(data);
+    }
+
+    async update(
+        where: FindOptionsWhere<StudentLearnIntern>, 
+        data: DeepPartial<StudentLearnIntern>
+    ): Promise<Boolean> {
+        const result = await this.studentLearnInternRes.update(where, data);
+        return !!result.affected;
+    }
+
+    async getAll(filter?: FindOneOptions<StudentLearnIntern>) {
+        return await this.studentLearnInternRes.find(filter);
+    }
+
+    async softRemove(StudentLearnIntern: StudentLearnIntern[]) {
+        return await this.studentLearnInternRes.softRemove(StudentLearnIntern);
+    }
+
+    public getOne = async (filter?: FindOneOptions<StudentLearnIntern>) => {
+        return await this.studentLearnInternRes.findOne(filter);
+    }
+
+    async delete(condition: FindOptionsWhere<StudentLearnIntern>) {
+        return await this.studentLearnInternRes.delete(condition);
+    }
 
     async getStudentLearnIntern(schoolId: number, filter: IStudentLearnInternSubject) {
         const { search_text, semester_id, academic_id, page, limit } = filter;
