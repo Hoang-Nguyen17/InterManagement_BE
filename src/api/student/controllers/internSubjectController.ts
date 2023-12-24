@@ -50,7 +50,24 @@ const saveLearnIntern = async (req: Request, res: Response) => {
         return res.status(500).json({ detail: error.message });
     }
 }
+
+const deleteLearnIntern = async (req: Request, res: Response) => {
+    const userId = req.userData.id;
+    const us = new UserService();
+    const student = await us.getOneStudent({ where: { user_id: userId } });
+    if (!student) {
+        return res.status(400).json('Không phải sinh viên');
+    }
+    const learnInternId = parseInt(req.params.lid);
+    const sv = new StudentLearnInternService();
+    const result = await sv.delete({ student_id: student.id, id: learnInternId });
+    if (result.affected) {
+        return res.status(401).json('Không tìm thấy phần đăng ký của bạn');
+    }
+    return res.status(200).json(result);
+}
 export const InternSubjectController = {
     learnInternDetail,
     saveLearnIntern,
+    deleteLearnIntern,
 }

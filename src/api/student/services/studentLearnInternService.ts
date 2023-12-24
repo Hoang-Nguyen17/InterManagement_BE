@@ -1,5 +1,5 @@
 import { AppDataSource } from "../../../ormconfig";
-import { Brackets, DeepPartial, FindOneOptions } from "typeorm";
+import { Brackets, DeepPartial, FindOneOptions, FindOptionsWhere } from "typeorm";
 import { StudentLearnIntern } from "../../../database/entities/StudentLearnIntern";
 import { InternSubjectService } from "../../admin/services/internSubjectService";
 
@@ -27,6 +27,11 @@ export class StudentLearnInternService {
     public getOne = async (filter?: FindOneOptions<StudentLearnIntern>) => {
         return await this.stulearnInternRes.findOne(filter);
     }
+
+    async delete(condition: FindOptionsWhere<StudentLearnIntern>) {
+        return await this.stulearnInternRes.delete(condition);
+    }
+    
 
     async checkRegister(schoolId: number, internSubjectId: number) {
         const subject = await this.InternSubjectService.getOne({

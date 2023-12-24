@@ -20,13 +20,13 @@ export class InternSubject extends CodeBase {
 
     @Column()
     sessions: number;
-    
+
     @Column()
     max_students: number;
-    
+
     @Column()
     teacher_id: number;
-    
+
     @Column()
     department_id: number;
 
@@ -41,6 +41,9 @@ export class InternSubject extends CodeBase {
 
     @Column()
     end_date: Date;
+
+    @Column({ type: 'bool', default: true })
+    is_open: boolean;
 
     @ManyToOne(() => Department, (department) => department.id)
     @JoinColumn({
