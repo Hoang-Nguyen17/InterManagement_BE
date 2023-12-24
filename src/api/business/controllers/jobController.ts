@@ -163,9 +163,9 @@ const savePosition = async (req: Request, res: Response) => {
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
 
-        const skillService = new SkillService();
-        const skill = skillService.create(value);
-        const result = await skillService.save(skill);
+        const positionService = new PositionService();
+        const position = positionService.create(value);
+        const result = await positionService.save(position);
 
         return res.status(200).json(result);
     } catch (error) {
