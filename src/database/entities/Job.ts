@@ -1,10 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, RelationId, RelationCount } from "typeorm";
 import { CodeBase } from "./CodeBase";
-import { Department } from "./Department";
-import { Teacher } from "./Teacher";
-import { Student } from "./Student";
 import { Business } from "./Business";
-import { Skill } from "./skill";
 import { InternJob } from "./InternJob";
 import { JobFavorite } from "./JobFavorite";
 import { StudentRequestRegistIntern } from "./StudentRequestRegistIntern";
@@ -30,7 +26,7 @@ export class Job extends CodeBase {
     @Column({ type: 'decimal', precision: 20, scale: 2 })
     salary: number;
 
-    @Column({ type: 'decimal', precision: 2, scale: 2, default: null, nullable: true })
+    @Column({ type: 'decimal', precision: 3, scale: 2, default: null, nullable: true })
     average_rate: number;
 
     @Column({ default: 0 })
@@ -100,5 +96,7 @@ export class Job extends CodeBase {
 
     @OneToMany(() => JobSkill, (jobSkill) => jobSkill.job)
     jobSkills?: JobSkill[];
-
+    
+    @RelationCount((job: Job) =>job.applies)
+    count_apply: number;
 }
