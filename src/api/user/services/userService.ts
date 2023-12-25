@@ -48,7 +48,7 @@ export class UserService {
     }
 
     public getProfileById = async (id: number) => {
-        const data = await this.userPersonRepository.findOne({ where: { id: id }, relations: ['teacher', 'administrator', 'business', 'student'] })
+        const data = await this.userPersonRepository.findOne({ where: { id: id }, relations: ['teacher', 'administrator', 'business', 'student', 'student.major', 'teacher.department'] })
         return data;
     }
 
