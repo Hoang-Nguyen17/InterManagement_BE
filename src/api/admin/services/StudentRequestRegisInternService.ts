@@ -15,7 +15,7 @@ export class StudentRequestRegistInternService {
     }
 
     async getAll(filter?: FindOneOptions<StudentRequestRegistIntern>) {
-        return await this.requestRegistInternRes.find(filter);
+        return await this.requestRegistInternRes.find();
     }
 
     async softRemove(StudentRequestRegistIntern: StudentRequestRegistIntern) {
@@ -36,5 +36,13 @@ export class StudentRequestRegistInternService {
     ): Promise<Boolean> {
         const result = await this.requestRegistInternRes.update(where, data);
         return !!result.affected;
+    }
+
+    async requests(schoolId: number, page: number, limit: number) {
+        const qb = this.requestRegistInternRes.createQueryBuilder('request')
+            .where('request.school_id = :schoolId', { schoolId })
+            .skip((page - 1) * limit)
+            .take(limit);
+        return qb.getManyAndCount();
     }
 }

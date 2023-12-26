@@ -5,9 +5,17 @@ import { RequestStatus } from "../../../database/entities/StudentRequestRegistIn
 
 const requestRegisInterns = async (req: Request, res: Response) => {
     const { schoolId } = req.userData;
-    const sv = new StudentRequestRegistInternService();
+    const schema = Joi.object({
+        page: Joi.number().default(1),
+        limit: Joi.number().default(10),
+    })
 
-    const data = await sv.getAll({ where: { school_id: schoolId } });
+    const { error, value } = schema.validate(req.body);
+    if (error) return res.status(400).json({ detail: error.message });
+    const { page, limit } = value;
+    
+    const sv = new StudentRequestRegistInternService();
+    const data = await sv.requests(schoolId, page, limit);
     return res.status(200).json(data);
 }
 
