@@ -2,6 +2,7 @@ import { AppDataSource } from "../../../ormconfig";
 import { Brackets, DeepPartial, FindOneOptions, FindOptionsWhere } from "typeorm";
 import { StudentLearnIntern } from "../../../database/entities/StudentLearnIntern";
 import { InternSubjectService } from "../../admin/services/internSubjectService";
+import { Student } from "src/database/entities/Student";
 
 
 export class StudentLearnInternService {
@@ -31,9 +32,9 @@ export class StudentLearnInternService {
     async delete(condition: FindOptionsWhere<StudentLearnIntern>) {
         return await this.stulearnInternRes.delete(condition);
     }
-    
 
-    async checkRegister(schoolId: number, internSubjectId: number) {
+
+    async checkRegister(schoolId: number, internSubjectId: number, student: Student) {
         const subject = await this.InternSubjectService.getOne({
             where: {
                 id: internSubjectId
@@ -41,6 +42,9 @@ export class StudentLearnInternService {
             relations: ['department']
         });
 
-        return !!(schoolId === subject.department.school_id);
+        return !!(
+            schoolId === subject.department.school_id
+            && student.major.department_id === subject.department_id
+        );
     }
 }

@@ -81,9 +81,6 @@ export class Job extends CodeBase {
     @OneToMany(() => JobFavorite, (jobFavorite) => jobFavorite.job)
     job_favorite?: JobFavorite[];
 
-    @OneToMany(() => StudentRequestRegistIntern, (studentRequestRegistIntern) => studentRequestRegistIntern.job)
-    studentRequestRegistIntern?: StudentRequestRegistIntern[];
-
     @OneToMany(() => Applies, (applies) => applies.job)
     applies?: Applies[];
 

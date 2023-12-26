@@ -107,6 +107,27 @@ const getJobs = async (req: Request, res: Response) => {
     }
 }
 
+const getJobById = async (req: Request, res: Response) => {
+    try {
+        const jobId = parseInt(req.params.id);
+        const js = new JobService();
+        const job = await js.getOneJob({
+            where: {
+                id: jobId,
+            },
+            relations: [
+                'position',
+                'jobSkills',
+                'jobSkills.skill',
+            ]
+        });
+        return res.status(200).json(job);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ detail: e.message })
+    }
+}
+
 const deleteJobs = async (req: Request, res: Response) => {
     try {
         const userId = req.userData.id;
@@ -215,6 +236,7 @@ const saveSkill = async (req: Request, res: Response) => {
 export const jobController = {
     saveJob,
     getJobs,
+    getJobById,
     deleteJobs,
 
     getSkills,

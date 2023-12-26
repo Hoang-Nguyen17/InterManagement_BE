@@ -5,6 +5,13 @@ import { Teacher } from "./Teacher";
 import { Student } from "./Student";
 import { status } from "../../common/constants/status.constant";
 import { Job } from "./Job";
+import { School } from "./School";
+
+export enum RequestStatus {
+    WAITTING = 'WAITTING',
+    REJECTED = 'REJECTED',
+    SENT = 'SENT',
+}
 
 @Entity({ name: 'student_request_regist_intern' })
 export class StudentRequestRegistIntern extends CodeBase {
@@ -14,21 +21,14 @@ export class StudentRequestRegistIntern extends CodeBase {
     @Column()
     student_id: number;
 
-    @Column({ default: status.processing })
-    regist_submit_status: status;
-
     @Column()
-    job_id: number;
+    school_id: number;
 
-    @Column({ type: 'longblob' })
+    @Column({ type: 'enum', enum: RequestStatus, default: RequestStatus.WAITTING })
+    regist_submit_status: RequestStatus;
+
+    @Column({ length: 500 })
     file: string;
-
-    @ManyToOne(() => Job, (job) => job.id)
-    @JoinColumn({
-        name: 'job_id',
-        referencedColumnName: 'id'
-    })
-    job?: Job;
 
     @ManyToOne(() => Student, (student) => student.id)
     @JoinColumn({
@@ -36,4 +36,11 @@ export class StudentRequestRegistIntern extends CodeBase {
         referencedColumnName: 'id'
     })
     student?: Student;
+
+    @ManyToOne(() => School, (school) => school.id)
+    @JoinColumn({
+        name: 'school_id',
+        referencedColumnName: 'id'
+    })
+    school?: School;
 }

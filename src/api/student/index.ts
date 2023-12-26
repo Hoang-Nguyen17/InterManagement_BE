@@ -6,9 +6,15 @@ const authInstance = new Auth();
 import { InternSubjectController } from './controllers/internSubjectController';
 import { ApplyController } from './controllers/applyController';
 import { JobController } from './controllers/jobController';
+import { StudentRequestRegistIntern } from './controllers/requestRegisInternController';
+
+// student request introducing letter
+router.get('/introducing-letter', authInstance.auth, StudentRequestRegistIntern.requestRegisInterns)
+router.post('/introducing-letter', authInstance.auth, StudentRequestRegistIntern.saveRequest);
+router.delete('/introducing-letter/:id', authInstance.auth, StudentRequestRegistIntern.deleteRequest);
 
 // student Learn Intern
-router.get('/intern-subject/:id/learn-intern/:lid', authInstance.auth, InternSubjectController.learnInternDetail)
+router.get('/intern-subject/:id/learn-intern', authInstance.auth, InternSubjectController.learnInternDetail)
 router.post('/intern-subject/:id/learn-intern', authInstance.auth, InternSubjectController.saveLearnIntern);
 router.delete('/intern-subject/:id/learn-intern/:lid', authInstance.auth, InternSubjectController.deleteLearnIntern);
 

@@ -32,15 +32,15 @@ const saveLearnIntern = async (req: Request, res: Response) => {
         const user = req.userData;
         const us = new UserService();
 
-        const student = await us.getOneStudent({ where: { user_id: user.id } });
+        const student = await us.getOneStudent({ where: { user_id: user.id }, relations: ['major'] });
         if (!student) {
             return res.status(400).json('Bạn không phải sinh viên của trường này');
         }
         const internSubjectId = parseInt(req.params.id);
         const sv = new StudentLearnInternService();
-        const checkRegister = await sv.checkRegister(user.schoolId, internSubjectId);
+        const checkRegister = await sv.checkRegister(user.schoolId, internSubjectId, student);
         if (!checkRegister) {
-            return res.status(400).json('Bạn không được phép đăng ký môn học của trường khác');
+            return res.status(400).json('Bạn không được phép đăng ký môn học này');
         }
         const data = sv.create({ student_id: student.id, subject_id: internSubjectId });
         const result = await sv.save([data]);
