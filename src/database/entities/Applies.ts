@@ -19,21 +19,24 @@ export class Applies extends CodeBase {
     id: number;
 
     @Column()
-    student_id: number
+    student_id: number;
 
     @Column()
-    job_id: number
+    job_id: number;
 
     @Column({ length: 500 })
-    cv_file: string
+    cv_file: string;
+
+    @Column({ length: 500, nullable: true })
+    introducing_file: string;
 
     @Column({ nullable: true })
     @Min(1)
     @Max(5)
-    rate_point: number
+    rate_point: number;
 
     @Column({ type: 'enum', enum: AppliesStatus, default: AppliesStatus.APPLYING })
-    apply_status: AppliesStatus
+    apply_status: AppliesStatus;
 
     @ManyToOne(() => Student, (student) => student.id)
     @JoinColumn({

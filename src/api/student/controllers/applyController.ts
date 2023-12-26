@@ -42,6 +42,7 @@ const saveApply = async (req: Request, res: Response) => {
     const schema = Joi.object({
         job_id: Joi.number().required(),
         cv_file: Joi.string().max(500).required(),
+        introducing_file: Joi.string().max(500).optional(),
         rate_point: Joi.number().valid(1, 2, 3, 4, 5).optional(),
     })
     const { error, value } = schema.validate(req.body);
