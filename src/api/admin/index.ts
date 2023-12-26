@@ -86,6 +86,6 @@ router.get('/school/student', authInstance.authAdmin, userController.getStudents
 // major
 
 // student request regist intern
-router.get('/introducing-letter', authInstance.auth, StudentRequestRegistIntern.requestRegisInterns)
-router.put('/introducing-letter', authInstance.auth, StudentRequestRegistIntern.updateRequest);
+router.get('/introducing-letter', authInstance.authAdmin, StudentRequestRegistIntern.requestRegisInterns)
+router.put('/introducing-letter', authInstance.authAdmin, StudentRequestRegistIntern.updateRequest);
 module.exports = router;
