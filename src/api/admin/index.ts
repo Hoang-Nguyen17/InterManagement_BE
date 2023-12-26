@@ -8,6 +8,7 @@ import { schoolController } from './controllers/schoolController';
 import { internSubjectController } from './controllers/internSubjectController';
 import { manageAppController } from './controllers/manageAppController';
 import { studentLearnInternController } from './controllers/studentLearnInternSubjectController';
+import { StudentRequestRegistIntern } from './controllers/studentRequestRegistInternController';
 
 
 router.post('/school/:id/register', authInstance.verifyAdminSchool, userController.register);
@@ -84,4 +85,7 @@ router.get('/school/teacher', authInstance.authAdmin, userController.getTeachers
 router.get('/school/student', authInstance.authAdmin, userController.getStudents);
 // major
 
+// student request regist intern
+router.get('/introducing-letter', authInstance.auth, StudentRequestRegistIntern.requestRegisInterns)
+router.put('/introducing-letter', authInstance.auth, StudentRequestRegistIntern.updateRequest);
 module.exports = router;
