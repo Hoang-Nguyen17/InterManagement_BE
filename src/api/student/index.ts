@@ -19,8 +19,8 @@ router.post('/intern-subject/:id/learn-intern', authInstance.auth, InternSubject
 router.delete('/intern-subject/:id/learn-intern/:lid', authInstance.auth, InternSubjectController.deleteLearnIntern);
 
 // apply
-router.get('/apply', authInstance.auth, ApplyController.applies)
-router.post('/apply', authInstance.auth, ApplyController.saveApply)
+router.get('/apply', authInstance.auth, ApplyController.applies);
+router.post('/apply', authInstance.auth, ApplyController.saveApply);
 router.delete('/apply/:id', authInstance.auth, ApplyController.deleteApply);
 
 // job

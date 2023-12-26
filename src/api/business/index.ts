@@ -3,8 +3,8 @@ import Auth from '../../common/helpers/auth';
 const router = express.Router();
 const authInstance = new Auth();
 
-import { businessController } from "./controllers/businessController";
 import { jobController } from "./controllers/jobController";
+import { ApplyController } from './controllers/applyController';
 
 // jobs
 router.post('/job', authInstance.auth, jobController.saveJob);
@@ -20,6 +20,9 @@ router.post('/position', authInstance.auth, jobController.savePosition);
 router.get('/skill', authInstance.auth, jobController.getSkills);
 router.post('/skill', authInstance.auth, jobController.saveSkill);
 
+// apply
+router.get('/apply', authInstance.auth, ApplyController.applies);
+router.post('/apply/:id', authInstance.auth, ApplyController.updateApply);
 
 
 module.exports = router;
