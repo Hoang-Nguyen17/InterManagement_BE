@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import * as Joi from "joi";
 import { BusinessService } from "../services/businessService";
 import { ApplyService } from "../services/applyService";
-import { AppliesStatus } from "src/database/entities/Applies";
+import { AppliesStatus } from "../../../database/entities/Applies";
 
 const applies = async (req: Request, res: Response) => {
     const { id } = req.userData;
