@@ -7,10 +7,16 @@ import { UserService } from "../../../api/admin/services/userService";
 const learnInternDetail = async (req: Request, res: Response) => {
     try {
         const userId = req.userData.id;
+        const us = new UserService();
+
+        const student = await us.getOneStudent({ where: { user_id: userId }, relations: ['major'] });
+        if (!student) {
+            return res.status(400).json('Bạn không phải sinh viên của trường này');
+        }
         const sv = new StudentLearnInternService();
         const result = await sv.getOne({
             where: {
-                student_id: userId
+                student_id: student.id
             },
             relations: [
                 'board',

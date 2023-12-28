@@ -27,6 +27,9 @@ router.put('/business', manageAppController.updateBusiness);
 router.delete('/business', manageAppController.deleteSchool);
 router.get('/business', manageAppController.businesses);
 
+// school linked business
+router.get('/school-linked-business', manageAppController.schoolLinkedBusinesses);
+
 // --------------------------------------- admin school ----------------------------------
 
 // school

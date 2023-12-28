@@ -7,8 +7,9 @@ import { UserAccount } from "../../../database/entities/UserAccount";
 import { UserPerson } from "../../../database/entities/UserPerson";
 import { Business } from "../../../database/entities/Business";
 import { UserService } from "../services/userService";
-import { Not } from "typeorm";
+import { Like, Not } from "typeorm";
 import { hashPass } from "../../../common/helpers/common";
+import { FIlterSchoolLinkedBusiness } from "../interfaces/school-linked-business.interface";
 
 
 const getSchools = async (req: Request, res: Response) => {
@@ -212,6 +213,29 @@ const deleteBusinesses = async (req: Request, res: Response) => {
     }
 }
 
+const schoolLinkedBusinesses = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            status: Joi.bool().default(true),
+            search_text: Joi.string().optional(),
+            limit: Joi.number().default(10),
+            page: Joi.number().default(1),
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const filter: FIlterSchoolLinkedBusiness = value;
+
+        const ms = new ManageAppService();
+        const data = await ms.schoolLinkedBusinesses(filter);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
 
 export const manageAppController = {
     saveSchool,
@@ -222,4 +246,6 @@ export const manageAppController = {
     saveBusiness,
     updateBusiness,
     deleteBusinesses,
+
+    schoolLinkedBusinesses,
 }

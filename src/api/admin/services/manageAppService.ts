@@ -1,12 +1,16 @@
-import { Brackets, DeepPartial, FindOneOptions, In } from "typeorm";
+import { Brackets, DeepPartial, FindManyOptions, FindOneOptions, In } from "typeorm";
 import { School } from "../../../database/entities/School";
 import { AppDataSource } from "../../../ormconfig";
 import { Business } from "../../../database/entities/Business";
 import { FilterBusiness } from "../interfaces/business.interface";
+import { FIlterSchoolLinkedBusiness } from "../interfaces/school-linked-business.interface";
+import { SchoolLinkedBusiness } from "../../../database/entities/SchoolLinkedBusiness";
 
 export class ManageAppService {
     private schoolRes = AppDataSource.getRepository(School);
     private bussnessRes = AppDataSource.getRepository(Business);
+    private schoolLinkedBusinessRes = AppDataSource.getRepository(SchoolLinkedBusiness);
+
 
     createSchool(data: DeepPartial<School>) {
         return this.schoolRes.create(data);
@@ -20,7 +24,7 @@ export class ManageAppService {
         return await this.schoolRes.findOne(filter);
     }
 
-    async getAllSchool(filter?: FindOneOptions<School>) {
+    async getAllSchool(filter?: FindManyOptions<School>) {
         return await this.schoolRes.find(filter);
     }
 
@@ -59,6 +63,26 @@ export class ManageAppService {
         }
 
         const [items, total] = await qb.offset((page - 1) * limit).take(limit).getManyAndCount();
+        return { items, total };
+    }
+
+    async schoolLinkedBusinesses(filter: FIlterSchoolLinkedBusiness): Promise<{ items: School[], total: number }> {
+        const { page, limit, status, search_text } = filter;
+        const qb = await this.schoolRes
+            .createQueryBuilder('school')
+            .leftJoinAndSelect('school.schoolLinkedBusiness', 'linked')
+            .leftJoinAndSelect('linked.business', 'business')
+            .leftJoinAndSelect('business.user_person', 'userPerson')
+            .where('linked.status = :status', { status });
+
+        if (search_text) {
+            qb.andWhere(new Brackets((qb) => {
+                qb.orWhere('school.school_name like :search_text')
+                    .orWhere('userPerson.full_name like :search_text')
+            })).setParameters({ search_text: `%${search_text}%` })
+        }
+
+        const [items, total] = await qb.offset((page - 1) * limit).limit(limit).getManyAndCount();
         return { items, total };
     }
 }
