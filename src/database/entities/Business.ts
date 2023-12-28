@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn
 import { CodeBase } from "./CodeBase";
 import { UserPerson } from "./UserPerson";
 import { Job } from "./Job";
+import { SchoolLinkedBusiness } from "./SchoolLinkedBusiness";
 
 @Entity({ name: 'business' })
 export class Business extends CodeBase {
@@ -33,4 +34,7 @@ export class Business extends CodeBase {
 
     @OneToMany(() => Job, (job) => job.business)
     job?: Job[];
+
+    @OneToMany(() => SchoolLinkedBusiness, (schoolLinkedBusiness) => schoolLinkedBusiness.business)
+    schoolLinkedBusiness?: SchoolLinkedBusiness[];
 }
