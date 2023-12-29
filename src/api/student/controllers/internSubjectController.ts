@@ -67,7 +67,7 @@ const deleteLearnIntern = async (req: Request, res: Response) => {
     const learnInternId = parseInt(req.params.lid);
     const sv = new StudentLearnInternService();
     const result = await sv.delete({ student_id: student.id, id: learnInternId });
-    if (result.affected) {
+    if (!result.affected) {
         return res.status(401).json('Không tìm thấy phần đăng ký của bạn');
     }
     return res.status(200).json(result);
