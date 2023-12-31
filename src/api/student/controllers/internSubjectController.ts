@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import * as Joi from "joi";
 import { StudentLearnInternService } from "../services/studentLearnInternService";
 import { UserService } from "../../../api/admin/services/userService";
+import { InternSubjectService } from "../../admin/services/internSubjectService";
 
 // Student learn Intern
 const learnInternDetail = async (req: Request, res: Response) => {
@@ -44,9 +45,16 @@ const saveLearnIntern = async (req: Request, res: Response) => {
         }
         const internSubjectId = parseInt(req.params.id);
         const sv = new StudentLearnInternService();
+        const internSubjectService = new InternSubjectService()
+        const internSubject = await internSubjectService.getOne({ where: { id: internSubjectId } });
         const checkRegister = await sv.checkRegister(user.schoolId, internSubjectId, student);
         if (!checkRegister) {
             return res.status(400).json('Bạn không được phép đăng ký môn học này');
+        }
+
+        const isExistregister = await sv.isExistRegister(student.id, internSubject);
+        if (isExistregister) {
+            return res.status(400).json('bạn đã đăng ký môn thực tập kỳ này rồi, vui lòng không đăng ký lại');
         }
         const data = sv.create({ student_id: student.id, subject_id: internSubjectId });
         const result = await sv.save([data]);

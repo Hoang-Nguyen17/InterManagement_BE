@@ -1,8 +1,9 @@
 import { AppDataSource } from "../../../ormconfig";
 import { Brackets, DeepPartial, FindOneOptions, FindOptionsWhere } from "typeorm";
-import { StudentLearnIntern } from "../../../database/entities/StudentLearnIntern";
+import { RegistStatus, StudentLearnIntern } from "../../../database/entities/StudentLearnIntern";
 import { InternSubjectService } from "../../admin/services/internSubjectService";
-import { Student } from "src/database/entities/Student";
+import { Student } from "../../../database/entities/Student";
+import { InternSubject } from "../../../database/entities/InternSubject";
 
 
 export class StudentLearnInternService {
@@ -31,6 +32,19 @@ export class StudentLearnInternService {
 
     async delete(condition: FindOptionsWhere<StudentLearnIntern>) {
         return await this.stulearnInternRes.delete(condition);
+    }
+
+    async isExistRegister(studentId: number, internSubject: InternSubject) {
+        const data = await this.stulearnInternRes
+            .createQueryBuilder('learnIntern')
+            .leftJoin('learnIntern.student', 'student')
+            .leftJoin('learnIntern.internSubject', 'internSubject')
+            .where('student.id = :studentId', { studentId })
+            .andWhere('learnIntern.regist_status = :status', { status: RegistStatus.SUCCESSED })
+            .andWhere('internSubject.academic_year = :academicYear', { academicYear: internSubject.academic_year })
+            .andWhere('internSubject.semester = :semester', { semester: internSubject.semester })
+            .getOne();
+        return !!data;
     }
 
 
