@@ -96,4 +96,6 @@ export class Job extends CodeBase {
     
     @RelationCount((job: Job) =>job.applies)
     count_apply: number;
+
+    isApplied?: boolean;
 }

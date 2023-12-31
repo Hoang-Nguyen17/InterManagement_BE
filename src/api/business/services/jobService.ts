@@ -37,7 +37,7 @@ export class JobService {
     }
 
     async jobs(filter: FilterJob): Promise<{ items: Job[], total: number }> {
-        const { page, limit, businessId, search_text } = filter;
+        const { page, limit, businessId, search_text, studentId } = filter;
         const qb = await this.jobRes
             .createQueryBuilder('job')
             .innerJoinAndSelect('job.business', 'business')
@@ -45,7 +45,9 @@ export class JobService {
             .leftJoinAndSelect('job.position', 'position')
             .leftJoinAndSelect('job.jobSkills', 'jobSkills')
             .leftJoinAndSelect('jobSkills.skill', 'skill')
+            .leftJoin('job.applies', 'apply')
             .loadRelationCountAndMap('job.count_apply', 'job.applies')
+            .addSelect(['apply.id', 'apply.student_id']);
 
         if (businessId) {
             qb.andWhere('business.id = :businessId', { businessId });
@@ -58,9 +60,13 @@ export class JobService {
                     .orWhere('job.requirements LIKE :searchText')
             })).setParameters({ searchtext: search_text });
         }
-        console.log(qb.getQuery());
 
-        const [items, total] = await qb.offset((page - 1) * limit).take(limit).orderBy('job.createdAt', 'DESC').getManyAndCount();
+        const [items, total] = await qb.skip((page - 1) * limit).take(limit).orderBy('job.createdAt', 'DESC').getManyAndCount();
+        if (studentId) {
+            items.forEach((job: Job) => {
+                job.isApplied = job.applies.some((apply) => apply.student_id === studentId)
+            })
+        }
         return { items, total };
     }
 

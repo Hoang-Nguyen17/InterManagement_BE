@@ -9,6 +9,7 @@ import { WorkSpace, WorkType } from "../../../database/entities/Job";
 import { PositionService } from "../services/positionService";
 import { JobSkillService } from "../services/jobSkillService";
 import { SkillService } from "../services/skillService";
+import { UserService } from "../../admin/services/userService";
 
 // ---------------------------- job -------------------------------
 const saveJob = async (req: Request, res: Response) => {
@@ -87,6 +88,7 @@ const saveJob = async (req: Request, res: Response) => {
 
 const getJobs = async (req: Request, res: Response) => {
     try {
+        const id = req.userData.id;
         const schema = Joi.object({
             businessId: Joi.number().optional(),
             search_text: Joi.string().optional(),
@@ -96,8 +98,13 @@ const getJobs = async (req: Request, res: Response) => {
 
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
+        const userService = new UserService();
+        const student = await userService.getOneStudent({ where: { user_id: id } });
 
         const filter: FilterJob = value;
+        if (student) {
+            filter.studentId = student.id;
+        }
         const js = new JobService();
         const jobs = await js.jobs(filter);
         return res.status(200).json(jobs);
