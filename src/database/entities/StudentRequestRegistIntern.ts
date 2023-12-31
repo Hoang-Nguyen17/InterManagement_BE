@@ -27,7 +27,7 @@ export class StudentRequestRegistIntern extends CodeBase {
     @Column({ type: 'enum', enum: RequestStatus, default: RequestStatus.WAITTING })
     regist_submit_status: RequestStatus;
 
-    @Column({ length: 500 })
+    @Column({ length: 500, nullable: true })
     file: string;
 
     @ManyToOne(() => Student, (student) => student.id)
