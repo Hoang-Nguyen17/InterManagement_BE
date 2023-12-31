@@ -126,8 +126,15 @@ const getJobById = async (req: Request, res: Response) => {
                 'position',
                 'jobSkills',
                 'jobSkills.skill',
+                'applies'
             ]
         });
+        const id = req.userData.id;
+        const userService = new UserService();
+        const student = await userService.getOneStudent({ where: { user_id: id } });
+        if (student) {
+            job.isApplied = job.applies.some((apply) => apply.student_id === student.id)
+        }
         return res.status(200).json(job);
     } catch (e) {
         console.log(e);
