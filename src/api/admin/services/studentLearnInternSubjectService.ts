@@ -66,10 +66,10 @@ export class StudentLearInternService {
             })).setParameters({ search_text: `%${search_text}% ` });
         }
 
-        const data = await qb
-            .offset((page - 1) * limit)
-            .limit(limit)
+        const [items, total] = await qb
+            .skip((page - 1) * limit)
+            .take(limit)
             .getManyAndCount();
-        return data;
+        return {items, total};
     }
 }
