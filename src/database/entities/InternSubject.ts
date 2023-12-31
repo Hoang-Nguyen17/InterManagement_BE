@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn, OneToMany, RelationCount } from "typeorm";
 import { CodeBase } from "./CodeBase";
 import { Department } from "./Department";
 import { Teacher } from "./Teacher";
@@ -73,12 +73,9 @@ export class InternSubject extends CodeBase {
     })
     semester?: Semester;
 
-    @OneToOne(() => StudentLearnIntern, (studentLearnIntern) => studentLearnIntern.internSubject, {
-        createForeignKeyConstraints: false,
-    })
-    @JoinColumn({
-        name: 'id',
-        referencedColumnName: 'subject_id'
-    })
+    @OneToMany(() => StudentLearnIntern, (studentLearnIntern) => studentLearnIntern.internSubject)
     studentLearnIntern?: StudentLearnIntern;
+
+    @RelationCount((internSubject: InternSubject) =>internSubject.studentLearnIntern)
+    rest_count: number;
 }

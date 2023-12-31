@@ -37,6 +37,7 @@ export class InternSubjectService {
             .leftJoinAndSelect('subject.department', 'department')
             .leftJoinAndSelect('subject.academicYear', 'academicYear')
             .leftJoinAndSelect('subject.semester', 'semester')
+            .loadRelationCountAndMap('subject.rest_count', 'subject.studentLearnIntern')
 
         filter.academic_year && qb.andWhere('subject.academic_year = :academicYear', { academicYear: filter.academic_year });
         filter.semester_id && qb.andWhere('subject.semester_id = :semester', { semester: filter.semester_id });

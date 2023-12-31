@@ -22,6 +22,8 @@ const learnInternDetail = async (req: Request, res: Response) => {
             relations: [
                 'board',
                 'internSubject',
+                'internSubject.teacher',
+                'internSubject.teacher.user_person',
             ],
             order: {
                 createdAt: 'DESC'

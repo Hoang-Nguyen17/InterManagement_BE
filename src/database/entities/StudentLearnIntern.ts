@@ -54,7 +54,7 @@ export class StudentLearnIntern extends CodeBase {
     })
     student?: Student;
 
-    @OneToOne(() => InternSubject, (internSubject) => internSubject.id)
+    @ManyToOne(() => InternSubject, (internSubject) => internSubject.id)
     @JoinColumn({
         name: 'subject_id',
         referencedColumnName: 'id'
