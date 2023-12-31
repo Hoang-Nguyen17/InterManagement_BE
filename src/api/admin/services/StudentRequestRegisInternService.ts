@@ -43,6 +43,7 @@ export class StudentRequestRegistInternService {
             .where('request.school_id = :schoolId', { schoolId })
             .skip((page - 1) * limit)
             .take(limit);
-        return qb.getManyAndCount();
+        const [items, total] = await qb.getManyAndCount()
+        return { items, total };
     }
 }
