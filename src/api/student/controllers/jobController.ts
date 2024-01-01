@@ -30,7 +30,7 @@ const rateJob = async (req: Request, res: Response) => {
     });
 
     if (!result) {
-        return res.status(401).json('đánh giá job thất bại');
+        return res.status(400).json('đánh giá job thất bại');
     }
     const job = await jobService.averageRateJob(jobId);
     return res.status(200).json(job);

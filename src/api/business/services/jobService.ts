@@ -83,7 +83,7 @@ export class JobService {
             .groupBy('job.id')
             .getRawOne();
 
-        const jobUpdate = await this.getOneJob({ where: job.job_id });
+        const jobUpdate = await this.getOneJob({ where: { id: jobId } });
         jobUpdate.average_rate = parseFloat(job.AVERAGE_RATE_POINT)
         const result = await this.saveJob(jobUpdate);
         return result;
