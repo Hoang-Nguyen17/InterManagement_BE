@@ -37,4 +37,14 @@ export class RegularTodoService {
         const result = await this.regularTodoRes.update(where, data);
         return !!result.affected;
     }
+
+    async getRegularTodo (businessId: number) {
+        const data = await this.regularTodoRes
+            .createQueryBuilder('todo')
+            .leftJoinAndSelect('todo.student', 'student')
+            .leftJoinAndSelect('student.user_person', 'user_person')
+            .where('todo.business_id = :businessId', { businessId })
+            .getMany();
+        return data;
+    }
 }
