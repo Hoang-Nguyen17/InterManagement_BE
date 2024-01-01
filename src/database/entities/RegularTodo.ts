@@ -5,6 +5,7 @@ import { Teacher } from "./Teacher";
 import { Student } from "./Student";
 import { DetailConversation } from "./DetailConversation";
 import { DetailTodo } from "./DetailTodo";
+import { Business } from "./Business";
 
 @Entity({ name: 'regular_todo' })
 export class RegularTodo extends CodeBase {
@@ -15,14 +16,14 @@ export class RegularTodo extends CodeBase {
     student_id: number;
 
     @Column()
-    teacher_id: number;
+    business_id: number;
 
-    @ManyToOne(() => Teacher, (teacher) => teacher.id)
+    @ManyToOne(() => Business, (business) => business.id)
     @JoinColumn({
-        name: 'teacher_id',
+        name: 'business_id',
         referencedColumnName: 'id'
     })
-    teacher?: Teacher;
+    business?: Business;
 
     @ManyToOne(() => Student, (student) => student.id)
     @JoinColumn({

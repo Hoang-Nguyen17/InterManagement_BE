@@ -66,7 +66,4 @@ export class Teacher extends CodeBase {
 
     @OneToMany(() => Conversation, (conversation) => conversation.teacher)
     conversation?: Conversation[];
-
-    @OneToMany(() => RegularTodo, (regularTodo) => regularTodo.teacher)
-    regularTodo?: RegularTodo[];
 }
