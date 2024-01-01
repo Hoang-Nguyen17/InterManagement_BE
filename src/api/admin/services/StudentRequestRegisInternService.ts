@@ -41,7 +41,7 @@ export class StudentRequestRegistInternService {
     async requests(schoolId: number, page: number, limit: number) {
         const qb = this.requestRegistInternRes.createQueryBuilder('request')
             .leftJoinAndSelect('request.student', 'student')
-            .leftJoinAndSelect('student.student', 'user_person')
+            .leftJoinAndSelect('student.user_person', 'user_person')
             .addSelect(['user_person.id', 'user_person.image', 'user_person.email', 'user_person.full_name', 'user_person.phone'])
             .where('request.school_id = :schoolId', { schoolId })
             .skip((page - 1) * limit)

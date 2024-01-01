@@ -5,6 +5,7 @@ import { ApplyService } from "../services/applyService";
 import { JobService } from "../../business/services/jobService";
 import { SchoolService } from "../../admin/services/schoolService";
 import { StudentRequestRegistInternService } from "../../admin/services/StudentRequestRegisInternService";
+import { RequestStatus } from "../../../database/entities/StudentRequestRegistIntern";
 
 const requestRegisInterns = async (req: Request, res: Response) => {
     const { id } = req.userData;
@@ -33,9 +34,12 @@ const saveRequest = async (req: Request, res: Response) => {
         student_id: student.id,
         school_id: schoolId,
     })
-
-    const result = await sv.save(data);
-    return res.status(200).json(result);
+    const isExist = await sv.getOne({ where: data });
+    if (!isExist || isExist?.regist_submit_status === RequestStatus.REJECTED) {
+        const result = await sv.save(data);
+        return res.status(200).json(result);
+    }
+    return res.status(400).json('Bạn đã gữi yêu cầu thư giới thiệu');
 }
 
 const deleteRequest = async (req: Request, res: Response) => {
