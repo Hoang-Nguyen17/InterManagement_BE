@@ -49,17 +49,20 @@ const updateApply = async (req: Request, res: Response) => {
 
     apply.apply_status = value.apply_status;
     const result = await applyService.save(apply);
-    const regularTodoService = new RegularTodoService();
-    const regularTodo = regularTodoService.create({
-        student_id: result.student_id,
-        business_id: business.id,
-    })
-    await regularTodoService.save(regularTodo);
 
-    // make conversation
-    const conversationService = new ConversationService();
-    const conversation = conversationService.create({ student_id: result.student_id, business_id: business.id });
-    await conversationService.save(conversation);
+    if (apply.apply_status === AppliesStatus.ONBOARD) {
+        const regularTodoService = new RegularTodoService();
+        const regularTodo = regularTodoService.create({
+            student_id: result.student_id,
+            business_id: business.id,
+        })
+        await regularTodoService.save(regularTodo);
+    
+        // make conversation
+        const conversationService = new ConversationService();
+        const conversation = conversationService.create({ student_id: result.student_id, business_id: business.id });
+        await conversationService.save(conversation);
+    }
     return res.status(200).json(result);
 }
 export const ApplyController = {
