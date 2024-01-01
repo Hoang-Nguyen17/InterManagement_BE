@@ -4,6 +4,7 @@ import { UserPerson } from "./UserPerson";
 import { Job } from "./Job";
 import { SchoolLinkedBusiness } from "./SchoolLinkedBusiness";
 import { RegularTodo } from "./RegularTodo";
+import { Conversation } from "./Conversation";
 
 @Entity({ name: 'business' })
 export class Business extends CodeBase {
@@ -41,4 +42,7 @@ export class Business extends CodeBase {
 
     @OneToMany(() => RegularTodo, (regularTodo) => regularTodo.business)
     regularTodo?: RegularTodo[];
+
+    @OneToMany(() => Conversation, (conversation) => conversation.business)
+    conversation?: Conversation[];
 }

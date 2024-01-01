@@ -63,7 +63,4 @@ export class Teacher extends CodeBase {
 
     @OneToMany(() => ExaminationBoard, (examinationBoard) => examinationBoard.Asker)
     examinationBoardAsker?:ExaminationBoard[];
-
-    @OneToMany(() => Conversation, (conversation) => conversation.teacher)
-    conversation?: Conversation[];
 }
