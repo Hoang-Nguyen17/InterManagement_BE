@@ -77,9 +77,9 @@ const saveRegularTodo = async (req: Request, res: Response) => {
             end_date: Joi.date().required(),
             completed_status: Joi.string().valid(...Object.values(CompletedStatus)).optional(),
             out_of_expire: Joi.string().valid(...Object.values(StatusFinished)).optional(),
-            todoAppreciation: Joi.object({
-                content: Joi.string().required(),
-            }).optional(),
+            todoAppreciation: Joi.array().items(
+                Joi.string().required(),
+            ).optional(),
         })
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json({ detail: error.message });
@@ -93,10 +93,12 @@ const saveRegularTodo = async (req: Request, res: Response) => {
         }
         const todo = todoDetailService.create(value);
         const result = await todoDetailService.save(todo);
-        if (value.todoAppreciation) {
+        if (value?.todoAppreciation.length) {
             const todoAppreciationService = new TodoAppreciationService();
             await todoAppreciationService.delete({ todo_id: todo.id });
-            await todoAppreciationService.save(value.todoAppreciation);
+            value.todoAppreciation.forEach( async element => {
+                await todoAppreciationService.save(element);
+            });
         }
         return res.status(200).json(result);
     } catch (error) {
