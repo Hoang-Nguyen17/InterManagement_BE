@@ -63,6 +63,7 @@ app.use('/api/v1/business', require('./api/business'));
 app.use('/api/v1/student', require('./api/student'));
 app.use('/api/v1/teacher', require('./api/teacher'));
 app.use('/api/v1/user', require('./api/user'));
+app.use('/api/v1/chat', require('./api/chat'));
 
 const httpServer = http.createServer(app);
 
