@@ -67,7 +67,7 @@ router.delete('/school/:id/intern-subject', authInstance.verifyAdminSchool, inte
 
 // student learn intern subject
 router.get('/school/:id/learn-intern', authInstance.authAdmin, studentLearnInternController.getStudentLearnInternSubject);
-router.put('/school/:id/learn-intern/:lid', authInstance.authAdmin, studentLearnInternController.updateLearnIntern);
+router.put('/school/learn-intern/:id', authInstance.authAdmin, studentLearnInternController.updateLearnIntern);
 
 // academic year
 router.post('/school/:id/academic-year', authInstance.authAdmin, schoolController.saveAcademicYear);

@@ -27,7 +27,7 @@ const getStudentLearnInternSubject = async (req: Request, res: Response) => {
 
 const updateLearnIntern = async (req: Request, res: Response) => {
     const schoolId = req.userData.schoolId;
-    const learnInternId = parseInt(req.params.lid);
+    const learnInternId = parseInt(req.params.id);
     const schema = Joi.object({
         regist_status: Joi.string().valid(...Object.values(RegistStatus)).required(),
     })

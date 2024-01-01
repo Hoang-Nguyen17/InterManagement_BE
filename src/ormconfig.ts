@@ -2,7 +2,13 @@ import { DataSource } from "typeorm";
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const { MYSQL_ADDON_HOST, MYSQL_ADDON_PORT, MYSQL_ADDON_USER, MYSQL_ADDON_PASSWORD, MYSQL_ADDON_DB } = process.env;
+const { 
+    MYSQL_ADDON_HOST, 
+    MYSQL_ADDON_PORT, 
+    MYSQL_ADDON_USER, 
+    MYSQL_ADDON_PASSWORD, 
+    MYSQL_ADDON_DB, 
+} = process.env;
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -18,4 +24,8 @@ export const AppDataSource = new DataSource({
     ],
     migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
     subscribers: [],
+    ssl: {
+        minVersion: 'TLSv1.2',
+        rejectUnauthorized: true
+    },
 })
