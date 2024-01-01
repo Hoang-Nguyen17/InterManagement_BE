@@ -23,6 +23,8 @@ const applies = async (req: Request, res: Response) => {
     }
     const applyService = new ApplyService()
     const applies = await applyService.applies(business.id, page, limit);
+    const [items, total] = applies;
+    return res.status(200).json({ items, total});
 }
 
 const updateApply = async (req: Request, res: Response) => {

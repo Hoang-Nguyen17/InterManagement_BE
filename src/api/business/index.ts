@@ -9,7 +9,7 @@ import { regularTodoController } from './controllers/regularTodoController';
 
 // jobs
 router.post('/job', authInstance.auth, jobController.saveJob);
-router.get('/job', authInstance.auth, jobController.getJobs);
+router.post('/job-list', authInstance.auth, jobController.getJobs);
 router.get('/job/:id', authInstance.auth, jobController.getJobById);
 router.delete('/job', authInstance.auth, jobController.deleteJobs);
 

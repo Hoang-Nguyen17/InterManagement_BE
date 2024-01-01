@@ -44,7 +44,7 @@ export class ApplyService {
             .leftJoinAndSelect('apply.student', 'student')
             .leftJoinAndSelect('student.user_person', 'userPerson')
             .leftJoinAndSelect('apply.job', 'job')
-            .where('job.bussiness_id = :businessId', { businessId })
+            .where('job.business_id = :businessId', { businessId })
             .skip((page - 1) * limit)
             .take(limit)
             .orderBy('apply.createdAt', 'DESC');

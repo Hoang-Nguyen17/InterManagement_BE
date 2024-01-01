@@ -28,4 +28,5 @@ export const AppDataSource = new DataSource({
         minVersion: 'TLSv1.2',
         rejectUnauthorized: true
     },
+    connectTimeout: 20000
 })
