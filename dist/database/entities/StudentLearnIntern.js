@@ -9,13 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StudentLearnIntern = void 0;
+exports.StudentLearnIntern = exports.RegistStatus = exports.PassStatus = void 0;
 const typeorm_1 = require("typeorm");
 const CodeBase_1 = require("./CodeBase");
-const status_constant_1 = require("../../common/constants/status.constant");
 const ExaminationBoard_1 = require("./ExaminationBoard");
 const Student_1 = require("./Student");
 const InternSubject_1 = require("./InternSubject");
+var PassStatus;
+(function (PassStatus) {
+    PassStatus["FAILED"] = "FAILED";
+    PassStatus["STUDYING"] = "STUDYING";
+    PassStatus["PASSED"] = "PASSED";
+})(PassStatus || (exports.PassStatus = PassStatus = {}));
+var RegistStatus;
+(function (RegistStatus) {
+    RegistStatus["REGISTERING"] = "REGISTERING";
+    RegistStatus["REJECTED"] = "REJECTED";
+    RegistStatus["SUCCESSED"] = "SUCCESSED";
+})(RegistStatus || (exports.RegistStatus = RegistStatus = {}));
 let StudentLearnIntern = class StudentLearnIntern extends CodeBase_1.CodeBase {
 };
 exports.StudentLearnIntern = StudentLearnIntern;
@@ -32,12 +43,12 @@ __decorate([
     __metadata("design:type", Number)
 ], StudentLearnIntern.prototype, "score", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: status_constant_1.status.processing }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.Column)({ type: 'enum', enum: PassStatus, default: PassStatus.STUDYING }),
+    __metadata("design:type", String)
 ], StudentLearnIntern.prototype, "passed_status", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: status_constant_1.status.finished }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.Column)({ type: 'enum', enum: RegistStatus, default: RegistStatus.REGISTERING }),
+    __metadata("design:type", String)
 ], StudentLearnIntern.prototype, "regist_status", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
@@ -64,7 +75,7 @@ __decorate([
     __metadata("design:type", Student_1.Student)
 ], StudentLearnIntern.prototype, "student", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => InternSubject_1.InternSubject, (internSubject) => internSubject.id),
+    (0, typeorm_1.ManyToOne)(() => InternSubject_1.InternSubject, (internSubject) => internSubject.id),
     (0, typeorm_1.JoinColumn)({
         name: 'subject_id',
         referencedColumnName: 'id'

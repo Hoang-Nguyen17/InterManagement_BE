@@ -28,7 +28,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Administrator.prototype, "account_status", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], Administrator.prototype, "school_id", void 0);
 __decorate([

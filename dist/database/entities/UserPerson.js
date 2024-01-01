@@ -88,7 +88,7 @@ __decorate([
     __metadata("design:type", Business_1.Business)
 ], UserPerson.prototype, "business", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => Business_1.Business, (business) => business.user_id, {
+    (0, typeorm_1.OneToOne)(() => Student_1.Student, (student) => student.user_id, {
         createForeignKeyConstraints: false,
     }),
     (0, typeorm_1.JoinColumn)({

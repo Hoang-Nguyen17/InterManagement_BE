@@ -65,6 +65,10 @@ __decorate([
     __metadata("design:type", Date)
 ], InternSubject.prototype, "end_date", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'bool', default: true }),
+    __metadata("design:type", Boolean)
+], InternSubject.prototype, "is_open", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => Department_1.Department, (department) => department.id),
     (0, typeorm_1.JoinColumn)({
         name: 'department_id',
@@ -97,15 +101,13 @@ __decorate([
     __metadata("design:type", Semester_1.Semester)
 ], InternSubject.prototype, "semester", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => StudentLearnIntern_1.StudentLearnIntern, (studentLearnIntern) => studentLearnIntern.internSubject, {
-        createForeignKeyConstraints: false,
-    }),
-    (0, typeorm_1.JoinColumn)({
-        name: 'id',
-        referencedColumnName: 'subject_id'
-    }),
+    (0, typeorm_1.OneToMany)(() => StudentLearnIntern_1.StudentLearnIntern, (studentLearnIntern) => studentLearnIntern.internSubject),
     __metadata("design:type", StudentLearnIntern_1.StudentLearnIntern)
 ], InternSubject.prototype, "studentLearnIntern", void 0);
+__decorate([
+    (0, typeorm_1.RelationCount)((internSubject) => internSubject.studentLearnIntern),
+    __metadata("design:type", Number)
+], InternSubject.prototype, "rest_count", void 0);
 exports.InternSubject = InternSubject = __decorate([
     (0, typeorm_1.Entity)({ name: 'intern_subject' })
 ], InternSubject);

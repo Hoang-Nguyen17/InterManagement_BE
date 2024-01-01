@@ -8,23 +8,24 @@ const ormconfig_1 = require("../../../ormconfig");
 const Class_1 = require("../../../database/entities/Class");
 const InternSubject_1 = require("../../../database/entities/InternSubject");
 const Teacher_1 = require("../../../database/entities/Teacher");
-const userService_1 = require("./userService");
 const typeorm_1 = require("typeorm");
-const schoolService_1 = require("../../user/services/schoolService");
 const Major_1 = require("../../../database/entities/Major");
 const Student_1 = require("../../../database/entities/Student");
+const AcademicYear_1 = require("../../../database/entities/AcademicYear");
+const Semester_1 = require("../../../database/entities/Semester");
 class SchoolService {
     constructor() {
-        this.shcoolRepository = ormconfig_1.AppDataSource.getRepository(School_1.School);
+        this.schoolRepository = ormconfig_1.AppDataSource.getRepository(School_1.School);
         this.programRepository = ormconfig_1.AppDataSource.getRepository(Program_1.Program);
         this.departmentRepository = ormconfig_1.AppDataSource.getRepository(Department_1.Department);
+        this.majorRepository = ormconfig_1.AppDataSource.getRepository(Major_1.Major);
         this.classRepository = ormconfig_1.AppDataSource.getRepository(Class_1.Class);
         this.internSubjectRespository = ormconfig_1.AppDataSource.getRepository(InternSubject_1.InternSubject);
-        this.userService = new userService_1.UserService();
-        this.userSchoolService = new schoolService_1.SchoolService();
+        this.academicYearRes = ormconfig_1.AppDataSource.getRepository(AcademicYear_1.AcademicYear);
+        this.semesterRes = ormconfig_1.AppDataSource.getRepository(Semester_1.Semester);
         this.getSchool = async (schoolId) => {
             try {
-                const school = this.shcoolRepository
+                const school = this.schoolRepository
                     .createQueryBuilder('school')
                     .addSelect((subQuery) => {
                     return subQuery
@@ -74,6 +75,37 @@ class SchoolService {
             catch (e) {
                 throw e;
             }
+        };
+        this.getOneDepartment = async (filter) => {
+            return await this.departmentRepository.findOne(filter);
+        };
+        this.getOneProgram = async (filter) => {
+            return await this.programRepository.findOne(filter);
+        };
+        this.getOneClass = async (filter) => {
+            return await this.classRepository.findOne(filter);
+        };
+        this.getOneMajor = async (filter) => {
+            return await this.majorRepository.findOne(filter);
+        };
+        this.getOneInternSubject = async (filter) => {
+            return await this.internSubjectRespository.findOne(filter);
+        };
+        this.checkMajorBySchoolId = async (schoolId, majorId) => {
+            return await this.majorRepository
+                .createQueryBuilder('major')
+                .leftJoin('major.department', 'department')
+                .where('major.id = :majorId', { majorId })
+                .andWhere('department.school_id = :schoolId', { schoolId })
+                .getOne();
+        };
+        this.checkClassBySchoolId = async (schoolId, classId) => {
+            return await this.classRepository
+                .createQueryBuilder('Class')
+                .leftJoin('Class.department', 'department')
+                .where('Class.id = :classId', { classId })
+                .andWhere('department.school_id = :schoolId', { schoolId })
+                .getOne();
         };
         this.getPrograms = async (schoolId) => {
             try {
@@ -142,16 +174,14 @@ class SchoolService {
                 const data = this.departmentRepository.find({
                     where: {
                         school_id: schoolId,
-                    }
+                    },
+                    relations: ['teacher', 'teacher.user_person'],
                 });
                 return data;
             }
             catch (e) {
                 throw e;
             }
-        };
-        this.getOneDepartment = async (filter) => {
-            return await this.departmentRepository.findOne(filter);
         };
         this.getDepartment = async (schoolId, departmentId) => {
             try {
@@ -269,12 +299,73 @@ class SchoolService {
                 throw e;
             }
         };
-        this.getOneClass = async (filter) => {
-            return await this.classRepository.findOne(filter);
+        this.getOneAcademicYear = async (filter) => {
+            return await this.academicYearRes.findOne(filter);
         };
-        this.getOneInternSubject = async (filter) => {
-            return await this.internSubjectRespository.findOne(filter);
+        this.getOneSemester = async (filter) => {
+            return await this.academicYearRes.findOne(filter);
         };
+    }
+    createMajor(data) {
+        return this.majorRepository.create(data);
+    }
+    async saveMajor(data) {
+        return await this.majorRepository.save(data);
+    }
+    async getAllMajor(filter) {
+        return await this.majorRepository.find(filter);
+    }
+    async softDeleteMajor(ids) {
+        return await this.majorRepository.softDelete({ id: (0, typeorm_1.In)(ids) });
+    }
+    async majors(filter) {
+        const { page, limit, search_text, department_id, schoolId } = filter;
+        const qb = await this.majorRepository
+            .createQueryBuilder('major')
+            .leftJoinAndSelect('major.department', 'department')
+            .where('department.school_id = :schoolId', { schoolId: schoolId });
+        if (search_text) {
+            qb.andWhere(new typeorm_1.Brackets((qb) => {
+                qb.orWhere('major.major_name LIKE :search_text');
+            })).setParameter(search_text, `%${search_text}%`);
+        }
+        if (department_id) {
+            qb.andWhere('department.id = :departmentId', { departmentId: department_id });
+        }
+        const [items, total] = await qb.offset((page - 1) * limit).take(limit).getManyAndCount();
+        return { items, total };
+    }
+    createAcademicYear(data) {
+        return this.academicYearRes.create(data);
+    }
+    async saveAcademicYear(data) {
+        return await this.academicYearRes.save(data);
+    }
+    async getAllAcademicYear(filter) {
+        return await this.academicYearRes.find(filter);
+    }
+    async softDeleteAcademicYear(ids) {
+        return await this.academicYearRes.softDelete({ id: (0, typeorm_1.In)(ids) });
+    }
+    async academicYears(filter) {
+        const { page, limit, schoolId } = filter;
+        const qb = await this.academicYearRes
+            .createQueryBuilder('academicYear')
+            .where('academicYear.school_id = :schoolId', { schoolId: schoolId });
+        const [items, total] = await qb.offset((page - 1) * limit).take(limit).orderBy('academicYear.current_year', 'DESC').getManyAndCount();
+        return { items, total };
+    }
+    createSemester(data) {
+        return this.semesterRes.create(data);
+    }
+    async saveSemester(data) {
+        return await this.semesterRes.save(data);
+    }
+    async getAllSemester(filter) {
+        return await this.semesterRes.find(filter);
+    }
+    async softDeleteSemester(ids) {
+        return await this.semesterRes.softDelete({ id: (0, typeorm_1.In)(ids) });
     }
 }
 exports.SchoolService = SchoolService;

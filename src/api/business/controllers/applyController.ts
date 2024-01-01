@@ -4,6 +4,7 @@ import { BusinessService } from "../services/businessService";
 import { ApplyService } from "../services/applyService";
 import { AppliesStatus } from "../../../database/entities/Applies";
 import { RegularTodoService } from "../services/regularTodoService";
+import { ConversationService } from "../../chat/services/conversationService";
 
 const applies = async (req: Request, res: Response) => {
     const { id } = req.userData;
@@ -52,6 +53,11 @@ const updateApply = async (req: Request, res: Response) => {
         business_id: business.id,
     })
     await regularTodoService.save(regularTodo);
+
+    // make conversation
+    const conversationService = new ConversationService();
+    const conversation = conversationService.create({ student_id: result.student_id, business_id: business.id });
+    await conversationService.save(conversation);
     return res.status(200).json(result);
 }
 export const ApplyController = {

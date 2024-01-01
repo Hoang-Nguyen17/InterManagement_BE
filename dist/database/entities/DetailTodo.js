@@ -9,12 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DetailTodo = void 0;
+exports.DetailTodo = exports.StatusFinished = exports.CompletedStatus = void 0;
 const typeorm_1 = require("typeorm");
 const CodeBase_1 = require("./CodeBase");
-const status_constant_1 = require("../../common/constants/status.constant");
 const RegularTodo_1 = require("./RegularTodo");
 const TodoAppreciation_1 = require("./TodoAppreciation");
+var CompletedStatus;
+(function (CompletedStatus) {
+    CompletedStatus["FAILED"] = "FAILED";
+    CompletedStatus["FINISHED"] = "FINISHED";
+    CompletedStatus["PROCESSING"] = "PROCESSING";
+})(CompletedStatus || (exports.CompletedStatus = CompletedStatus = {}));
+var StatusFinished;
+(function (StatusFinished) {
+    StatusFinished["OUT_OF_EXPIRE"] = "OUT_OF_EXPIRE";
+    StatusFinished["ON_TIME"] = "ON_TIME";
+})(StatusFinished || (exports.StatusFinished = StatusFinished = {}));
 let DetailTodo = class DetailTodo extends CodeBase_1.CodeBase {
 };
 exports.DetailTodo = DetailTodo;
@@ -35,12 +45,12 @@ __decorate([
     __metadata("design:type", Date)
 ], DetailTodo.prototype, "end_date", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: status_constant_1.status.processing }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.Column)({ type: 'enum', enum: CompletedStatus, default: CompletedStatus.PROCESSING }),
+    __metadata("design:type", String)
 ], DetailTodo.prototype, "completed_status", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: null, nullable: true }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.Column)({ type: 'enum', enum: StatusFinished, nullable: true }),
+    __metadata("design:type", String)
 ], DetailTodo.prototype, "out_of_expire", void 0);
 __decorate([
     (0, typeorm_1.Column)(),

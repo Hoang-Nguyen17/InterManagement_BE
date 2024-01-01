@@ -7,6 +7,9 @@ const typeorm_1 = require("typeorm");
 class BusinessService {
     constructor() {
         this.businessRepository = ormconfig_1.AppDataSource.getRepository(Business_1.Business);
+        this.getOne = async (filter) => {
+            return await this.businessRepository.findOne(filter);
+        };
         this.getBusiness = async (filter) => {
             try {
                 const query = this.businessRepository
@@ -56,6 +59,15 @@ class BusinessService {
                 throw e;
             }
         };
+    }
+    create(data) {
+        return this.businessRepository.create(data);
+    }
+    async save(data) {
+        return await this.businessRepository.save(data);
+    }
+    async getAll(filter) {
+        return await this.businessRepository.find(filter);
     }
 }
 exports.BusinessService = BusinessService;

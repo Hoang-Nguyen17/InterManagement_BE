@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const CodeBase_1 = require("./CodeBase");
 const InternSubject_1 = require("./InternSubject");
 const ExaminationBoard_1 = require("./ExaminationBoard");
+const School_1 = require("./School");
 let Semester = class Semester extends CodeBase_1.CodeBase {
 };
 exports.Semester = Semester;
@@ -26,6 +27,10 @@ __decorate([
     __metadata("design:type", String)
 ], Semester.prototype, "semester_name", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Semester.prototype, "school_id", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => InternSubject_1.InternSubject, (internSubject) => internSubject.semester),
     __metadata("design:type", Array)
 ], Semester.prototype, "internSubject", void 0);
@@ -33,6 +38,14 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => ExaminationBoard_1.ExaminationBoard, (examinationBoard) => examinationBoard.semester),
     __metadata("design:type", Array)
 ], Semester.prototype, "examinationBoard", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => School_1.School, (school) => school.id),
+    (0, typeorm_1.JoinColumn)({
+        name: 'school_id',
+        referencedColumnName: 'id',
+    }),
+    __metadata("design:type", School_1.School)
+], Semester.prototype, "school", void 0);
 exports.Semester = Semester = __decorate([
     (0, typeorm_1.Entity)({ name: 'semester' })
 ], Semester);

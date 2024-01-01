@@ -33,4 +33,25 @@ export class ConversationService {
         const result = await this.conversationRes.update(where, data);
         return !!result.affected;
     }
+
+    async conversations(businessId: number = null, studentId: number = null) {
+        const qb = this.conversationRes
+            .createQueryBuilder('conversation')
+            .leftJoinAndSelect('conversation.student', 'student')
+            .leftJoinAndSelect('student.user_person', 'userStudent')
+            .leftJoinAndSelect('conversation.business', 'business')
+            .leftJoinAndSelect('business.user_person', 'userBusiness')
+            .leftJoin('conversation.detailConversation', 'message')
+
+        if (businessId) {
+            qb.andWhere('conversation.business_id = :businessId', { businessId })
+        }
+        if (studentId) {
+            qb.andWhere('conversation.student_id = :studentId', { studentId })
+        }
+
+        qb.orderBy('message.createdAt', 'DESC')
+        const data = await qb.getMany();
+        return data;
+    }
 }

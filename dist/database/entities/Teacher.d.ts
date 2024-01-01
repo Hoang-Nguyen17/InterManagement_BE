@@ -5,8 +5,6 @@ import { Department } from "./Department";
 import { Class } from "./Class";
 import { InternSubject } from "./InternSubject";
 import { ExaminationBoard } from "./ExaminationBoard";
-import { Conversation } from "./Conversation";
-import { RegularTodo } from "./RegularTodo";
 export declare class Teacher extends CodeBase {
     id: number;
     user_id: number;
@@ -23,6 +21,4 @@ export declare class Teacher extends CodeBase {
     examinationBoardPresident?: ExaminationBoard[];
     examinationBoardSecretary?: ExaminationBoard[];
     examinationBoardAsker?: ExaminationBoard[];
-    conversation?: Conversation[];
-    regularTodo?: RegularTodo[];
 }

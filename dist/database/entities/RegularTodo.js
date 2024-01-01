@@ -12,9 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegularTodo = void 0;
 const typeorm_1 = require("typeorm");
 const CodeBase_1 = require("./CodeBase");
-const Teacher_1 = require("./Teacher");
 const Student_1 = require("./Student");
 const DetailTodo_1 = require("./DetailTodo");
+const Business_1 = require("./Business");
 let RegularTodo = class RegularTodo extends CodeBase_1.CodeBase {
 };
 exports.RegularTodo = RegularTodo;
@@ -29,15 +29,15 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
-], RegularTodo.prototype, "teacher_id", void 0);
+], RegularTodo.prototype, "business_id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Teacher_1.Teacher, (teacher) => teacher.id),
+    (0, typeorm_1.ManyToOne)(() => Business_1.Business, (business) => business.id),
     (0, typeorm_1.JoinColumn)({
-        name: 'teacher_id',
+        name: 'business_id',
         referencedColumnName: 'id'
     }),
-    __metadata("design:type", Teacher_1.Teacher)
-], RegularTodo.prototype, "teacher", void 0);
+    __metadata("design:type", Business_1.Business)
+], RegularTodo.prototype, "business", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Student_1.Student, (student) => student.id),
     (0, typeorm_1.JoinColumn)({

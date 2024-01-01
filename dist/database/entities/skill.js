@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Skill = void 0;
 const typeorm_1 = require("typeorm");
 const CodeBase_1 = require("./CodeBase");
-const Job_1 = require("./Job");
+const JobSkill_1 = require("./JobSkill");
 let Skill = class Skill extends CodeBase_1.CodeBase {
 };
 exports.Skill = Skill;
@@ -21,21 +21,13 @@ __decorate([
     __metadata("design:type", Number)
 ], Skill.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'nvarchar', length: 20 }),
+    (0, typeorm_1.Column)({ type: 'nvarchar', length: 100 }),
     __metadata("design:type", String)
 ], Skill.prototype, "skill_name", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Skill.prototype, "job_id", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Job_1.Job, (job) => job.id),
-    (0, typeorm_1.JoinColumn)({
-        name: 'job_id',
-        referencedColumnName: 'id'
-    }),
-    __metadata("design:type", Job_1.Job)
-], Skill.prototype, "job", void 0);
+    (0, typeorm_1.OneToMany)(() => JobSkill_1.JobSkill, (jobSkill) => jobSkill.skill),
+    __metadata("design:type", Array)
+], Skill.prototype, "jobSkills", void 0);
 exports.Skill = Skill = __decorate([
     (0, typeorm_1.Entity)({ name: 'skill' })
 ], Skill);

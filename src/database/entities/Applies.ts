@@ -13,7 +13,6 @@ export enum AppliesStatus {
 }
 
 @Entity({ name: 'applies' })
-@Index(['job_id', 'student_id'], { unique: true })
 export class Applies extends CodeBase {
     @PrimaryGeneratedColumn()
     id: number;

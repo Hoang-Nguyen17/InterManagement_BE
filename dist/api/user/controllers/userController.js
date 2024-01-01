@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userController = void 0;
 const userService_1 = require("../services/userService");
 const common_1 = require("../../../common/helpers/common");
+const permisstion_constant_1 = require("../../../common/constants/permisstion.constant");
 const Joi = require('joi');
 const login = async (req, res) => {
     try {
@@ -15,9 +16,9 @@ const login = async (req, res) => {
             return res.status(400).json({ detail: error.message });
         const { username, pass } = value;
         const us = new userService_1.UserService();
-        const { result, schoolId } = await us.login(username, pass);
-        if (!result)
-            return res.status(404).json({ detail: 'Đăng nhập thất bại, không tìm thấy tài khoản' });
+        const { result, schoolId = 0 } = await us.login(username, pass);
+        if (!(result && (result.permission_id === permisstion_constant_1.PermissionConstants.MANAGE_APP || result.permission_id === permisstion_constant_1.PermissionConstants.BUSINESS || schoolId)))
+            return res.status(400).json({ detail: 'Đăng nhập thất bại, không tìm thấy tài khoản' });
         delete result.pass;
         const returnData = {
             user: result,

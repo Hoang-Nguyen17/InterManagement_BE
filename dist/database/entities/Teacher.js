@@ -18,8 +18,6 @@ const Department_1 = require("./Department");
 const Class_1 = require("./Class");
 const InternSubject_1 = require("./InternSubject");
 const ExaminationBoard_1 = require("./ExaminationBoard");
-const Conversation_1 = require("./Conversation");
-const RegularTodo_1 = require("./RegularTodo");
 let Teacher = class Teacher extends CodeBase_1.CodeBase {
 };
 exports.Teacher = Teacher;
@@ -91,14 +89,6 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => ExaminationBoard_1.ExaminationBoard, (examinationBoard) => examinationBoard.Asker),
     __metadata("design:type", Array)
 ], Teacher.prototype, "examinationBoardAsker", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => Conversation_1.Conversation, (conversation) => conversation.teacher),
-    __metadata("design:type", Array)
-], Teacher.prototype, "conversation", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => RegularTodo_1.RegularTodo, (regularTodo) => regularTodo.teacher),
-    __metadata("design:type", Array)
-], Teacher.prototype, "regularTodo", void 0);
 exports.Teacher = Teacher = __decorate([
     (0, typeorm_1.Entity)({ name: 'teacher' })
 ], Teacher);

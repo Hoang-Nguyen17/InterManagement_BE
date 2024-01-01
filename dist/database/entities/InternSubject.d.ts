@@ -16,9 +16,11 @@ export declare class InternSubject extends CodeBase {
     semester_id: number;
     start_date: Date;
     end_date: Date;
+    is_open: boolean;
     department?: Department;
     teacher?: Teacher;
     academicYear?: AcademicYear;
     semester?: Semester;
     studentLearnIntern?: StudentLearnIntern;
+    rest_count: number;
 }

@@ -54,8 +54,12 @@ const saveApply = async (req: Request, res: Response) => {
         ...value,
         student_id: student.id,
     })
+    const isExist = await applyService.getOne({ where: apply });
+    if (isExist) {
+        return res.status(400).json('Bạn đã apply vào job này rồi');
+    }
     const result = await applyService.save(apply);
-    
+
     return res.status(200).json(result);
 }
 

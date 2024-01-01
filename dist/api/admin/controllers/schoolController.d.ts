@@ -11,8 +11,17 @@ export declare const schoolController: {
     saveDepartment: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     updateDepartment: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     deleteDepartment: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    saveMajor: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    getMajors: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    deleteMajors: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     saveClass: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     updateClass: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     getClasses: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     deleteClass: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    saveAcademicYear: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    getAcademicYear: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    deleteAcademicYear: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    saveSemester: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    getSemester: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    deleteSemester: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
 };

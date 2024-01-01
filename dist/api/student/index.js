@@ -1,8 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
+const auth_1 = require("../../common/helpers/auth");
 const router = express.Router();
-const studentLearnInternSubjectController_1 = require("../admin/controllers/studentLearnInternSubjectController");
-router.post('/signup-intern-subject/', studentLearnInternSubjectController_1.studentLearnInternController.saveStudentLearnInternSubject);
+const authInstance = new auth_1.default();
+const internSubjectController_1 = require("./controllers/internSubjectController");
+const applyController_1 = require("./controllers/applyController");
+const jobController_1 = require("./controllers/jobController");
+const requestRegisInternController_1 = require("./controllers/requestRegisInternController");
+const regularTodoController_1 = require("./controllers/regularTodoController");
+router.get('/introducing-letter', authInstance.auth, requestRegisInternController_1.StudentRequestRegistIntern.requestRegisInterns);
+router.post('/introducing-letter', authInstance.auth, requestRegisInternController_1.StudentRequestRegistIntern.saveRequest);
+router.delete('/introducing-letter/:id', authInstance.auth, requestRegisInternController_1.StudentRequestRegistIntern.deleteRequest);
+router.get('/intern-subject/learn-intern', authInstance.auth, internSubjectController_1.InternSubjectController.learnInternDetail);
+router.post('/intern-subject/:id/learn-intern', authInstance.auth, internSubjectController_1.InternSubjectController.saveLearnIntern);
+router.delete('/intern-subject/:id/learn-intern/:lid', authInstance.auth, internSubjectController_1.InternSubjectController.deleteLearnIntern);
+router.get('/apply', authInstance.auth, applyController_1.ApplyController.applies);
+router.post('/apply', authInstance.auth, applyController_1.ApplyController.saveApply);
+router.delete('/apply/:id', authInstance.auth, applyController_1.ApplyController.deleteApply);
+router.put('/job/:id/rate_point', authInstance.auth, jobController_1.JobController.rateJob);
+router.put('/job/:id/add_view', authInstance.auth, jobController_1.JobController.addView);
+router.get('/regular-todo', authInstance.auth, regularTodoController_1.regularTodoController.getRegularTododetail);
+router.put('/regular-todo/detail-todo/:id', authInstance.auth, regularTodoController_1.regularTodoController.updateDetailTodo);
 module.exports = router;
 //# sourceMappingURL=index.js.map

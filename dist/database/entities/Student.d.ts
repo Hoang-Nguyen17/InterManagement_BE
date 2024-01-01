@@ -13,6 +13,7 @@ import { Notice } from "./Notice";
 import { Report } from "./Report";
 import { Conversation } from "./Conversation";
 import { RegularTodo } from "./RegularTodo";
+import { Applies } from "./Applies";
 export declare class Student extends CodeBase {
     id: number;
     user_id: number;
@@ -35,4 +36,5 @@ export declare class Student extends CodeBase {
     report?: Report[];
     conversation?: Conversation[];
     regularTodo?: RegularTodo[];
+    applies?: Applies[];
 }

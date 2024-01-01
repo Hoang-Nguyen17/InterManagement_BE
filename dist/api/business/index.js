@@ -1,7 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
+const auth_1 = require("../../common/helpers/auth");
 const router = express.Router();
-const businessController = require("./controllers/businessController");
+const authInstance = new auth_1.default();
+const jobController_1 = require("./controllers/jobController");
+const applyController_1 = require("./controllers/applyController");
+const regularTodoController_1 = require("./controllers/regularTodoController");
+router.post('/job', authInstance.auth, jobController_1.jobController.saveJob);
+router.get('/job', authInstance.auth, jobController_1.jobController.getJobs);
+router.get('/job/:id', authInstance.auth, jobController_1.jobController.getJobById);
+router.delete('/job', authInstance.auth, jobController_1.jobController.deleteJobs);
+router.get('/position', authInstance.auth, jobController_1.jobController.getPosition);
+router.post('/position', authInstance.auth, jobController_1.jobController.savePosition);
+router.get('/skill', authInstance.auth, jobController_1.jobController.getSkills);
+router.post('/skill', authInstance.auth, jobController_1.jobController.saveSkill);
+router.get('/apply', authInstance.auth, applyController_1.ApplyController.applies);
+router.post('/apply/:id', authInstance.auth, applyController_1.ApplyController.updateApply);
+router.get('/regular-todo', authInstance.auth, regularTodoController_1.regularTodoController.getRegularTodos);
+router.get('/regular-todo/:id', authInstance.auth, regularTodoController_1.regularTodoController.getRegularTododetail);
+router.post('/regular-todo/:id/todo', authInstance.auth, regularTodoController_1.regularTodoController.saveRegularTodo);
 module.exports = router;
 //# sourceMappingURL=index.js.map

@@ -14,6 +14,9 @@ const typeorm_1 = require("typeorm");
 const CodeBase_1 = require("./CodeBase");
 const UserPerson_1 = require("./UserPerson");
 const Job_1 = require("./Job");
+const SchoolLinkedBusiness_1 = require("./SchoolLinkedBusiness");
+const RegularTodo_1 = require("./RegularTodo");
+const Conversation_1 = require("./Conversation");
 let Business = class Business extends CodeBase_1.CodeBase {
 };
 exports.Business = Business;
@@ -53,6 +56,18 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => Job_1.Job, (job) => job.business),
     __metadata("design:type", Array)
 ], Business.prototype, "job", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => SchoolLinkedBusiness_1.SchoolLinkedBusiness, (schoolLinkedBusiness) => schoolLinkedBusiness.business),
+    __metadata("design:type", Array)
+], Business.prototype, "schoolLinkedBusiness", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => RegularTodo_1.RegularTodo, (regularTodo) => regularTodo.business),
+    __metadata("design:type", Array)
+], Business.prototype, "regularTodo", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Conversation_1.Conversation, (conversation) => conversation.business),
+    __metadata("design:type", Array)
+], Business.prototype, "conversation", void 0);
 exports.Business = Business = __decorate([
     (0, typeorm_1.Entity)({ name: 'business' })
 ], Business);

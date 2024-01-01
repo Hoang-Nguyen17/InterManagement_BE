@@ -30,10 +30,6 @@ __decorate([
     __metadata("design:type", Number)
 ], UserAccount.prototype, "permission_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'mediumtext', nullable: true }),
-    __metadata("design:type", String)
-], UserAccount.prototype, "token", void 0);
-__decorate([
     (0, typeorm_1.OneToOne)(() => UserPerson_1.UserPerson, (userPerson) => userPerson.username, {
         createForeignKeyConstraints: false,
     }),

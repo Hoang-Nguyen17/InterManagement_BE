@@ -26,6 +26,7 @@ const Notice_1 = require("./Notice");
 const Report_1 = require("./Report");
 const Conversation_1 = require("./Conversation");
 const RegularTodo_1 = require("./RegularTodo");
+const Applies_1 = require("./Applies");
 let Student = class Student extends CodeBase_1.CodeBase {
 };
 exports.Student = Student;
@@ -129,6 +130,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => RegularTodo_1.RegularTodo, (regularTodo) => regularTodo.student),
     __metadata("design:type", Array)
 ], Student.prototype, "regularTodo", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Applies_1.Applies, (applies) => applies.student),
+    __metadata("design:type", Array)
+], Student.prototype, "applies", void 0);
 exports.Student = Student = __decorate([
     (0, typeorm_1.Entity)({ name: 'student' })
 ], Student);

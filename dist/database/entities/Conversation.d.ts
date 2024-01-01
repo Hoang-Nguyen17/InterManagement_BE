@@ -1,12 +1,12 @@
 import { CodeBase } from "./CodeBase";
-import { Teacher } from "./Teacher";
 import { Student } from "./Student";
 import { DetailConversation } from "./DetailConversation";
+import { Business } from "./Business";
 export declare class Conversation extends CodeBase {
     id: number;
     student_id: number;
-    teacher_id: number;
-    teacher?: Teacher;
+    business_id: number;
+    business?: Business;
     student?: Student;
     detailConversation?: DetailConversation[];
 }

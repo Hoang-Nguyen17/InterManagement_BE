@@ -22,7 +22,14 @@ class UserService {
                         username: username,
                         pass: (0, common_1.hashPass)(pass),
                     },
-                    relations: ['permission', 'user_person', 'user_person.teacher', 'user_person.student', 'user_person.business', 'user_person.administrator'],
+                    relations: [
+                        'permission',
+                        'user_person',
+                        'user_person.teacher',
+                        'user_person.student',
+                        'user_person.business',
+                        'user_person.administrator'
+                    ],
                 });
                 const user = result?.user_person;
                 let schoolId = user?.administrator?.school_id ?? null;
@@ -41,7 +48,7 @@ class UserService {
             }
         };
         this.getProfileById = async (id) => {
-            const data = await this.userPersonRepository.findOne({ where: { id: id }, relations: ['teacher', 'administrator', 'business', 'student'] });
+            const data = await this.userPersonRepository.findOne({ where: { id: id }, relations: ['teacher', 'administrator', 'business', 'student', 'student.major', 'teacher.department'] });
             return data;
         };
         this.isExistsEmail = async (email) => {

@@ -15,6 +15,10 @@ const CodeBase_1 = require("./CodeBase");
 const Program_1 = require("./Program");
 const Administrator_1 = require("./Administrator");
 const Department_1 = require("./Department");
+const AcademicYear_1 = require("./AcademicYear");
+const Semester_1 = require("./Semester");
+const StudentRequestRegistIntern_1 = require("./StudentRequestRegistIntern");
+const SchoolLinkedBusiness_1 = require("./SchoolLinkedBusiness");
 let School = class School extends CodeBase_1.CodeBase {
 };
 exports.School = School;
@@ -26,6 +30,14 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'nvarchar', length: 50 }),
     __metadata("design:type", String)
 ], School.prototype, "school_name", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'nvarchar', length: 50 }),
+    __metadata("design:type", String)
+], School.prototype, "shorthand_name", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'nvarchar', length: 500, nullable: true }),
+    __metadata("design:type", String)
+], School.prototype, "avatar", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Date)
@@ -46,6 +58,22 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => Department_1.Department, (department) => department.school),
     __metadata("design:type", Array)
 ], School.prototype, "department", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => AcademicYear_1.AcademicYear, (academicYear) => academicYear.school),
+    __metadata("design:type", Array)
+], School.prototype, "academicYear", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Semester_1.Semester, (semesters) => semesters.school),
+    __metadata("design:type", Array)
+], School.prototype, "semesters", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => StudentRequestRegistIntern_1.StudentRequestRegistIntern, (studentRequestRegistIntern) => studentRequestRegistIntern.school),
+    __metadata("design:type", Array)
+], School.prototype, "studentRequestRegistIntern", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => SchoolLinkedBusiness_1.SchoolLinkedBusiness, (schoolLinkedBusiness) => schoolLinkedBusiness.school),
+    __metadata("design:type", Array)
+], School.prototype, "schoolLinkedBusiness", void 0);
 exports.School = School = __decorate([
     (0, typeorm_1.Entity)({ name: 'school' })
 ], School);

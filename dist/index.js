@@ -14,7 +14,7 @@ dotenv.config();
 const { PORT } = process.env;
 const app = express();
 const corsOptions = {
-    origin: 'http://localhost:8080',
+    origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'origin, authorization, access-token, content-type',
     credentials: true,
@@ -36,11 +36,12 @@ app.use(session({
     saveUninitialized: true,
     cookie: { httpOnly: true, secure: false, sameSite: 'none' },
 }));
-app.use('/admin', require('./api/admin'));
-app.use('/business', require('./api/business'));
-app.use('/student', require('./api/student'));
-app.use('/teacher', require('./api/teacher'));
-app.use('/user', require('./api/user'));
+app.use('/api/v1/admin', require('./api/admin'));
+app.use('/api/v1/business', require('./api/business'));
+app.use('/api/v1/student', require('./api/student'));
+app.use('/api/v1/teacher', require('./api/teacher'));
+app.use('/api/v1/user', require('./api/user'));
+app.use('/api/v1/chat', require('./api/chat'));
 const httpServer = http.createServer(app);
 let io = new socket_io_1.Server(httpServer, { cors: corsOptions });
 global.io = io;
