@@ -8,6 +8,7 @@ import * as morgan from 'morgan';
 import { Server } from 'socket.io';
 import * as dotenv from 'dotenv'
 import { AppDataSource } from './ormconfig';
+import { chatController } from './api/chat/controllers/chatController';
 dotenv.config()
 
 const { PORT } = process.env;
@@ -77,11 +78,15 @@ global.io = io;
 AppDataSource.initialize()
     .then(() => {
         httpServer.listen(PORT, async function () {
-            // const cs = new ChatService();
-            // cs.deleteAllSocketData();
+            io.on("connection", (socket) => {
+
+                chatController.sendMessage(socket, io);
+            
+                socket.on("disconnect", () => {
+                    console.log("User disconnected")
+                })
+            })
             console.log('Connected ' + PORT + ' port!');
         });
-
-        // io = require('./chat/io');
     })
     .catch((error) => console.log(error));
