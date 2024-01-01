@@ -3,6 +3,7 @@ import * as Joi from "joi";
 import { BusinessService } from "../services/businessService";
 import { ApplyService } from "../services/applyService";
 import { AppliesStatus } from "../../../database/entities/Applies";
+import { RegularTodoService } from "../services/regularTodoService";
 
 const applies = async (req: Request, res: Response) => {
     const { id } = req.userData;
@@ -45,6 +46,12 @@ const updateApply = async (req: Request, res: Response) => {
 
     apply.apply_status = value.apply_status;
     const result = await applyService.save(apply);
+    const regularTodoService = new RegularTodoService();
+    const regularTodo = regularTodoService.create({
+        student_id: result.student_id,
+        business_id: business.id,
+    })
+    await regularTodoService.save(regularTodo);
     return res.status(200).json(result);
 }
 export const ApplyController = {
