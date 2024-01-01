@@ -1,9 +1,18 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn, OneToMany } from "typeorm";
 import { CodeBase } from "./CodeBase";
-import { statusFinished, status } from "../../common/constants/status.constant";
 import { RegularTodo } from "./RegularTodo";
 import { TodoAppreciation } from "./TodoAppreciation";
 
+export enum CompletedStatus {
+    FAILED = 'FAILED',
+    FINISHED = 'FINISHED',
+    PROCESSING = 'PROCESSING',
+}
+
+export enum StatusFinished {
+    OUT_OF_EXPIRE = 'OUT_OF_EXPIRE',
+    ON_TIME = 'ON_TIME',
+}
 @Entity({ name: 'detail_todo' })
 export class DetailTodo extends CodeBase {
     @PrimaryGeneratedColumn()
@@ -18,11 +27,11 @@ export class DetailTodo extends CodeBase {
     @Column()
     end_date: Date;
 
-    @Column({ default: status.processing })
-    completed_status: status;
+    @Column({ type: 'enum', enum: CompletedStatus, default: CompletedStatus.PROCESSING })
+    completed_status: CompletedStatus;
 
-    @Column({ default: null, nullable: true })
-    out_of_expire: statusFinished
+    @Column({ type: 'enum', enum: StatusFinished, nullable: true })
+    out_of_expire: StatusFinished
 
     @Column()
     regular_id: number;
