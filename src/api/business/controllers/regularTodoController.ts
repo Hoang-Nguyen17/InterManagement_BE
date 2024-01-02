@@ -97,7 +97,7 @@ const saveRegularTodo = async (req: Request, res: Response) => {
             const todoAppreciationService = new TodoAppreciationService();
             await todoAppreciationService.delete({ todo_id: todo.id });
             const appreciation = value.todoAppreciation.map(element => {
-                todoAppreciationService.create({ ...element, todo_id: result.id });
+                return todoAppreciationService.create({ content: element, todo_id: result.id });
             });
             await todoAppreciationService.save(appreciation);
         }
