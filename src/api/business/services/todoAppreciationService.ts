@@ -10,7 +10,7 @@ export class TodoAppreciationService {
         return this.todoApprecitionRes.create(data);
     }
 
-    async save(data: DeepPartial<TodoAppreciation>): Promise<TodoAppreciation> {
+    async save(data: DeepPartial<TodoAppreciation[]>): Promise<TodoAppreciation[]> {
         return await this.todoApprecitionRes.save(data);
     }
 
