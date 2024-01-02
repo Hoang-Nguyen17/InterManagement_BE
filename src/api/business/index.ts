@@ -23,7 +23,7 @@ router.post('/skill', authInstance.auth, jobController.saveSkill);
 
 // apply
 router.get('/apply', authInstance.auth, ApplyController.applies);
-router.post('/apply/:id', authInstance.auth, ApplyController.updateApply);
+router.post('/apply/:studentId', authInstance.auth, ApplyController.updateApply);
 
 // regular todo
 router.get('/regular-todo', authInstance.auth, regularTodoController.getRegularTodos);

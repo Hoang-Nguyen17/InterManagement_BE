@@ -32,11 +32,11 @@ const getRegularTododetail = async (req: Request, res: Response) => {
         if (!business) {
             return res.status(400).json('Tài khoản này không phải business');
         }
-        const regularTodoId = parseInt(req.params.id);
+        const studentId = parseInt(req.params.studentId);
         const regularTodoService = new RegularTodoService();
         const data = await regularTodoService.getOne({
             where: {
-                id: regularTodoId, business_id: business.id
+                student_id: studentId, business_id: business.id
             },
             relations: [
                 'student',
