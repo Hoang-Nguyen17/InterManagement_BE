@@ -93,7 +93,7 @@ const saveRegularTodo = async (req: Request, res: Response) => {
         }
         const todo = todoDetailService.create({ ...value, regular_id: regular.id });
         const result = await todoDetailService.save(todo);
-        if (value?.todoAppreciation.length) {
+        if (value?.todoAppreciation?.length) {
             const todoAppreciationService = new TodoAppreciationService();
             await todoAppreciationService.delete({ todo_id: todo.id });
             const appreciation = value.todoAppreciation.map(element => {
