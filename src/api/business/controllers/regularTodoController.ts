@@ -32,7 +32,7 @@ const getRegularTododetail = async (req: Request, res: Response) => {
         if (!business) {
             return res.status(400).json('Tài khoản này không phải business');
         }
-        const studentId = parseInt(req.params.studentId);
+        const studentId = parseInt(req.params.id);
         const regularTodoService = new RegularTodoService();
         const data = await regularTodoService.getOne({
             where: {
