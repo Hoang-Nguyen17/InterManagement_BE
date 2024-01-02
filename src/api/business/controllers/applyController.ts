@@ -24,7 +24,7 @@ const applies = async (req: Request, res: Response) => {
     const applyService = new ApplyService()
     const applies = await applyService.applies(business.id, page, limit);
     const [items, total] = applies;
-    return res.status(200).json({ items, total});
+    return res.status(200).json({ items, total });
 }
 
 const updateApply = async (req: Request, res: Response) => {
@@ -57,11 +57,14 @@ const updateApply = async (req: Request, res: Response) => {
             business_id: business.id,
         })
         await regularTodoService.save(regularTodo);
-    
+
         // make conversation
         const conversationService = new ConversationService();
         const conversation = conversationService.create({ student_id: result.student_id, business_id: business.id });
-        await conversationService.save(conversation);
+        const isExistConversation = conversationService.getOne({ where: conversation });
+        if (!isExistConversation) {
+            await conversationService.save(conversation);
+        }
     }
     return res.status(200).json(result);
 }
