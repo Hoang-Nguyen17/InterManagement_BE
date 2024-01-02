@@ -59,7 +59,7 @@ const saveRegularTodo = async (req: Request, res: Response) => {
     try {
         const id = req.userData.id;
         const businessService = new BusinessService();
-        const business = await businessService.getOne({ where: { id: id } });
+        const business = await businessService.getOne({ where: { user_id: id } });
         if (!business) {
             return res.status(400).json('Tài khoản này không phải business');
         }
