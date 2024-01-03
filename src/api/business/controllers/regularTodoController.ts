@@ -91,15 +91,16 @@ const saveRegularTodo = async (req: Request, res: Response) => {
                 return res.status(400).json('không tìm thấy detail todo');
             }
         }
-        const todo = todoDetailService.create({ ...value, regular_id: regular.id });
+        const { todoAppreciation, ...todoDetail } = value;
+        const todo = todoDetailService.create({ ...todoDetail, regular_id: regular.id });
         const result = await todoDetailService.save(todo);
-        if (value?.todoAppreciation?.length) {
+        if (todoAppreciation?.length) {
             const todoAppreciationService = new TodoAppreciationService();
-            await todoAppreciationService.delete({ todo_id: todo.id });
+            await todoAppreciationService.delete({ todo_id: result.id });
             const appreciation = value.todoAppreciation.map(element => {
                 return todoAppreciationService.create({ content: element, todo_id: result.id });
             });
-            await todoAppreciationService.save(appreciation);
+            result.todoAppreciation = await todoAppreciationService.save(appreciation);
         }
         return res.status(200).json(result);
     } catch (error) {
