@@ -70,22 +70,19 @@ const httpServer = http.createServer(app);
 
 let io = new Server(httpServer, { cors: corsOptions });
 
-declare global {
-    var io: Server;
-}
-global.io = io;
+io.on("connection", (socket) => {
+
+    chatController.sendMessage(socket, io);
+
+    socket.on("disconnect", () => {
+        console.log("User disconnected")
+    })
+})
 
 AppDataSource.initialize()
     .then(() => {
         httpServer.listen(PORT, async function () {
-            io.on("connection", (socket) => {
-
-                chatController.sendMessage(socket, io);
-            
-                socket.on("disconnect", () => {
-                    console.log("User disconnected")
-                })
-            })
+     
             console.log('Connected ' + PORT + ' port!');
         });
     })
