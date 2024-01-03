@@ -14,7 +14,7 @@ const sendMessage = async (socket, io) => {
             console.log(error);
             const messageService = new MessageService();
             await messageService.save(value);
-            io.emit("sendDataServer", { data });
+            io.emit("sendDataServer", { data: { ...data, createdAt: new Date()} });
         });
     } catch (error) {
         console.log(error);

@@ -71,12 +71,7 @@ const httpServer = http.createServer(app);
 let io = new Server(httpServer, { cors: corsOptions });
 
 io.on("connection", (socket) => {
-
     chatController.sendMessage(socket, io);
-
-    socket.on("disconnect", () => {
-        console.log("User disconnected")
-    })
 })
 
 AppDataSource.initialize()
