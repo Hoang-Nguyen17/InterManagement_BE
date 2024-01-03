@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import * as Joi from "joi";
 import { UserService } from "../../admin/services/userService";
 import { RegularTodoService } from "../../business/services/regularTodoService";
-import { CompletedStatus } from "../../../database/entities/DetailTodo";
+import { CompletedStatus, StatusFinished } from "../../../database/entities/DetailTodo";
 import { DetailTodoService } from "../../business/services/detailTodoService";
 
 const getRegularTododetail = async (req: Request, res: Response) => {
@@ -48,10 +48,12 @@ const updateDetailTodo = async (req: Request, res: Response) => {
         }
         const schema = Joi.object({
             completed_status: Joi.string().valid(...Object.values(CompletedStatus)).optional(),
+            out_of_expire: Joi.string().valid(...Object.values(StatusFinished)).optional(),
         })
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json({ detail: error.message });
         todo.completed_status = value.completed_status;
+        todo.out_of_expire = value.out_of_expire;
         const result = await detailTodoService.save(todo);
         return res.status(200).json(result);
     } catch (error) {
