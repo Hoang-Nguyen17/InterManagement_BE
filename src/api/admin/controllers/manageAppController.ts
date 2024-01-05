@@ -246,8 +246,8 @@ const schoolLinkedBusinesses = async (req: Request, res: Response) => {
     try {
         const school_id = req.userData.schoolId;
         const schema = Joi.object({
-            status: Joi.string().valid(...Object.values(LinkedStatus)).default(LinkedStatus.APPROVED),
-            search_text: Joi.string().optional(),
+            is_linked: Joi.bool().default(true),
+            // status: Joi.string().valid(...Object.values(LinkedStatus)).default(LinkedStatus.APPROVED),
             limit: Joi.number().default(10),
             page: Joi.number().default(1),
         })
@@ -258,7 +258,7 @@ const schoolLinkedBusinesses = async (req: Request, res: Response) => {
         const filter: FIlterSchoolLinkedBusiness = value;
 
         const ms = new ManageAppService();
-        const data = await ms.schoolLinkedBusinesses(school_id, filter);
+        const data = await ms.schoolLinkedBusinesses(school_id, filter, value.is_linked);
         return res.status(200).json(data);
     } catch (error) {
         console.log(error);

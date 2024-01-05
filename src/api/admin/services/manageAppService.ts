@@ -98,21 +98,28 @@ export class ManageAppService {
         return { items, total };
     }
 
-    async schoolLinkedBusinesses(schoolId: number, filter: FIlterSchoolLinkedBusiness): Promise<{ items: School[], total: number }> {
-        const { page, limit, status, search_text } = filter;
-        const qb = await this.schoolRes
-            .createQueryBuilder('school')
-            .leftJoinAndSelect('school.schoolLinkedBusiness', 'linked')
-            .leftJoinAndSelect('linked.business', 'business')
-            .leftJoinAndSelect('business.user_person', 'userPerson')
-            .where('linked.is_linked = :status', { status })
-            .andWhere('school.id = :schoolId', { schoolId });
+    async schoolLinkedBusinesses(
+        schoolId: number,
+        filter: FIlterSchoolLinkedBusiness,
+        isLinked: Boolean = true,
+    ): Promise<{ items: Business[], total: number }> {
+        const { page, limit, status } = filter;
+        const qb = this.bussnessRes
+            .createQueryBuilder('business')
+            .leftJoinAndSelect('business.user_person', 'businessPerson')
 
-        if (search_text) {
-            qb.andWhere(new Brackets((qb) => {
-                qb.orWhere('school.school_name like :search_text')
-                    .orWhere('userPerson.full_name like :search_text')
-            })).setParameters({ search_text: `%${search_text}%` })
+        if (isLinked) {
+            qb.innerJoinAndSelect('business.schoolLinkedBusiness', 'linked')
+                .innerJoinAndSelect('linked.school', 'school')
+                .where('linked.school_id = : schoolId', { schoolId });
+        } else {
+            qb.where(`
+                NOT EXISTS(
+                    select 1 from school_linked_business slb
+                    where slb.school_id = :schoolId and slb.business_id = business.id
+                )
+            `, { schoolId });
+
         }
 
         const [items, total] = await qb.skip((page - 1) * limit).take(limit).getManyAndCount();
@@ -120,7 +127,7 @@ export class ManageAppService {
     }
 
     async getLinkedSchoolByBusinessId(
-        businessId: number, 
+        businessId: number,
         status: LinkedStatus,
         page: number = 1,
         limit: number = 10,
