@@ -213,6 +213,34 @@ const deleteBusinesses = async (req: Request, res: Response) => {
     }
 }
 
+// admin school
+const adminSchools = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            search_text: Joi.string().optional(),
+            school_id: Joi.number().optional(),
+            limit: Joi.number().default(10),
+            page: Joi.number().default(1),
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+        const { search_text, school_id, limit, page } = value;
+
+        const ms = new ManageAppService();
+        const data = await ms.adminSchools(
+            search_text,
+            school_id,
+            page,
+            limit,
+        );
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
 const schoolLinkedBusinesses = async (req: Request, res: Response) => {
     try {
         const schema = Joi.object({
@@ -246,6 +274,8 @@ export const manageAppController = {
     saveBusiness,
     updateBusiness,
     deleteBusinesses,
+
+    adminSchools,
 
     schoolLinkedBusinesses,
 }

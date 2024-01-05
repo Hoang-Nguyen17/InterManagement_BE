@@ -5,11 +5,13 @@ import { Business } from "../../../database/entities/Business";
 import { FilterBusiness } from "../interfaces/business.interface";
 import { FIlterSchoolLinkedBusiness } from "../interfaces/school-linked-business.interface";
 import { SchoolLinkedBusiness } from "../../../database/entities/SchoolLinkedBusiness";
+import { UserPerson } from "../../../database/entities/UserPerson";
 
 export class ManageAppService {
     private schoolRes = AppDataSource.getRepository(School);
     private bussnessRes = AppDataSource.getRepository(Business);
     private schoolLinkedBusinessRes = AppDataSource.getRepository(SchoolLinkedBusiness);
+    private userRes = AppDataSource.getRepository(UserPerson);
 
 
     createSchool(data: DeepPartial<School>) {
@@ -83,6 +85,28 @@ export class ManageAppService {
         }
 
         const [items, total] = await qb.offset((page - 1) * limit).limit(limit).getManyAndCount();
+        return { items, total };
+    }
+
+    async adminSchools(
+        search_text: string = null,
+        school_id: number = null,
+        page: number = 1,
+        limit: number = 10,
+    ) {
+        const qb = this.userRes
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.administrator', 'administrator')
+            .leftJoinAndSelect('administrator.school', 'school');
+        if (school_id) {
+            qb.andWhere('school.id = :school_id', { school_id });
+        }
+        if (search_text) {
+            qb.andWhere(new Brackets((qb) => {
+                qb.orWhere('user.full_name like :search_text')
+            })).setParameters({ search_text: `%${search_text}%` });
+        }
+        const [items, total] = await qb.skip((page - 1) * limit).take(limit).getManyAndCount();
         return { items, total };
     }
 }
