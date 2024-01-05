@@ -11,7 +11,7 @@ import { internJobController } from './controllers/internJobController';
 
 // jobs
 router.post('/job', authInstance.auth, jobController.saveJob);
-router.post('/job-list', authInstance.auth, jobController.getJobs);
+router.get('/job-list', authInstance.auth, jobController.getJobs);
 router.get('/job/:id', authInstance.auth, jobController.getJobById);
 router.delete('/job', authInstance.auth, jobController.deleteJobs);
 
