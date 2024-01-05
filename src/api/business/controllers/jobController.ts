@@ -126,7 +126,9 @@ const getJobById = async (req: Request, res: Response) => {
                 'position',
                 'jobSkills',
                 'jobSkills.skill',
-                'applies'
+                'applies',
+                'business',
+                'business.user_person',
             ]
         });
         const id = req.userData.id;
