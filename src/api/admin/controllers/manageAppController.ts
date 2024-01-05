@@ -10,6 +10,7 @@ import { UserService } from "../services/userService";
 import { Like, Not } from "typeorm";
 import { hashPass } from "../../../common/helpers/common";
 import { FIlterSchoolLinkedBusiness } from "../interfaces/school-linked-business.interface";
+import { LinkedStatus } from "../../../database/entities/SchoolLinkedBusiness";
 
 
 const getSchools = async (req: Request, res: Response) => {
@@ -245,7 +246,7 @@ const schoolLinkedBusinesses = async (req: Request, res: Response) => {
     try {
         const school_id = req.userData.schoolId;
         const schema = Joi.object({
-            status: Joi.bool().default(true),
+            status: Joi.string().valid(...Object.values(LinkedStatus)).default(LinkedStatus.APPROVED),
             search_text: Joi.string().optional(),
             limit: Joi.number().default(10),
             page: Joi.number().default(1),

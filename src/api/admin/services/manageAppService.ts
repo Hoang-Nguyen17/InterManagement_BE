@@ -4,7 +4,7 @@ import { AppDataSource } from "../../../ormconfig";
 import { Business } from "../../../database/entities/Business";
 import { FilterBusiness } from "../interfaces/business.interface";
 import { FIlterSchoolLinkedBusiness } from "../interfaces/school-linked-business.interface";
-import { SchoolLinkedBusiness } from "../../../database/entities/SchoolLinkedBusiness";
+import { LinkedStatus, SchoolLinkedBusiness } from "../../../database/entities/SchoolLinkedBusiness";
 import { UserPerson } from "../../../database/entities/UserPerson";
 import { Administrator } from "../../../database/entities/Administrator";
 import { UserAccount } from "../../../database/entities/UserAccount";
@@ -116,6 +116,22 @@ export class ManageAppService {
         }
 
         const [items, total] = await qb.skip((page - 1) * limit).take(limit).getManyAndCount();
+        return { items, total };
+    }
+
+    async getLinkedSchoolByBusinessId(
+        businessId: number, 
+        status: LinkedStatus,
+        page: number = 1,
+        limit: number = 10,
+    ) {
+        const qb = this.schoolLinkedBusinessRes
+            .createQueryBuilder('linked')
+            .leftJoinAndSelect('linked.school', 'school')
+            .where('linked.is_linked = :status', { status })
+            .andWhere('linked.business_id = :businessId', { businessId })
+            .skip((page - 1) * limit).take(limit);
+        const [items, total] = await qb.getManyAndCount();
         return { items, total };
     }
 

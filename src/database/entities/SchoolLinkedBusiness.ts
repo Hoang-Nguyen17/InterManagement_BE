@@ -19,11 +19,8 @@ export class SchoolLinkedBusiness extends CodeBase {
     @Column()
     business_id: number;
 
-    @Column({ default: false })
-    is_linked: boolean;
-
     @Column({ type: 'enum', enum: LinkedStatus, default: LinkedStatus.WAITING })
-    is_linked_status: LinkedStatus;
+    is_linked: LinkedStatus;
 
     @ManyToOne(() => School, (school) => school.id)
     @JoinColumn({

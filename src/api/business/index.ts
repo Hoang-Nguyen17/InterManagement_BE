@@ -6,6 +6,7 @@ const authInstance = new Auth();
 import { jobController } from "./controllers/jobController";
 import { ApplyController } from './controllers/applyController';
 import { regularTodoController } from './controllers/regularTodoController';
+import { linkedController } from './controllers/linkedController';
 
 // jobs
 router.post('/job', authInstance.auth, jobController.saveJob);
@@ -30,5 +31,8 @@ router.get('/regular-todo', authInstance.auth, regularTodoController.getRegularT
 router.get('/regular-todo/:id', authInstance.auth, regularTodoController.getRegularTododetail);
 router.post('/regular-todo/:id/todo', authInstance.auth, regularTodoController.saveRegularTodo);
 
+// update linked school
+router.get('/linked-school', authInstance.auth, linkedController.schoolLinked);
+router.put('/linked-school/:id', authInstance.auth, linkedController.updateLinked);
 
 module.exports = router;
