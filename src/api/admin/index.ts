@@ -97,8 +97,8 @@ router.get('/introducing-letter', authInstance.authAdmin, StudentRequestRegistIn
 router.put('/introducing-letter/:id', authInstance.authAdmin, StudentRequestRegistIntern.updateRequest);
 
 // school linked business
-router.get('/school-linked-business', manageAppController.schoolLinkedBusinesses);
-router.post('/school-linked-business', manageAppController.saveSchoolLinkedBusiness);
-router.delete('/school-linked-business/:id', manageAppController.deleteSchoolLinkedBusiness);
+router.get('/school-linked-business', authInstance.authAdmin, manageAppController.schoolLinkedBusinesses);
+router.post('/school-linked-business', authInstance.authAdmin, manageAppController.saveSchoolLinkedBusiness);
+router.delete('/school-linked-business/:id', authInstance.authAdmin, manageAppController.deleteSchoolLinkedBusiness);
 
 module.exports = router;

@@ -270,7 +270,6 @@ const saveSchoolLinkedBusiness = async (req: Request, res: Response) => {
         const school_id = req.userData.schoolId;
 
         const schema = Joi.object({
-            school_id: Joi.number().required(),
             business_id: Joi.number().required(),
         })
 
@@ -280,7 +279,7 @@ const saveSchoolLinkedBusiness = async (req: Request, res: Response) => {
         const ms = new ManageAppService();
         const isExist = await ms.getOneLinked({
             where: {
-                school_id: value.school_id,
+                school_id: school_id,
                 business_id: value.business_id
             }
         });
@@ -304,9 +303,11 @@ const deleteSchoolLinkedBusiness = async (req: Request, res: Response) => {
         const data = await ms.getOneLinked({ where: { id: id } });
         if (!data) {
             return res.status(400).json('Linked not found');
+        } else if (data.school_id !== school_id) {
+            return res.status(403).json('You are not allowed to delete');
         }
         const result = await ms.deleteLinkedById(id);
-        return res.status(200).json(data);
+        return res.status(200).json(result);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ detail: error.message });
