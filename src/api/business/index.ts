@@ -7,6 +7,7 @@ import { jobController } from "./controllers/jobController";
 import { ApplyController } from './controllers/applyController';
 import { regularTodoController } from './controllers/regularTodoController';
 import { linkedController } from './controllers/linkedController';
+import { internJobController } from './controllers/internJobController';
 
 // jobs
 router.post('/job', authInstance.auth, jobController.saveJob);
@@ -34,5 +35,9 @@ router.post('/regular-todo/:id/todo', authInstance.auth, regularTodoController.s
 // update linked school
 router.get('/linked-school', authInstance.auth, linkedController.schoolLinked);
 router.put('/linked-school/:id', authInstance.auth, linkedController.updateLinked);
+
+// intern job
+router.get('/intern-job', authInstance.auth, internJobController.internJobs);
+router.put('/intern-job/:id', authInstance.auth, internJobController.updateInternJob);
 
 module.exports = router;

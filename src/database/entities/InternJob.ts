@@ -1,40 +1,41 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn, OneToMany } from "typeorm";
 import { CodeBase } from "./CodeBase";
-import { Department } from "./Department";
-import { Teacher } from "./Teacher";
 import { Student } from "./Student";
-import { status } from "../../common/constants/status.constant";
-import { Job } from "./Job";
+import { Applies } from "./Applies";
 
+export enum InternStatus {
+    IN_PROGRESS = 'IN_PROGRESS',
+    FINISHED = 'FINISHED',
+}
 @Entity({ name: 'intern_job' })
 export class InternJob extends CodeBase {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ nullable: true })
     start_date: Date;
 
-    @Column({ default: status.processing })
-    submit_status: status;
+    @Column({ nullable: true })
+    finished_date: Date;
 
     @Column()
-    job_id: number;
+    apply_id: number;
 
-    @Column({ default: status.processing })
-    is_interning: status;
+    @Column({ type: 'enum', enum: InternStatus, default: InternStatus.IN_PROGRESS })
+    is_interning: InternStatus;
 
     @Column()
     student_id: number;
 
-    @Column({ type: 'longblob', nullable: true })
+    @Column({ length: 500, nullable: true })
     appreciation_file: string;
 
-    @ManyToOne(() => Job, (job) => job.id)
+    @OneToOne(() => Applies, (apply) => apply.id)
     @JoinColumn({
-        name: 'job_id',
+        name: 'apply_id',
         referencedColumnName: 'id'
     })
-    job?: Job;
+    apply?: Applies;
 
     @ManyToOne(() => Student, (student) => student.id)
     @JoinColumn({

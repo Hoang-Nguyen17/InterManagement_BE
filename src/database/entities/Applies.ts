@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, Index, Unique } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, Index, Unique, OneToOne } from "typeorm";
 import { CodeBase } from "./CodeBase";
 import { Student } from "./Student";
 import { Job } from "./Job";
 import { Max, Min } from "class-validator";
+import { InternJob } from "./InternJob";
 
 export enum AppliesStatus {
     APPLYING = 'APPLYING',
@@ -50,4 +51,9 @@ export class Applies extends CodeBase {
         referencedColumnName: 'id',
     })
     job?: Job;
+
+    @OneToOne(() => InternJob, (internJob) => internJob.apply, {
+        createForeignKeyConstraints: false,
+    })
+    intern_job?: InternJob;
 }
