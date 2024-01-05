@@ -6,12 +6,17 @@ import { FilterBusiness } from "../interfaces/business.interface";
 import { FIlterSchoolLinkedBusiness } from "../interfaces/school-linked-business.interface";
 import { SchoolLinkedBusiness } from "../../../database/entities/SchoolLinkedBusiness";
 import { UserPerson } from "../../../database/entities/UserPerson";
+import { Administrator } from "../../../database/entities/Administrator";
+import { UserAccount } from "../../../database/entities/UserAccount";
 
 export class ManageAppService {
     private schoolRes = AppDataSource.getRepository(School);
     private bussnessRes = AppDataSource.getRepository(Business);
     private schoolLinkedBusinessRes = AppDataSource.getRepository(SchoolLinkedBusiness);
     private userRes = AppDataSource.getRepository(UserPerson);
+    private adminRes = AppDataSource.getRepository(Administrator);
+    private userAccoutRes = AppDataSource.getRepository(UserAccount);
+
 
 
     createSchool(data: DeepPartial<School>) {
@@ -48,6 +53,31 @@ export class ManageAppService {
 
     async softDeleteBusinesses(ids: number[]) {
         return await this.bussnessRes.softDelete({ id: In(ids) });
+    }
+
+
+    async saveAdmin(data: DeepPartial<Administrator>): Promise<Administrator> {
+        return await this.adminRes.save(data);
+    }
+
+    createAdmin(data: DeepPartial<Administrator>) {
+        return this.adminRes.create(data);
+    }
+
+    async softRemoveAdmin(JobSkill: Administrator[]) {
+        return await this.adminRes.softRemove(JobSkill);
+    }
+
+    async getOneLinked(filter?: FindOneOptions<SchoolLinkedBusiness>) {
+        return await this.schoolLinkedBusinessRes.findOne(filter);
+    }
+
+    async saveLinked(data: DeepPartial<SchoolLinkedBusiness>): Promise<SchoolLinkedBusiness> {
+        return await this.schoolLinkedBusinessRes.save(data);
+    }
+
+    async deleteLinkedById(id: number) {
+        return await this.schoolLinkedBusinessRes.delete({ id: id });
     }
 
     async bussnesses(filter: FilterBusiness): Promise<{ items: Business[], total: number }> {
@@ -96,7 +126,7 @@ export class ManageAppService {
     ) {
         const qb = this.userRes
             .createQueryBuilder('user')
-            .leftJoinAndSelect('user.administrator', 'administrator')
+            .innerJoinAndSelect('user.administrator', 'administrator')
             .leftJoinAndSelect('administrator.school', 'school');
         if (school_id) {
             qb.andWhere('school.id = :school_id', { school_id });
@@ -108,5 +138,25 @@ export class ManageAppService {
         }
         const [items, total] = await qb.skip((page - 1) * limit).take(limit).getManyAndCount();
         return { items, total };
+    }
+
+    async getAdminById(id: number) {
+        const qb = this.userRes
+            .createQueryBuilder('user')
+            .innerJoinAndSelect('user.administrator', 'administrator')
+            .leftJoinAndSelect('administrator.school', 'school')
+            .where('administrator.id = :id', { id })
+        return qb.getOne();
+    }
+
+    async softDeleteAdminById(id: number) {
+        const admin = await this.adminRes.findOne({ where: { id: id }, relations: ['user_person'] });
+        if (!admin) {
+            return false;
+        }
+        await this.adminRes.softDelete({ id: id });
+        await this.userRes.softDelete({ id: admin.user_id });
+        await this.userAccoutRes.softDelete({ username: admin.user_person.username });
+        return true;
     }
 }

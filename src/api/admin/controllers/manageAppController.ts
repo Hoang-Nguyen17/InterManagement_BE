@@ -264,6 +264,132 @@ const schoolLinkedBusinesses = async (req: Request, res: Response) => {
     }
 }
 
+const saveSchoolLinkedBusiness = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            school_id: Joi.number().required(),
+            business_id: Joi.number().required(),
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const ms = new ManageAppService();
+        const isExist = await ms.getOneLinked({
+            where: {
+                school_id: value.school_id,
+                business_id: value.business_id
+            }
+        });
+        if (isExist) {
+            return res.status(400).json('already business linked school');
+        }
+        const result = await ms.saveLinked(value);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
+const deleteSchoolLinkedBusiness = async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id);
+        const ms = new ManageAppService();
+        const data = await ms.getOneLinked({ where: { id: id } });
+        if (!data) {
+            return res.status(400).json('Linked not found');
+        }
+        const result = await ms.deleteLinkedById(id);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
+const adminSchoolDetail = async (req: Request, res: Response) => {
+    try {
+        const adminId = parseInt(req.params.aid);
+
+        const ms = new ManageAppService();
+        const admin = await ms.getAdminById(adminId);
+        if (!admin) {
+            return res.status(400).json('admin not found');
+        }
+        return res.status(200).json(admin);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
+const saveAdmin = async (req: Request, res: Response) => {
+    try {
+        const schema = Joi.object({
+            username: Joi.string().required(),
+            pass: Joi.string().min(6).required(),
+            user_person: Joi.object({
+                email: Joi.string().email().max(50).required(),
+                full_name: Joi.string().required(),
+                phone: Joi.string()
+                    .pattern(/^[0-9]{10}$/)
+                    .required(),
+                address: Joi.string().max(100).required(),
+                image: Joi.string().optional(),
+                administrator: Joi.object({
+                    school_id: Joi.number().required(),
+                }).required()
+            }).required()
+        })
+
+        const { error, value } = schema.validate(req.body);
+        if (error) return res.status(400).json(error);
+
+        const us = new UserService();
+        const ms = new ManageAppService();
+
+        const isValidAccout = await us.isValidAccount(
+            value,
+            value.user_person.administrator.school_id
+        );
+        if (!isValidAccout) {
+            return res.status(400).json(' Kiểm tra lại thông tin tài khoản, có thể username hoặc email đã trùng');
+        }
+
+        value.pass = hashPass(value.pass);
+        const user_account = us.createUserAccount({ ...value, permission_id: 1 });
+        const userAccount = await us.saveAccount(user_account);
+        const user_person = us.createUserPerson(value.user_person);
+        const userPerson = await us.saveUserPerson(user_person);
+        const administrator = await ms.createAdmin({ ...value.user_person.administrator, user_id: userPerson.id });
+        const admin = await ms.saveAdmin(administrator);
+
+        userPerson.administrator = admin;
+        userAccount.user_person = userPerson;
+
+        return res.status(200).json(userAccount);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
+
+const deleteAdmin = async (req: Request, res: Response) => {
+    try {
+        const adminId = parseInt(req.params.aid);
+
+        const ms = new ManageAppService();
+        const result = await ms.softDeleteAdminById(adminId);
+        if (!result) {
+            return res.status(400).json('Admin not found');
+        }
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ detail: error.message });
+    }
+}
 
 export const manageAppController = {
     saveSchool,
@@ -276,6 +402,11 @@ export const manageAppController = {
     deleteBusinesses,
 
     adminSchools,
+    adminSchoolDetail,
+    saveAdmin,
+    deleteAdmin,
 
     schoolLinkedBusinesses,
+    saveSchoolLinkedBusiness,
+    deleteSchoolLinkedBusiness,
 }

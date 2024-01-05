@@ -80,6 +80,10 @@ export class SchoolService {
         }
     }
 
+    public getOneSchool = async (filter?: FindOneOptions<School>) => {
+        return await this.schoolRepository.findOne(filter);
+    }
+
     public getOneDepartment = async (filter?: FindOneOptions<Department>) => {
         return await this.departmentRepository.findOne(filter);
     }

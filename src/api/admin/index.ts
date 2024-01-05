@@ -28,10 +28,20 @@ router.delete('/business', manageAppController.deleteSchool);
 router.get('/business', manageAppController.businesses);
 
 // admin school
+router.post('/admin-school', manageAppController.saveAdmin);
+router.get('/admin-school', manageAppController.adminSchools);
+router.get('/admin-school/:aid', manageAppController.adminSchoolDetail);
+router.delete('/admin-school/:aid', manageAppController.deleteAdmin);
+
+
+// admin school
 
 
 // school linked business
 router.get('/school-linked-business', manageAppController.schoolLinkedBusinesses);
+router.post('/school-linked-business', manageAppController.saveSchoolLinkedBusiness);
+router.delete('/school-linked-business/:id', manageAppController.deleteSchoolLinkedBusiness);
+
 
 // --------------------------------------- admin school ----------------------------------
 
