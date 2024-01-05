@@ -3,6 +3,11 @@ import { CodeBase } from "./CodeBase";
 import { School } from "./School";
 import { Business } from "./Business";
 
+export enum LinkedStatus {
+    WAITING = 'WAITING',
+    APPROVED = 'APPROVED',
+    REJECTED = 'REJECTED',
+}
 @Entity({ name: 'school_linked_business' })
 export class SchoolLinkedBusiness extends CodeBase {
     @PrimaryGeneratedColumn()
@@ -17,8 +22,8 @@ export class SchoolLinkedBusiness extends CodeBase {
     @Column({ default: false })
     is_linked: boolean;
 
-    @Column({ default: false })
-    is_linked_status: boolean;
+    @Column({ type: 'enum', enum: LinkedStatus, default: LinkedStatus.WAITING })
+    is_linked_status: LinkedStatus;
 
     @ManyToOne(() => School, (school) => school.id)
     @JoinColumn({
