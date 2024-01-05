@@ -7,7 +7,7 @@ import { IStudentLearnInternSubject } from "../interfaces/student.interface";
 export class StudentLearInternService {
     private studentLearnInternRes = AppDataSource.getRepository(StudentLearnIntern);
 
-    
+
     create(data: DeepPartial<StudentLearnIntern>) {
         return this.studentLearnInternRes.create(data);
     }
@@ -17,7 +17,7 @@ export class StudentLearInternService {
     }
 
     async update(
-        where: FindOptionsWhere<StudentLearnIntern>, 
+        where: FindOptionsWhere<StudentLearnIntern>,
         data: DeepPartial<StudentLearnIntern>
     ): Promise<Boolean> {
         const result = await this.studentLearnInternRes.update(where, data);
@@ -38,6 +38,23 @@ export class StudentLearInternService {
 
     async delete(condition: FindOptionsWhere<StudentLearnIntern>) {
         return await this.studentLearnInternRes.delete(condition);
+    }
+
+    async getStudentLearnInternByTeacherId(
+        teacherId: number,
+        academic_id: number,
+        semester_id: number,
+    ) {
+        const qb = this.studentLearnInternRes
+            .createQueryBuilder('studentLearnIntern')
+            .leftJoin('studentLearnIntern.internSubject', 'internSubject')
+            .leftJoinAndSelect('studentLearnIntern.student', 'student')
+            .leftJoinAndSelect('student.user_person', 'userPerson')
+            .where('internSubject.teacher_id = :teacherId', { teacherId })
+            .andWhere('internSubject.semester_id = :semester_id', { semester_id })
+            .andWhere('internSubject.academic_year = :academic_id', { academic_id })
+        const data = await qb.getMany();
+        return data;
     }
 
     async getStudentLearnIntern(schoolId: number, filter: IStudentLearnInternSubject) {
@@ -70,6 +87,6 @@ export class StudentLearInternService {
             .skip((page - 1) * limit)
             .take(limit)
             .getManyAndCount();
-        return {items, total};
+        return { items, total };
     }
 }

@@ -61,7 +61,7 @@ export class InternSubject extends CodeBase {
 
     @ManyToOne(() => AcademicYear, (academicYear) => academicYear.id)
     @JoinColumn({
-        name: 'academic_year_id',
+        name: 'academic_year',
         referencedColumnName: 'id'
     })
     academicYear?: AcademicYear;
