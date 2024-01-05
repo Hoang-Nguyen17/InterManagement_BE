@@ -34,15 +34,6 @@ router.get('/admin-school/:aid', manageAppController.adminSchoolDetail);
 router.delete('/admin-school/:aid', manageAppController.deleteAdmin);
 
 
-// admin school
-
-
-// school linked business
-router.get('/school-linked-business', manageAppController.schoolLinkedBusinesses);
-router.post('/school-linked-business', manageAppController.saveSchoolLinkedBusiness);
-router.delete('/school-linked-business/:id', manageAppController.deleteSchoolLinkedBusiness);
-
-
 // --------------------------------------- admin school ----------------------------------
 
 // school
@@ -102,6 +93,12 @@ router.get('/school/student', authInstance.authAdmin, userController.getStudents
 // major
 
 // student request regist intern
-router.get('/introducing-letter', authInstance.authAdmin, StudentRequestRegistIntern.requestRegisInterns)
+router.get('/introducing-letter', authInstance.authAdmin, StudentRequestRegistIntern.requestRegisInterns);
 router.put('/introducing-letter/:id', authInstance.authAdmin, StudentRequestRegistIntern.updateRequest);
+
+// school linked business
+router.get('/school-linked-business', manageAppController.schoolLinkedBusinesses);
+router.post('/school-linked-business', manageAppController.saveSchoolLinkedBusiness);
+router.delete('/school-linked-business/:id', manageAppController.deleteSchoolLinkedBusiness);
+
 module.exports = router;

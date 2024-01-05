@@ -14,7 +14,7 @@ export class SchoolLinkedBusiness extends CodeBase {
     @Column()
     business_id: number;
 
-    @Column({ default: true })
+    @Column({ default: false })
     is_linked: boolean;
 
     @ManyToOne(() => School, (school) => school.id)

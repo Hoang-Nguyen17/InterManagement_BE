@@ -98,14 +98,15 @@ export class ManageAppService {
         return { items, total };
     }
 
-    async schoolLinkedBusinesses(filter: FIlterSchoolLinkedBusiness): Promise<{ items: School[], total: number }> {
+    async schoolLinkedBusinesses(schoolId: number, filter: FIlterSchoolLinkedBusiness): Promise<{ items: School[], total: number }> {
         const { page, limit, status, search_text } = filter;
         const qb = await this.schoolRes
             .createQueryBuilder('school')
             .leftJoinAndSelect('school.schoolLinkedBusiness', 'linked')
             .leftJoinAndSelect('linked.business', 'business')
             .leftJoinAndSelect('business.user_person', 'userPerson')
-            .where('linked.status = :status', { status });
+            .where('linked.is_linked = :status', { status })
+            .andWhere('school.id = :schoolId', { schoolId });
 
         if (search_text) {
             qb.andWhere(new Brackets((qb) => {
@@ -114,7 +115,7 @@ export class ManageAppService {
             })).setParameters({ search_text: `%${search_text}%` })
         }
 
-        const [items, total] = await qb.offset((page - 1) * limit).limit(limit).getManyAndCount();
+        const [items, total] = await qb.skip((page - 1) * limit).take(limit).getManyAndCount();
         return { items, total };
     }
 

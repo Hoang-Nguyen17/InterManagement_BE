@@ -243,6 +243,7 @@ const adminSchools = async (req: Request, res: Response) => {
 
 const schoolLinkedBusinesses = async (req: Request, res: Response) => {
     try {
+        const school_id = req.userData.schoolId;
         const schema = Joi.object({
             status: Joi.bool().default(true),
             search_text: Joi.string().optional(),
@@ -256,7 +257,7 @@ const schoolLinkedBusinesses = async (req: Request, res: Response) => {
         const filter: FIlterSchoolLinkedBusiness = value;
 
         const ms = new ManageAppService();
-        const data = await ms.schoolLinkedBusinesses(filter);
+        const data = await ms.schoolLinkedBusinesses(school_id, filter);
         return res.status(200).json(data);
     } catch (error) {
         console.log(error);
@@ -266,6 +267,8 @@ const schoolLinkedBusinesses = async (req: Request, res: Response) => {
 
 const saveSchoolLinkedBusiness = async (req: Request, res: Response) => {
     try {
+        const school_id = req.userData.schoolId;
+
         const schema = Joi.object({
             school_id: Joi.number().required(),
             business_id: Joi.number().required(),
@@ -294,6 +297,8 @@ const saveSchoolLinkedBusiness = async (req: Request, res: Response) => {
 
 const deleteSchoolLinkedBusiness = async (req: Request, res: Response) => {
     try {
+        const school_id = req.userData.schoolId;
+
         const id = parseInt(req.params.id);
         const ms = new ManageAppService();
         const data = await ms.getOneLinked({ where: { id: id } });
