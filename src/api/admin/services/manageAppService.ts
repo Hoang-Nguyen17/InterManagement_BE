@@ -116,7 +116,9 @@ export class ManageAppService {
             qb.where(`
                 NOT EXISTS(
                     select 1 from school_linked_business slb
-                    where slb.school_id = :schoolId and slb.business_id = business.id
+                    where slb.school_id = :schoolId 
+                        and slb.business_id = business.id
+                        and slb.deletedAt IS NULL
                 )
             `, { schoolId });
 
