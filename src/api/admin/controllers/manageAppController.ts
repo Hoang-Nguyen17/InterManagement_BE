@@ -365,7 +365,7 @@ const saveAdmin = async (req: Request, res: Response) => {
         }
 
         value.pass = hashPass(value.pass);
-        const user_account = us.createUserAccount({ ...value, permission_id: 1 });
+        const user_account = us.createUserAccount({ username: value.username, pass: value.pass, permission_id: 1 });
         const userAccount = await us.saveAccount(user_account);
         const user_person = us.createUserPerson({ ...value.user_person, username: userAccount.username });
         const userPerson = await us.saveUserPerson(user_person);
