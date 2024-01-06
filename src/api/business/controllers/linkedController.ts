@@ -39,14 +39,14 @@ const schoolLinked = async (req: Request, res: Response) => {
 const updateLinked = async (req: Request, res: Response) => {
     try {
         const id = req.userData.id;
-        const linkId = parseInt(req.params.lid);
+        const linkId = parseInt(req.params.id);
         const bs = new BusinessService();
         const business = await bs.getOne({ where: { user_id: id } });
         if (!business) {
             return res.status(400).json('Business not found');
         }
         const schema = Joi.object({
-            tatus: Joi.string().valid(...Object.values(LinkedStatus)).default(LinkedStatus.APPROVED),
+            status: Joi.string().valid(...Object.values(LinkedStatus)).default(LinkedStatus.APPROVED),
         })
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
