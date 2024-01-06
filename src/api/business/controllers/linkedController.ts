@@ -15,7 +15,7 @@ const schoolLinked = async (req: Request, res: Response) => {
             return res.status(400).json('Business not found');
         }
         const schema = Joi.object({
-            tatus: Joi.string().valid(...Object.values(LinkedStatus)).default(LinkedStatus.APPROVED),
+            status: Joi.string().valid(...Object.values(LinkedStatus)).optional(),
             limit: Joi.number().default(10),
             page: Joi.number().default(1),
         })

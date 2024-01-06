@@ -130,16 +130,18 @@ export class ManageAppService {
 
     async getLinkedSchoolByBusinessId(
         businessId: number,
-        status: LinkedStatus,
+        status: LinkedStatus = null,
         page: number = 1,
         limit: number = 10,
     ) {
         const qb = this.schoolLinkedBusinessRes
             .createQueryBuilder('linked')
             .leftJoinAndSelect('linked.school', 'school')
-            .where('linked.is_linked = :status', { status })
-            .andWhere('linked.business_id = :businessId', { businessId })
+            .where('linked.business_id = :businessId', { businessId })
             .skip((page - 1) * limit).take(limit);
+        if (status) {
+            qb.andWhere('linked.is_linked = :status', { status })
+        }
         const [items, total] = await qb.getManyAndCount();
         return { items, total };
     }
