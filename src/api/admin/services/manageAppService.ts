@@ -111,14 +111,14 @@ export class ManageAppService {
         if (isLinked) {
             qb.innerJoinAndSelect('business.schoolLinkedBusiness', 'linked')
                 .innerJoinAndSelect('linked.school', 'school')
-                .where('linked.school_id = : schoolId', { schoolId });
+                .where('linked.school_id = :schoolId', { schoolId });
         } else {
             qb.where(`
                 NOT EXISTS(
                     select 1 from school_linked_business slb
                     where slb.school_id = :schoolId 
                         and slb.business_id = business.id
-                        and slb.deletedAt IS NULL
+                        and slb.deleted_at IS NULL
                 )
             `, { schoolId });
 
