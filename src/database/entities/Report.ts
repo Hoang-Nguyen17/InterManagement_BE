@@ -10,13 +10,13 @@ export class Report extends CodeBase {
     @Column()
     student_id: number;
 
-    @Column({ type: 'longblob'})
+    @Column({ length: 500 })
     report_file: string;
 
-    @Column({ type: 'longblob'})
+    @Column({ length: 500 })
     result_business_file: string;
 
-    @Column({ type: 'longblob'})
+    @Column({ length: 500, nullable: true })
     result_teacher_file: string;
 
     @ManyToOne(() => Student, (student) => student.id)

@@ -8,6 +8,7 @@ import { ApplyController } from './controllers/applyController';
 import { JobController } from './controllers/jobController';
 import { StudentRequestRegistIntern } from './controllers/requestRegisInternController';
 import { regularTodoController } from './controllers/regularTodoController';
+import { reportController } from './controllers/reportController';
 
 // student request introducing letter
 router.get('/introducing-letter', authInstance.auth, StudentRequestRegistIntern.requestRegisInterns)
@@ -31,5 +32,9 @@ router.put('/job/:id/add_view', authInstance.auth, JobController.addView)
 // regular todo
 router.get('/regular-todo', authInstance.auth, regularTodoController.getRegularTododetail)
 router.put('/regular-todo/detail-todo/:id', authInstance.auth, regularTodoController.updateDetailTodo)
+
+//report
+router.get('/report', authInstance.auth, reportController.report)
+router.post('/report', authInstance.auth, reportController.saveReport)
 
 module.exports = router;
