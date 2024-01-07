@@ -1,5 +1,5 @@
 import { Brackets, DeepPartial, FindOneOptions, FindOptionsWhere } from "typeorm";
-import { StudentLearnIntern } from "../../../database/entities/StudentLearnIntern";
+import { PassStatus, StudentLearnIntern } from "../../../database/entities/StudentLearnIntern";
 import { AppDataSource } from "../../../ormconfig";
 import { IStudentLearnInternSubject } from "../interfaces/student.interface";
 
@@ -47,14 +47,77 @@ export class StudentLearInternService {
     ) {
         const qb = this.studentLearnInternRes
             .createQueryBuilder('studentLearnIntern')
+            .addSelect([
+                'student.sex',
+                'student.id',
+                'userPerson.full_name',
+            ])
             .leftJoin('studentLearnIntern.internSubject', 'internSubject')
-            .leftJoinAndSelect('studentLearnIntern.student', 'student')
-            .leftJoinAndSelect('student.user_person', 'userPerson')
+            .leftJoin('studentLearnIntern.student', 'student')
+            .leftJoin('student.user_person', 'userPerson')
             .where('internSubject.teacher_id = :teacherId', { teacherId })
             .andWhere('internSubject.semester_id = :semester_id', { semester_id })
             .andWhere('internSubject.academic_year = :academic_id', { academic_id })
         const data = await qb.getMany();
         return data;
+    }
+
+    async updateScore(
+        learnInternId: number,
+        score: number,
+        teacherId: number,
+    ) {
+        let result = false;
+        const learnIntern = await this.studentLearnInternRes
+            .createQueryBuilder('learn')
+            .leftJoin('learn.internSubject', 'internSubject')
+            .where('learn.id = :learnInternId', { learnInternId })
+            .where('internSubject.teacher_id = :teacherId', { teacherId })
+            .getOne();
+        if (!learnIntern) {
+            return { result, learnIntern };
+        } else if (learnIntern.passed_status !== PassStatus.STUDYING) {
+            return { result, learnIntern }
+        }
+        learnIntern.score = score;
+        await this.save([learnIntern]);
+        result = true;
+        return { result, learnIntern };
+    }
+
+    async updateStatusPass(
+        teacherId: number,
+        academic_year: number,
+        semester_id: number,
+    ) {
+        let result = false;
+        const learnInterns = await this.studentLearnInternRes
+            .createQueryBuilder('learnIntern')
+            .leftJoin('learnIntern.internSubject', 'internSubject')
+            .where('internSubject.teacher_id = :teacherId', { teacherId })
+            .andWhere('internSubject.academic_year = :academic_year', { academic_year })
+            .andWhere('internSubject.semester_id = :semester_id', { semester_id })
+            .getMany();
+        let length = learnInterns.length;
+        if (!length) {
+            return { result, length }
+        }
+        let scoreIsNull = 0;
+        learnInterns.forEach((learnIntern) => {
+            if (!learnIntern.score) {
+                scoreIsNull++;
+            } else if (learnIntern.score >= 5) {
+                learnIntern.passed_status = PassStatus.PASSED;
+            } else if (learnIntern.score < 5) {
+                learnIntern.passed_status = PassStatus.FAILED;
+            }
+        })
+        if (scoreIsNull) {
+            return { result, length };
+        }
+        await this.save(learnInterns);
+        result = true;
+        return { result, length };
     }
 
     async getStudentLearnIntern(schoolId: number, filter: IStudentLearnInternSubject) {
