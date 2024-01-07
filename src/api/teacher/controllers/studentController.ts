@@ -94,8 +94,36 @@ const updateAllStatusStudentLearnIntern = async (req: Request, res: Response) =>
     return res.status(200).json(data.result);
 }
 
+const getStudentDetail = async (req: Request, res: Response) => {
+    const { id } = req.userData;
+    const stduentId = parseInt(req.params.id);
+    const us = new UserService()
+    const teacher = await us.getOneTeacher({ where: { user_id: id } });
+    if (!teacher) {
+        return res.status(400).json('You do not have permission to access this');
+    }
+
+    const sv = new StudentService()
+    const student = await sv.getOne({
+        where: {
+            id: stduentId,
+        }, 
+        relations: [
+            'user_person',
+            'studentLearnIntern',
+            'report',
+        ]
+    })
+
+    if (!student) {
+        return res.status(400).json('student not found');
+    }
+    return res.status(200).json(student);
+}
+
 export const studentLearnInternController = {
     studentLearnInterns,
     updateScore,
     updateAllStatusStudentLearnIntern,
+    getStudentDetail,
 }

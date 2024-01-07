@@ -8,4 +8,6 @@ router.get('/student-learn-intern', authInstance.auth, studentLearnInternControl
 router.put('/student-learn-intern/:lid', authInstance.auth, studentLearnInternController.updateScore);
 router.put('/student-learn-intern', authInstance.auth, studentLearnInternController.updateAllStatusStudentLearnIntern);
 
+router.get('/student/:id', authInstance.auth, studentLearnInternController.getStudentDetail)
+
 module.exports = router;
