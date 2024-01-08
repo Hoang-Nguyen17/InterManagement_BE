@@ -65,7 +65,7 @@ export class JobService {
             "job.requirements LIKE :searchText"
           );
         })
-      ).setParameters({ searchtext: search_text });
+      ).setParameters({ searchText: `%${search_text}%` });
     }
 
     if (trending) {
