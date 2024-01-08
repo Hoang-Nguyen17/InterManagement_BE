@@ -6,6 +6,7 @@ import { AppliesStatus } from "../../../database/entities/Applies";
 import { RegularTodoService } from "../services/regularTodoService";
 import { ConversationService } from "../../chat/services/conversationService";
 import { InternJobService } from "../services/internService";
+import { InternStatus } from "src/database/entities/InternJob";
 
 const applies = async (req: Request, res: Response) => {
     const { id } = req.userData;
@@ -67,7 +68,7 @@ const updateApply = async (req: Request, res: Response) => {
             await conversationService.save(conversation);
         }
         const issv = new InternJobService();
-        await issv.save({ student_id: result.student_id, apply_id: result.id });
+        await issv.save({ student_id: result.student_id, apply_id: result.id, is_interning: InternStatus.WAITING });
     }
     return res.status(200).json(result);
 }

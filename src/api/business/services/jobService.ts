@@ -71,7 +71,7 @@ export class JobService {
     if (trending) {
       qb.orderBy("job.average_rate", "DESC")
         .addOrderBy("job.viewer_count", "DESC")
-        .andWhere("(job.average_rate > 3.5 or job.average_rate is null)");
+        .andWhere("job.average_rate > 3.5");
     }
 
     if (position_id) {

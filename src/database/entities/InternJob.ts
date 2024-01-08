@@ -4,6 +4,7 @@ import { Student } from "./Student";
 import { Applies } from "./Applies";
 
 export enum InternStatus {
+    WAITING = 'WAITING',
     IN_PROGRESS = 'IN_PROGRESS',
     FINISHED = 'FINISHED',
 }
