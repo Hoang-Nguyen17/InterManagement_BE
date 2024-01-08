@@ -7,6 +7,8 @@ import * as Joi from "joi";
 import { InternStatus } from "../../../database/entities/InternJob";
 import { InternJobService } from "../../business/services/internService";
 import { UserService } from "../../admin/services/userService";
+import { ApplyService } from "../services/applyService";
+import { AppliesStatus } from "src/database/entities/Applies";
 
 const internJobs = async (req: Request, res: Response) => {
     try {
@@ -59,6 +61,10 @@ const updateInternJob = async (req: Request, res: Response) => {
         if (error) return res.status(400).json(error);
         data.is_interning = value.is_interning;
         const result = await issv.save(data);
+        if (result.is_interning === InternStatus.IN_PROGRESS) {
+            const asv = new ApplyService();
+            await asv.update({ id: result.apply_id }, { apply_status: AppliesStatus.ONBOARD });
+        }
         return res.status(200).json(result);
     } catch (error) {
         console.log(error);

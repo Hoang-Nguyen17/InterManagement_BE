@@ -52,7 +52,7 @@ const updateApply = async (req: Request, res: Response) => {
     apply.apply_status = value.apply_status;
     const result = await applyService.save(apply);
 
-    if (apply.apply_status === AppliesStatus.ONBOARD) {
+    if (apply.apply_status === AppliesStatus.APPROVED) {
         const regularTodoService = new RegularTodoService();
         const regularTodo = regularTodoService.create({
             student_id: result.student_id,

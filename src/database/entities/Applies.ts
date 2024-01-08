@@ -8,6 +8,7 @@ import { InternJob } from "./InternJob";
 export enum AppliesStatus {
     APPLYING = 'APPLYING',
     INTERVIEWING = 'INTERVIEWING',
+    APPROVED = 'APPROVED',
     FAILED = 'FAILED',
     ONBOARD = 'ONBOARD',
     FINISHED = 'FINISHED',
