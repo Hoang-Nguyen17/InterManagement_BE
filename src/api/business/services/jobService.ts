@@ -97,7 +97,7 @@ export class JobService {
       .take(limit)
       .addOrderBy("job.createdAt", "DESC")
       .getManyAndCount();
-    if (studentId) {
+    if (studentId && !trending) {
       items.forEach((job: Job) => {
         job.isApplied = job.applies.some(
           (apply) => apply.student_id === studentId
