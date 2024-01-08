@@ -94,6 +94,10 @@ const getJobs = async (req: Request, res: Response) => {
             search_text: Joi.string().optional(),
             page: Joi.number().min(1).default(1),
             limit: Joi.number().min(0).default(10),
+            position_id: Joi.number().optional(),
+            skill_id: Joi.number().optional(),
+            work_type: Joi.string().valid(...Object.values(WorkType)).optional(),
+            work_space: Joi.string().valid(...Object.values(WorkSpace)).optional(),
         })
 
         const { error, value } = schema.validate(req.body);

@@ -41,7 +41,7 @@ export class JobService {
   }
 
   async jobs(filter: FilterJob): Promise<{ items: Job[]; total: number }> {
-    const { page, limit, businessId, search_text, studentId, trending } =
+    const { page, limit, businessId, search_text, studentId, trending, position_id, skill_id, work_type, work_space } =
       filter;
     const qb = await this.jobRes
       .createQueryBuilder("job")
@@ -74,6 +74,24 @@ export class JobService {
         .andWhere("(job.average_rate > 3.5 or job.average_rate is null)");
     }
 
+    if (position_id) {
+      qb.andWhere('job.position_id = :position_id', { position_id: position_id });
+    }
+    if (skill_id) {
+      qb.andWhere(`EXISTS (
+        select 1 
+        from job_skill js
+        where js.job_id = job.id
+          and js.skill_id = :skill_id
+          and js.deleted_at is null
+      )`, { skill_id: skill_id })
+    }
+    if (work_type) {
+      qb.andWhere('job.work_type = :work_type', { work_type })
+    }
+    if (work_space) {
+      qb.andWhere('job.work_space = :work_space', { work_space })
+    }
     const [items, total] = await qb
       .skip((page - 1) * limit)
       .take(limit)
