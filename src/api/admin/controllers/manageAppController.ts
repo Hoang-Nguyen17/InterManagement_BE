@@ -287,7 +287,7 @@ const saveSchoolLinkedBusiness = async (req: Request, res: Response) => {
         if (isExist) {
             return res.status(400).json('already business linked school');
         }
-        const result = await ms.saveLinked(value);
+        const result = await ms.saveLinked({ business_id: value.business_id, school_id });
         return res.status(200).json(result);
     } catch (error) {
         console.log(error);
