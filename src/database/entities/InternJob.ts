@@ -22,7 +22,7 @@ export class InternJob extends CodeBase {
     @Column()
     apply_id: number;
 
-    @Column({ type: 'enum', enum: InternStatus, default: InternStatus.IN_PROGRESS })
+    @Column({ type: 'enum', enum: InternStatus, default: InternStatus.WAITING })
     is_interning: InternStatus;
 
     @Column()

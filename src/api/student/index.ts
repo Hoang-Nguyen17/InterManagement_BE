@@ -9,6 +9,7 @@ import { JobController } from "./controllers/jobController";
 import { StudentRequestRegistIntern } from "./controllers/requestRegisInternController";
 import { regularTodoController } from "./controllers/regularTodoController";
 import { reportController } from "./controllers/reportController";
+import { internJobController } from "./controllers/internJobController";
 
 // student request introducing letter
 router.get(
@@ -72,7 +73,7 @@ router.get("/report", authInstance.auth, reportController.report);
 router.post("/report", authInstance.auth, reportController.saveReport);
 
 // intern job
-router.get("/intern-job", authInstance.auth, reportController.report);
-router.put("/intern-job", authInstance.auth, reportController.saveReport);
+router.get("/intern-job", authInstance.auth, internJobController.internJobs);
+router.put("/intern-job/:id", authInstance.auth, internJobController.updateInternJob);
 
 module.exports = router;
