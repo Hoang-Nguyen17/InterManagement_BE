@@ -58,7 +58,12 @@ const addView = async (req: Request, res: Response) => {
 
 const getJobTrending = async (req: Request, res: Response) => {
   const jobService = new JobService();
+  const userId = req.userData.id;
+  const userService = new UserService();
 
+  const student = await userService.getOneStudent({
+    where: { user_id: userId },
+  });
   const schema = Joi.object({
     trending: Joi.bool().default(true),
     page: Joi.number().default(1),
@@ -70,6 +75,7 @@ const getJobTrending = async (req: Request, res: Response) => {
     trending: value.trending,
     page: value.page,
     limit: value.limit,
+    studentId: student?.id,
   };
   const jobTrendings = await jobService.jobs(filter);
   return res.status(200).json(jobTrendings);
