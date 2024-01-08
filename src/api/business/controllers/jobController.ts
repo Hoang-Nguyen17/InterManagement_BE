@@ -90,14 +90,14 @@ const getJobs = async (req: Request, res: Response) => {
     try {
         const id = req.userData.id;
         const schema = Joi.object({
-            businessId: Joi.number().optional(),
-            search_text: Joi.string().optional(),
+            businessId: Joi.number().allow(null).optional(),
+            search_text: Joi.string().allow(''),
             page: Joi.number().min(1).default(1),
             limit: Joi.number().min(0).default(10),
-            position_id: Joi.number().optional(),
-            skill_id: Joi.number().optional(),
-            work_type: Joi.string().valid(...Object.values(WorkType)).optional(),
-            work_space: Joi.string().valid(...Object.values(WorkSpace)).optional(),
+            position_id: Joi.number().allow(null),
+            skill_id: Joi.number().allow(null),
+            work_type: Joi.string().valid(...Object.values(WorkType)).allow(''),
+            work_space: Joi.string().valid(...Object.values(WorkSpace)).allow(''),
         })
 
         const { error, value } = schema.validate(req.body);
