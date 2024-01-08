@@ -6,7 +6,7 @@ import { AppliesStatus } from "../../../database/entities/Applies";
 import { RegularTodoService } from "../services/regularTodoService";
 import { ConversationService } from "../../chat/services/conversationService";
 import { InternJobService } from "../services/internService";
-import { InternStatus } from "src/database/entities/InternJob";
+import { InternStatus } from "../../../database/entities/InternJob";
 
 const applies = async (req: Request, res: Response) => {
     const { id } = req.userData;
