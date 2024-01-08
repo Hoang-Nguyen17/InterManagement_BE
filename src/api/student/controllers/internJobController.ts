@@ -8,7 +8,7 @@ import { InternStatus } from "../../../database/entities/InternJob";
 import { InternJobService } from "../../business/services/internService";
 import { UserService } from "../../admin/services/userService";
 import { ApplyService } from "../services/applyService";
-import { AppliesStatus } from "src/database/entities/Applies";
+import { AppliesStatus } from "../../../database/entities/Applies";
 
 const internJobs = async (req: Request, res: Response) => {
     try {
