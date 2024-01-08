@@ -119,6 +119,8 @@ export class JobService {
       .innerJoinAndSelect("job.business", "business")
       .innerJoinAndSelect("business.user_person", "personBusiness")
       .leftJoinAndSelect("job.position", "position")
+      .leftJoinAndSelect("job.jobSkills", "jobSkills")
+      .leftJoinAndSelect("jobSkills.skill", "skill")
       .leftJoin('job.applies', 'apply')
       .leftJoin('apply.student', 'student')
       .where('student.major_id = :majorId', { majorId })

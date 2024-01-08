@@ -71,6 +71,8 @@ router.put(
 router.get("/report", authInstance.auth, reportController.report);
 router.post("/report", authInstance.auth, reportController.saveReport);
 
-// 
+// // intern job
+// router.get("/intern-job", authInstance.auth, reportController.report);
+// router.put("/intern-job", authInstance.auth, reportController.saveReport);
 
 module.exports = router;
