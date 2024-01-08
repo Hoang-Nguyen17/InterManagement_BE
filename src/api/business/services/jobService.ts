@@ -89,6 +89,28 @@ export class JobService {
     return { items, total };
   }
 
+  async getJobRecommend(filter: FilterJob) {
+    const { page, limit, majorId } = filter;
+    const qb = this.jobRes
+      .createQueryBuilder('job')
+      .addSelect((subQuery) => {
+        return subQuery.select('COUNT(a.id)', 'count')
+          .from(Applies, 'a')
+          .where('a.job_id = job.id')
+      }, 'count')
+      .innerJoinAndSelect("job.business", "business")
+      .innerJoinAndSelect("business.user_person", "personBusiness")
+      .leftJoinAndSelect("job.position", "position")
+      .leftJoin('job.applies', 'apply')
+      .leftJoin('apply.student', 'student')
+      .where('student.major_id = :majorId', { majorId })
+      .loadRelationCountAndMap('job.count_apply', 'job.applies')
+      .orderBy('count', 'DESC')
+
+    const [items, total] = await qb.skip((page - 1) * limit).take(limit).getManyAndCount();
+    return { items, total };
+  }
+
   async averageRateJob(jobId: number) {
     const job = await this.jobRes
       .createQueryBuilder("job")

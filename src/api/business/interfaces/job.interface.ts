@@ -5,4 +5,5 @@ export interface FilterJob extends paging {
     studentId?: number;
     search_text?: string;
     trending?: boolean;
+    majorId?: number;
 }

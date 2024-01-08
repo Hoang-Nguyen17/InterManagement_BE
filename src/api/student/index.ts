@@ -53,6 +53,7 @@ router.delete("/apply/:id", authInstance.auth, ApplyController.deleteApply);
 router.put("/job/:id/rate_point", authInstance.auth, JobController.rateJob);
 router.put("/job/:id/add_view", authInstance.auth, JobController.addView);
 router.get("/job/trending", authInstance.auth, JobController.getJobTrending);
+router.get("/job/recommend", authInstance.auth, JobController.getJobRecommend);
 
 // regular todo
 router.get(

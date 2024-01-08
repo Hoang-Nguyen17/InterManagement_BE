@@ -80,8 +80,37 @@ const getJobTrending = async (req: Request, res: Response) => {
   const jobTrendings = await jobService.jobs(filter);
   return res.status(200).json(jobTrendings);
 };
+
+const getJobRecommend = async (req: Request, res: Response) => {
+  const jobService = new JobService();
+  const userId = req.userData.id;
+  const userService = new UserService();
+
+  const student = await userService.getOneStudent({
+    where: { user_id: userId },
+  });
+  if (!student) {
+    return res.status(400).json("Không tìm thấy sinh viên");
+  }
+
+  const schema = Joi.object({
+    page: Joi.number().default(1),
+    limit: Joi.number().default(10),
+  });
+  const { error, value } = schema.validate(req.body);
+  if (error) return res.status(400).json(error);
+  const filter: FilterJob = {
+    page: value.page,
+    limit: value.limit,
+    majorId: student.major_id,
+  };
+  const jobRecommend = await jobService.getJobRecommend(filter);
+  return res.status(200).json(jobRecommend);
+};
+
 export const JobController = {
   rateJob,
   addView,
   getJobTrending,
+  getJobRecommend,
 };
