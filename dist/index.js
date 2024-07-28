@@ -10,9 +10,17 @@ const morgan = require("morgan");
 const socket_io_1 = require("socket.io");
 const dotenv = require("dotenv");
 const ormconfig_1 = require("./ormconfig");
+const chatController_1 = require("./api/chat/controllers/chatController");
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 dotenv.config();
 const { PORT } = process.env;
 const app = express();
+1;
 const corsOptions = {
     origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -44,7 +52,9 @@ app.use('/api/v1/user', require('./api/user'));
 app.use('/api/v1/chat', require('./api/chat'));
 const httpServer = http.createServer(app);
 let io = new socket_io_1.Server(httpServer, { cors: corsOptions });
-global.io = io;
+io.on('connection', (socket) => {
+    chatController_1.chatController.sendMessage(socket, io);
+});
 ormconfig_1.AppDataSource.initialize()
     .then(() => {
     httpServer.listen(PORT, async function () {

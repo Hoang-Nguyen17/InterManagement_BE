@@ -44,7 +44,7 @@ const updateInternJob = async (req: Request, res: Response) => {
         const issv = new InternJobService();
         const data = await issv.getOne({
             where: {
-                id: id,
+                apply_id: id,
                 student_id: student.id,
             }
         })
@@ -60,6 +60,7 @@ const updateInternJob = async (req: Request, res: Response) => {
         const { error, value } = schema.validate(req.body);
         if (error) return res.status(400).json(error);
         data.is_interning = value.is_interning;
+        data.start_date = new Date();
         const result = await issv.save(data);
         if (result.is_interning === InternStatus.IN_PROGRESS) {
             const asv = new ApplyService();

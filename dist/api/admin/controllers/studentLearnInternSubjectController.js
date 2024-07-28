@@ -4,6 +4,22 @@ exports.studentLearnInternController = void 0;
 const studentLearnInternSubjectService_1 = require("../services/studentLearnInternSubjectService");
 const Joi = require("joi");
 const StudentLearnIntern_1 = require("../../../database/entities/StudentLearnIntern");
+const typeorm_1 = require("typeorm");
+const getStudentLearnInternAll = async (req, res) => {
+    const isReport = req.query.is_report === 'true';
+    const studentLearnInternService = new studentLearnInternSubjectService_1.StudentLearInternService();
+    const data = await studentLearnInternService.getAll({
+        relations: [
+            'internSubject', 'student', 'student.user_person',
+            'student.class', 'student.Intern_job', 'student.Intern_job.apply',
+            'internSubject.teacher', 'internSubject.teacher.user_person', 'student.report',
+            'student.Intern_job.apply.job', 'internSubject.department', 'student.Intern_job.apply.job.business',
+            'student.Intern_job.apply.job.business.user_person'
+        ],
+        where: { regist_status: StudentLearnIntern_1.RegistStatus.SUCCESSED, student: isReport && { report: { report_file: (0, typeorm_1.Not)((0, typeorm_1.IsNull)()) } } }
+    });
+    return res.status(200).json(data);
+};
 const getStudentLearnInternSubject = async (req, res) => {
     const { schoolId } = req.userData;
     const schema = Joi.object({
@@ -57,5 +73,6 @@ const updateLearnIntern = async (req, res) => {
 exports.studentLearnInternController = {
     getStudentLearnInternSubject,
     updateLearnIntern,
+    getStudentLearnInternAll
 };
 //# sourceMappingURL=studentLearnInternSubjectController.js.map

@@ -87,7 +87,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.ManyToOne)(() => AcademicYear_1.AcademicYear, (academicYear) => academicYear.id),
     (0, typeorm_1.JoinColumn)({
-        name: 'academic_year_id',
+        name: 'academic_year',
         referencedColumnName: 'id'
     }),
     __metadata("design:type", AcademicYear_1.AcademicYear)

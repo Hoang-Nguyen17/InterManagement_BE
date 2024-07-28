@@ -72,7 +72,42 @@ const updateApply = async (req: Request, res: Response) => {
     }
     return res.status(200).json(result);
 }
-export const ApplyController = {
-    applies,
-    updateApply,
+
+const finishApply = async (req: Request, res: Response) => {
+    const { id } = req.userData;
+    const applyId = parseInt(req.params.id);
+    const {file_url} = req.body;
+
+    // Duplicate code
+    const bs = new BusinessService();
+    const internJobService = new InternJobService()
+
+    const business = await bs.getOne({ where: { user_id: id } });
+    if (!business) {
+        return res.status(400).json('Tài khoản của bạn không phải role doanh nghiệp');
+    }
+    const applyService = new ApplyService();
+    const [apply, internJob] = await Promise.all([applyService.getOne({ where: { id: applyId }, relations: ['job'] }), internJobService.getOne({ where: { apply_id: applyId } })]);
+    if (!apply || apply.job.business_id !== business.id) {
+        return res.status(400).json('Bạn không có quyền cập nhật');
+    } //
+
+    if (apply.apply_status !== AppliesStatus.ONBOARD) {
+        return res.status(400).json('Apply chưa được sinh viên xác nhận');
+    }
+
+    apply.file_url = file_url;
+    apply.apply_status = AppliesStatus.FINISHED;
+
+    internJob.is_interning = InternStatus.FINISHED;
+    internJob.finished_date = new Date();
+
+    await Promise.all([internJobService.save(internJob), applyService.save(apply)]);
+    return res.status(200).json("Thành công");
 }
+
+export const ApplyController = {
+  applies,
+  updateApply,
+  finishApply,
+};

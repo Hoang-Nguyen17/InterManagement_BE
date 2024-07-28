@@ -18,7 +18,10 @@ router.post('/business', manageAppController_1.manageAppController.saveBusiness)
 router.put('/business', manageAppController_1.manageAppController.updateBusiness);
 router.delete('/business', manageAppController_1.manageAppController.deleteSchool);
 router.get('/business', manageAppController_1.manageAppController.businesses);
-router.get('/school-linked-business', manageAppController_1.manageAppController.schoolLinkedBusinesses);
+router.post('/admin-school', manageAppController_1.manageAppController.saveAdmin);
+router.get('/admin-school', manageAppController_1.manageAppController.adminSchools);
+router.get('/admin-school/:aid', manageAppController_1.manageAppController.adminSchoolDetail);
+router.delete('/admin-school/:aid', manageAppController_1.manageAppController.deleteAdmin);
 router.get('/school', authInstance.authAdmin, schoolController_1.schoolController.getSchool);
 router.post('/school/:id/program', authInstance.verifyAdminSchool, schoolController_1.schoolController.saveProgram);
 router.put('/school/:id/program/:pid', authInstance.verifyAdminSchool, schoolController_1.schoolController.updateProgram);
@@ -42,6 +45,7 @@ router.get('/school/:id/intern-subject', authInstance.verifyAuthSchool, internSu
 router.delete('/school/:id/intern-subject', authInstance.verifyAdminSchool, internSubjectController_1.internSubjectController.deleteInternSubjects);
 router.get('/school/:id/learn-intern', authInstance.authAdmin, studentLearnInternSubjectController_1.studentLearnInternController.getStudentLearnInternSubject);
 router.put('/school/learn-intern/:id', authInstance.authAdmin, studentLearnInternSubjectController_1.studentLearnInternController.updateLearnIntern);
+router.get('/school/:id/learn-intern-all', authInstance.authAdmin, studentLearnInternSubjectController_1.studentLearnInternController.getStudentLearnInternAll);
 router.post('/school/:id/academic-year', authInstance.authAdmin, schoolController_1.schoolController.saveAcademicYear);
 router.get('/school/:id/academic-year', authInstance.auth, schoolController_1.schoolController.getAcademicYear);
 router.delete('/school/:id/academic-year/:aid', authInstance.authAdmin, schoolController_1.schoolController.deleteAcademicYear);
@@ -53,5 +57,8 @@ router.get('/school/teacher', authInstance.authAdmin, userController_1.userContr
 router.get('/school/student', authInstance.authAdmin, userController_1.userController.getStudents);
 router.get('/introducing-letter', authInstance.authAdmin, studentRequestRegistInternController_1.StudentRequestRegistIntern.requestRegisInterns);
 router.put('/introducing-letter/:id', authInstance.authAdmin, studentRequestRegistInternController_1.StudentRequestRegistIntern.updateRequest);
+router.post('/school-linked-business', authInstance.authAdmin, manageAppController_1.manageAppController.schoolLinkedBusinesses);
+router.post('/create-school-linked-business', authInstance.authAdmin, manageAppController_1.manageAppController.saveSchoolLinkedBusiness);
+router.delete('/school-linked-business/:id', authInstance.authAdmin, manageAppController_1.manageAppController.deleteSchoolLinkedBusiness);
 module.exports = router;
 //# sourceMappingURL=index.js.map

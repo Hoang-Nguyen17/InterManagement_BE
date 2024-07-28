@@ -76,6 +76,9 @@ class SchoolService {
                 throw e;
             }
         };
+        this.getOneSchool = async (filter) => {
+            return await this.schoolRepository.findOne(filter);
+        };
         this.getOneDepartment = async (filter) => {
             return await this.departmentRepository.findOne(filter);
         };
@@ -275,6 +278,7 @@ class SchoolService {
                     .createQueryBuilder("class")
                     .innerJoinAndSelect('class.department', 'department')
                     .leftJoinAndSelect('class.teacher', 'teacher')
+                    .leftJoinAndSelect('teacher.user_person', 'teacherPerson')
                     .where('department.school_id = :schoolId', { schoolId: school_id });
                 if (department_id)
                     qb.andWhere('class.department_id = :department_id', { department_id });

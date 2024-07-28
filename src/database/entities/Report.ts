@@ -10,10 +10,10 @@ export class Report extends CodeBase {
     @Column()
     student_id: number;
 
-    @Column({ length: 500 })
+    @Column({ length: 500, nullable: true })
     report_file: string;
 
-    @Column({ length: 500 })
+    @Column({ length: 500, nullable: true })
     result_business_file: string;
 
     @Column({ length: 500, nullable: true })

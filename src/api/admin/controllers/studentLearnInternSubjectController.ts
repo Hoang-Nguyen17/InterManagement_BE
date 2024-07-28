@@ -3,7 +3,24 @@ import { StudentLearInternService } from "../services/studentLearnInternSubjectS
 import * as Joi from "joi";
 import { IStudentLearnInternSubject } from "../interfaces/student.interface";
 import { RegistStatus } from "../../../database/entities/StudentLearnIntern";
+import { IsNull, Not } from "typeorm";
 
+const getStudentLearnInternAll = async (req: Request, res: Response) => {
+    const isReport = req.query.is_report === 'true';
+
+    const studentLearnInternService = new StudentLearInternService()
+    const data = await studentLearnInternService.getAll({
+        relations: [
+            'internSubject', 'student', 'student.user_person',
+            'student.class', 'student.Intern_job', 'student.Intern_job.apply',
+            'internSubject.teacher','internSubject.teacher.user_person','student.report',
+            'student.Intern_job.apply.job', 'internSubject.department', 'student.Intern_job.apply.job.business',
+            'student.Intern_job.apply.job.business.user_person'],
+        where: {regist_status:RegistStatus.SUCCESSED, student:isReport && { report: { report_file: Not(IsNull()) } } }
+    });
+
+    return res.status(200).json(data);
+}
 
 const getStudentLearnInternSubject = async (req: Request, res: Response) => {
     const { schoolId } = req.userData;
@@ -62,4 +79,5 @@ const updateLearnIntern = async (req: Request, res: Response) => {
 export const studentLearnInternController = {
     getStudentLearnInternSubject,
     updateLearnIntern,
+    getStudentLearnInternAll
 }

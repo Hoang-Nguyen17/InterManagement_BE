@@ -20,6 +20,7 @@ export declare class SchoolService {
     private academicYearRes;
     private semesterRes;
     getSchool: (schoolId: number) => Promise<School>;
+    getOneSchool: (filter?: FindOneOptions<School>) => Promise<School>;
     getOneDepartment: (filter?: FindOneOptions<Department>) => Promise<Department>;
     getOneProgram: (filter?: FindOneOptions<Program>) => Promise<Program>;
     getOneClass: (filter?: FindOneOptions<Class>) => Promise<Class>;

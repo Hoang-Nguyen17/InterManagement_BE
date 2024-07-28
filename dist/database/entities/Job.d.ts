@@ -1,6 +1,5 @@
 import { CodeBase } from "./CodeBase";
 import { Business } from "./Business";
-import { InternJob } from "./InternJob";
 import { JobFavorite } from "./JobFavorite";
 import { Applies } from "./Applies";
 import { Position } from "./Position";
@@ -32,7 +31,6 @@ export declare class Job extends CodeBase {
     business_id: number;
     position_id: number;
     business?: Business;
-    intern_job?: InternJob[];
     job_favorite?: JobFavorite[];
     applies?: Applies[];
     position?: Position;

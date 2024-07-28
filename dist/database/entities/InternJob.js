@@ -9,12 +9,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InternJob = void 0;
+exports.InternJob = exports.InternStatus = void 0;
 const typeorm_1 = require("typeorm");
 const CodeBase_1 = require("./CodeBase");
 const Student_1 = require("./Student");
-const status_constant_1 = require("../../common/constants/status.constant");
-const Job_1 = require("./Job");
+const Applies_1 = require("./Applies");
+var InternStatus;
+(function (InternStatus) {
+    InternStatus["REJECTED"] = "REJECTED";
+    InternStatus["WAITING"] = "WAITING";
+    InternStatus["IN_PROGRESS"] = "IN_PROGRESS";
+    InternStatus["FINISHED"] = "FINISHED";
+})(InternStatus || (exports.InternStatus = InternStatus = {}));
 let InternJob = class InternJob extends CodeBase_1.CodeBase {
 };
 exports.InternJob = InternJob;
@@ -23,37 +29,37 @@ __decorate([
     __metadata("design:type", Number)
 ], InternJob.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Date)
 ], InternJob.prototype, "start_date", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: status_constant_1.status.processing }),
-    __metadata("design:type", Number)
-], InternJob.prototype, "submit_status", void 0);
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", Date)
+], InternJob.prototype, "finished_date", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
-], InternJob.prototype, "job_id", void 0);
+], InternJob.prototype, "apply_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: status_constant_1.status.processing }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.Column)({ type: 'enum', enum: InternStatus, default: InternStatus.WAITING }),
+    __metadata("design:type", String)
 ], InternJob.prototype, "is_interning", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], InternJob.prototype, "student_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'longblob', nullable: true }),
+    (0, typeorm_1.Column)({ length: 500, nullable: true }),
     __metadata("design:type", String)
 ], InternJob.prototype, "appreciation_file", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Job_1.Job, (job) => job.id),
+    (0, typeorm_1.OneToOne)(() => Applies_1.Applies, (apply) => apply.id),
     (0, typeorm_1.JoinColumn)({
-        name: 'job_id',
+        name: 'apply_id',
         referencedColumnName: 'id'
     }),
-    __metadata("design:type", Job_1.Job)
-], InternJob.prototype, "job", void 0);
+    __metadata("design:type", Applies_1.Applies)
+], InternJob.prototype, "apply", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Student_1.Student, (student) => student.id),
     (0, typeorm_1.JoinColumn)({

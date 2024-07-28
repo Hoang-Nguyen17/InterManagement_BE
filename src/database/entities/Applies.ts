@@ -1,60 +1,77 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, Index, Unique, OneToOne } from "typeorm";
-import { CodeBase } from "./CodeBase";
-import { Student } from "./Student";
-import { Job } from "./Job";
-import { Max, Min } from "class-validator";
-import { InternJob } from "./InternJob";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+  Index,
+  Unique,
+  OneToOne,
+} from 'typeorm';
+import { CodeBase } from './CodeBase';
+import { Student } from './Student';
+import { Job } from './Job';
+import { Max, Min } from 'class-validator';
+import { InternJob } from './InternJob';
 
 export enum AppliesStatus {
-    APPLYING = 'APPLYING',
-    INTERVIEWING = 'INTERVIEWING',
-    APPROVED = 'APPROVED',
-    FAILED = 'FAILED',
-    ONBOARD = 'ONBOARD',
-    FINISHED = 'FINISHED',
+  APPLYING = 'APPLYING',
+  INTERVIEWING = 'INTERVIEWING',
+  APPROVED = 'APPROVED',
+  FAILED = 'FAILED',
+  ONBOARD = 'ONBOARD',
+  FINISHED = 'FINISHED',
 }
 
 @Entity({ name: 'applies' })
 export class Applies extends CodeBase {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    student_id: number;
+  @Column()
+  student_id: number;
 
-    @Column()
-    job_id: number;
+  @Column()
+  job_id: number;
 
-    @Column({ length: 500 })
-    cv_file: string;
+  @Column({ length: 500 })
+  cv_file: string;
 
-    @Column({ length: 500, nullable: true })
-    introducing_file: string;
+  @Column({ length: 500, nullable: true })
+  introducing_file: string;
 
-    @Column({ nullable: true })
-    @Min(1)
-    @Max(5)
-    rate_point: number;
+  @Column({ nullable: true })
+  @Min(1)
+  @Max(5)
+  rate_point: number;
 
-    @Column({ type: 'enum', enum: AppliesStatus, default: AppliesStatus.APPLYING })
-    apply_status: AppliesStatus;
+  @Column({
+    type: 'enum',
+    enum: AppliesStatus,
+    default: AppliesStatus.APPLYING,
+  })
+  apply_status: AppliesStatus;
 
-    @ManyToOne(() => Student, (student) => student.id)
-    @JoinColumn({
-        name: 'student_id',
-        referencedColumnName: 'id',
-    })
-    student?: Student;
+  @ManyToOne(() => Student, (student) => student.id)
+  @JoinColumn({
+    name: 'student_id',
+    referencedColumnName: 'id',
+  })
+  student?: Student;
 
-    @ManyToOne(() => Job, (job) => job.id)
-    @JoinColumn({
-        name: 'job_id',
-        referencedColumnName: 'id',
-    })
-    job?: Job;
+  @ManyToOne(() => Job, (job) => job.id)
+  @JoinColumn({
+    name: 'job_id',
+    referencedColumnName: 'id',
+  })
+  job?: Job;
 
-    @OneToOne(() => InternJob, (internJob) => internJob.apply, {
-        createForeignKeyConstraints: false,
-    })
-    intern_job?: InternJob;
+  @OneToOne(() => InternJob, (internJob) => internJob.apply, {
+    createForeignKeyConstraints: false,
+  })
+  intern_job?: InternJob;
+
+  @Column({ nullable: true })
+  file_url?: string;
 }

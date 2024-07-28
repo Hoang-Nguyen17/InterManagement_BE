@@ -23,5 +23,6 @@ exports.AppDataSource = new typeorm_1.DataSource({
         minVersion: 'TLSv1.2',
         rejectUnauthorized: true
     },
+    connectTimeout: 20000
 });
 //# sourceMappingURL=ormconfig.js.map

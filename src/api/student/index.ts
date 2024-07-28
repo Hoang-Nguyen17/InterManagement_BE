@@ -11,6 +11,10 @@ import { regularTodoController } from "./controllers/regularTodoController";
 import { reportController } from "./controllers/reportController";
 import { internJobController } from "./controllers/internJobController";
 
+const multer = require('multer');
+import uploadController from './controllers/uploadController';
+
+const fileUpload = multer();
 // student request introducing letter
 router.get(
   "/introducing-letter",
@@ -71,7 +75,9 @@ router.put(
 //report
 router.get("/report", authInstance.auth, reportController.report);
 router.post("/report", authInstance.auth, reportController.saveReport);
+router.post("/report-business", authInstance.auth, reportController.saveReportBusiness);
 
+router.post("/upload", authInstance.auth,fileUpload.single('file'), uploadController.uploadFile);
 // intern job
 router.get("/intern-job", authInstance.auth, internJobController.internJobs);
 router.put("/intern-job/:id", authInstance.auth, internJobController.updateInternJob);

@@ -3,6 +3,8 @@ import * as Joi from "joi";
 import { StudentLearInternService } from "../../admin/services/studentLearnInternSubjectService";
 import { UserService } from "../../admin/services/userService";
 import { StudentService } from "../services/studentService";
+import { InternStatus } from "../../../database/entities/InternJob";
+import { PassStatus } from "../../../database/entities/StudentLearnIntern";
 
 const studentLearnInterns = async (req: Request, res: Response) => {
     const { id } = req.userData;
@@ -14,24 +16,51 @@ const studentLearnInterns = async (req: Request, res: Response) => {
     const schema = Joi.object({
         semester_id: Joi.number().optional(),
         academic_year: Joi.number().optional(),
+        passed_status:  Joi.string()
+        .valid(...Object.values(PassStatus))
+        .optional(),
     })
 
-    const { error, value } = schema.validate(req.body);
+    const { error, value } = schema.validate(req.query);
     if (error) return res.status(400).json(error);
 
     const studentLearnInternService = new StudentLearInternService()
     const data = await studentLearnInternService.getStudentLearnInternByTeacherId(
         teacher.id,
         value.academic_year,
-        value.semester_id
+        value.semester_id,
+        value.passed_status
     );
 
-    // const ssv = new StudentService();
-    // const data = await ssv.getStudentLearnInternByTeacherId(
-    //     teacher.id,
-    //     value.academic_year,
-    //     value.semester_id,
-    // )
+    return res.status(200).json(data);
+}
+
+const getStudentLearnInternByTeacherIdAndInternJobStatus = async (req: Request, res: Response) => {
+    const { id } = req.userData;
+    const us = new UserService()
+    const teacher = await us.getOneTeacher({ where: { user_id: id } });
+    if (!teacher) {
+        return res.status(400).json('You do not have permission to access this');
+    }
+    const schema = Joi.object({
+        semester_id: Joi.number().optional(),
+        academic_year: Joi.number().optional(),
+        intern_job_status:  Joi.string()
+        .valid(...Object.values(InternStatus))
+        .required(),
+    })
+
+    const { error, value } = schema.validate(req.query);
+    if (error) return res.status(400).json(error);
+
+    const studentLearnInternService = new StudentLearInternService()
+    const data = await studentLearnInternService.getStudentLearnInternByTeacherIdAndInternJobStatus(
+        teacher.id,
+        value.intern_job_status,
+        value.academic_year,
+        value.semester_id,
+    );
+
     return res.status(200).json(data);
 }
 
@@ -46,7 +75,6 @@ const updateScore = async (req: Request, res: Response) => {
     const schema = Joi.object({
         score: Joi.number().min(0).max(10).required(),
     })
-
     const { error, value } = schema.validate(req.body);
     if (error) return res.status(400).json(error);
 
@@ -126,4 +154,5 @@ export const studentLearnInternController = {
     updateScore,
     updateAllStatusStudentLearnIntern,
     getStudentDetail,
+    getStudentLearnInternByTeacherIdAndInternJobStatus
 }

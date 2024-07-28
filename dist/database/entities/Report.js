@@ -25,15 +25,15 @@ __decorate([
     __metadata("design:type", Number)
 ], Report.prototype, "student_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'longblob' }),
+    (0, typeorm_1.Column)({ length: 500, nullable: true }),
     __metadata("design:type", String)
 ], Report.prototype, "report_file", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'longblob' }),
+    (0, typeorm_1.Column)({ length: 500, nullable: true }),
     __metadata("design:type", String)
 ], Report.prototype, "result_business_file", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'longblob' }),
+    (0, typeorm_1.Column)({ length: 500, nullable: true }),
     __metadata("design:type", String)
 ], Report.prototype, "result_teacher_file", void 0);
 __decorate([

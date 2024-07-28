@@ -13,7 +13,6 @@ exports.Job = exports.WorkSpace = exports.WorkType = void 0;
 const typeorm_1 = require("typeorm");
 const CodeBase_1 = require("./CodeBase");
 const Business_1 = require("./Business");
-const InternJob_1 = require("./InternJob");
 const JobFavorite_1 = require("./JobFavorite");
 const Applies_1 = require("./Applies");
 const Position_1 = require("./Position");
@@ -104,10 +103,6 @@ __decorate([
     }),
     __metadata("design:type", Business_1.Business)
 ], Job.prototype, "business", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => InternJob_1.InternJob, (internJob) => internJob.job),
-    __metadata("design:type", Array)
-], Job.prototype, "intern_job", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => JobFavorite_1.JobFavorite, (jobFavorite) => jobFavorite.job),
     __metadata("design:type", Array)

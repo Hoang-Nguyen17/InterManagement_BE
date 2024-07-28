@@ -286,6 +286,7 @@ export class SchoolService {
                 .createQueryBuilder("class")
                 .innerJoinAndSelect('class.department', 'department')
                 .leftJoinAndSelect('class.teacher', 'teacher')
+                .leftJoinAndSelect('teacher.user_person', 'teacherPerson')
                 .where('department.school_id = :schoolId', { schoolId: school_id });
 
             if (department_id) qb.andWhere('class.department_id = :department_id', { department_id });

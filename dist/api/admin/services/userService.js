@@ -102,6 +102,10 @@ class UserService {
                     && await this.schoolAdminService.checkClassBySchoolId(schoolId, account.user_person.student.class_id)))
                     return false;
             }
+            const isExistSchool = await this.schoolAdminService.getOneSchool({ where: { id: schoolId } });
+            if (!isExistSchool) {
+                return false;
+            }
             return true;
         };
         this.getAdministrator = async (schoolId) => {

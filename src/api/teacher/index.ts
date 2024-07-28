@@ -7,6 +7,7 @@ const authInstance = new Auth();
 router.get('/student-learn-intern', authInstance.auth, studentLearnInternController.studentLearnInterns);
 router.put('/student-learn-intern/:lid', authInstance.auth, studentLearnInternController.updateScore);
 router.put('/student-learn-intern', authInstance.auth, studentLearnInternController.updateAllStatusStudentLearnIntern);
+router.get('/student-learn-intern-intern-job', authInstance.auth, studentLearnInternController.getStudentLearnInternByTeacherIdAndInternJobStatus);
 
 router.get('/student/:id', authInstance.auth, studentLearnInternController.getStudentDetail)
 
